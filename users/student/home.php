@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Welcome Admin</h1>
+        <h1>Welcome Student</h1>
     </div>
     <div class="admin-menu">
         <button>Manage Users</button>

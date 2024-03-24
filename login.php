@@ -25,25 +25,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Redirect user based on role
         switch ($user['RoleName']) {
             case 'Admin':
-                header("Location: home.php");
+                header("Location: users/admin/home.php");
                 break;
             case 'Instructor':
-                header("Location: home.php");
+                header("Location: users/instructor/home.php");
                 break;
             case 'TA':
-                header("Location: home.php");
+                header("Location: users/student/home.php");
                 break;
             case 'Student':
-                header("Location: home.php");
+                header("Location: users/student/home.php");
                 break;
             default:
-                // Redirect to a generic home page if role is not recognized
                 header("Location: home.php");
                 break;
         }
         exit;
     } else {
-        // Authentication failed, redirect back to the login page with an error message
         header("Location: login.php?error=invalid_credentials");
         exit;
     }
@@ -72,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button class="btn" name="submit" type="submit">Login</button>
             </div>
             <?php
-            // Display error message if provided via GET parameter
             if (isset($_GET["error"]) && $_GET["error"] === "invalid_credentials") {
                 echo "<p style='color: red;'>Invalid email or password. Please try again.</p>";
             }
