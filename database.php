@@ -3,7 +3,7 @@ $host = 'localhost';
 $port = '3306'; 
 $dbname = 'crs_manager_final';
 $username = 'root';
-$password = 'password';
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname", $username, $password);
