@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS UserRole (
     UserID INT,
     RoleID INT,
     PRIMARY KEY (UserID, RoleID),
-    FOREIGN KEY (UserID) REFERENCES `User`(UserID),
-    FOREIGN KEY (RoleID) REFERENCES Role(RoleID)
+    FOREIGN KEY (UserID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (RoleID) REFERENCES Role(RoleID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Course (
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS CourseInstructor (
     CourseID INT,
     InstructorID INT,
     PRIMARY KEY (CourseID, InstructorID),
-    FOREIGN KEY (CourseID) REFERENCES Course(CourseID),
-    FOREIGN KEY (InstructorID) REFERENCES `User`(UserID)
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
+    FOREIGN KEY (InstructorID) REFERENCES `User`(UserID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CourseSection (
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS CourseSection (
     SectionNumber INT,
     StartDate DATE,
     EndDate DATE,
-    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `Group` (
@@ -53,16 +53,16 @@ CREATE TABLE IF NOT EXISTS `Group` (
     GroupLeaderID INT,
     DatabasePassword VARCHAR(255),
     MaxSize INT,
-    FOREIGN KEY (CourseID) REFERENCES Course(CourseID),
-    FOREIGN KEY (GroupLeaderID) REFERENCES `User`(UserID)
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
+    FOREIGN KEY (GroupLeaderID) REFERENCES `User`(UserID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS StudentGroupMembership (
     StudentID INT,
     GroupID INT,
     PRIMARY KEY (StudentID, GroupID),
-    FOREIGN KEY (StudentID) REFERENCES `User`(UserID),
-    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID)
+    FOREIGN KEY (StudentID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS InternalEmail (
@@ -71,15 +71,15 @@ CREATE TABLE IF NOT EXISTS InternalEmail (
     Subject VARCHAR(255),
     Body TEXT,
     Timestamp DATETIME,
-    FOREIGN KEY (SenderID) REFERENCES `User`(UserID)
+    FOREIGN KEY (SenderID) REFERENCES `User`(UserID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS EmailRecipient (
     EmailID INT,
     RecipientID INT,
     PRIMARY KEY (EmailID, RecipientID),
-    FOREIGN KEY (EmailID) REFERENCES InternalEmail(EmailID),
-    FOREIGN KEY (RecipientID) REFERENCES `User`(UserID)
+    FOREIGN KEY (EmailID) REFERENCES InternalEmail(EmailID) ON DELETE CASCADE,
+    FOREIGN KEY (RecipientID) REFERENCES `User`(UserID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS FAQ (
@@ -88,8 +88,8 @@ CREATE TABLE IF NOT EXISTS FAQ (
     Answer TEXT,
     ContributorID INT,
     CourseID INT DEFAULT NULL,
-    FOREIGN KEY (ContributorID) REFERENCES `User`(UserID),
-    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+    FOREIGN KEY (ContributorID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CourseMaterial (
@@ -99,5 +99,5 @@ CREATE TABLE IF NOT EXISTS CourseMaterial (
     Description TEXT,
     URL_Path TEXT,
     UploadTimestamp DATETIME,
-    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID)
+    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID) ON DELETE CASCADE
 );
