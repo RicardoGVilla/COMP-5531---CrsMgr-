@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" type="text/css" href="css/login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="login-container">
@@ -72,10 +72,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <form id="login-form" action="login.php" method="post">
                     
                     <div class="inputs">
-                    <div class="input-container">
-                        <img src="" alt="" />
-                        <input id="email" type="email" name='email' placeholder='Email' required/>
-                    </div>
+                        <div class="input-container">
+                            <img src="" alt="" />
+                            <input id="email" type="email" name='email' placeholder='Email' required/>
+                        </div>
                     </div>
                     <div class="inputs">
                     <div class="input-container">
