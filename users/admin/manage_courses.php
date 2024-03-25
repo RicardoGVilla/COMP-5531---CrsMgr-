@@ -1,3 +1,17 @@
+<?php
+// Start session and include database configuration
+session_start();
+require_once '../../database.php';
+
+// Fetch all courses from the database
+try {
+    $stmt = $pdo->query("SELECT * FROM Course");
+    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $error = "Error fetching courses: " . $e->getMessage();
+    $courses = [];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +30,8 @@
         <!-- Add Course Form -->
         <div id="add-course" class="course-form">
             <h2>Add Course</h2>
-            <form method="POST" action="add_course_endpoint.php"> <!-- Update action to your endpoint script -->
+            <form method="POST" action="edit_courses_endpoint.php">
+                <input type="hidden" name="action" value="add" />
                 <input type="text" name="course_name" placeholder="Course Name" required />
                 <input type="date" name="start_date" placeholder="Start Date" required />
                 <input type="date" name="end_date" placeholder="End Date" required />
@@ -27,7 +42,8 @@
         <!-- Update Course Form -->
         <div id="update-course" class="course-form" style="display: none;">
             <h2>Update Course</h2>
-            <form method="POST" action="update_course_endpoint.php"> <!-- Update action to your endpoint script -->
+            <form method="POST" action="edit_courses_endpoint.php">
+                <input type="hidden" name="action" value="update" />
                 <input type="text" name="course_id" placeholder="Course ID" required />
                 <input type="text" name="new_course_name" placeholder="New Course Name" />
                 <input type="date" name="new_start_date" placeholder="New Start Date" />
@@ -39,7 +55,8 @@
         <!-- Delete Course Form -->
         <div id="delete-course" class="course-form" style="display: none;">
             <h2>Delete Course</h2>
-            <form method="POST" action="delete_course_endpoint.php"> <!-- Update action to your endpoint script -->
+            <form method="POST" action="edit_courses_endpoint.php">
+                <input type="hidden" name="action" value="delete" />
                 <input type="text" name="course_id" placeholder="Course ID" required />
                 <button type="submit">Delete Course</button>
             </form>
@@ -49,6 +66,31 @@
             <button onclick="showForm('add')">Add Course</button>
             <button onclick="showForm('update')">Update Course</button>
             <button onclick="showForm('delete')">Delete Course</button>
+        </div>
+
+        <!-- Table to display courses -->
+        <div class="course-table">
+            <h2>Current Courses</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Course Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($courses as $course): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($course['CourseID']) ?></td>
+                            <td><?= htmlspecialchars($course['Name']) ?></td>
+                            <td><?= htmlspecialchars($course['StartDate']) ?></td>
+                            <td><?= htmlspecialchars($course['EndDate']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
