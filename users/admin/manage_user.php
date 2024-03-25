@@ -19,13 +19,13 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 // Display success message if set
 if (isset($_SESSION['message'])) {
     echo "<p>" . $_SESSION['message'] . "</p>";
-    unset($_SESSION['message']); // Unset the message so it doesn't display again on refresh.
+    unset($_SESSION['message']); 
 }
 
 // Display error message if set
 if (isset($_SESSION['error'])) {
     echo "<p>" . $_SESSION['error'] . "</p>";
-    unset($_SESSION['error']); // Unset the message so it doesn't display again on refresh.
+    unset($_SESSION['error']); 
 }
 ?>
 
@@ -48,7 +48,7 @@ if (isset($_SESSION['error'])) {
         <div id="add-user" class="user-form">
             <h2>Add User</h2>
             <form method="POST" action="edit_user_endpoint.php"> 
-                <input type="hidden" name="action" value="add"> <!-- Add hidden field for action -->
+                <input type="hidden" name="action" value="add"> 
                 <input type="text" name="name" placeholder="Full Name" required />
                 <input type="email" name="email" placeholder="Email" required />
                 <input type="password" name="password" placeholder="Password" required />
@@ -85,7 +85,7 @@ if (isset($_SESSION['error'])) {
 <div id="delete-user" class="user-form" style="display: none;">
     <h2>Delete User</h2>
     <form method="POST" action="edit_user_endpoint.php">
-        <input type="hidden" name="action" value="delete"> <!-- Add hidden field for action -->
+        <input type="hidden" name="action" value="delete">
         <input type="text" name="user_id" placeholder="User ID" required />
         <button type="submit">Delete User</button>
     </form>
