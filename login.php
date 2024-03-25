@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Redirect user based on role
         switch ($user['RoleName']) {
             case 'Admin':
-                header("Location: users/admin/home.php");
+                header("Location: users/admin/manage_user.php");
                 break;
             case 'Instructor':
                 header("Location: users/instructor/home.php");
@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="login-container">
         <div class="container">
-            <div class="header">
+            <div class="login-header">
                 <div class="text">
                     <h1>Welcome to CrsMgr</h1>
                     <h2>-- The Course Manager System! --</h2>
