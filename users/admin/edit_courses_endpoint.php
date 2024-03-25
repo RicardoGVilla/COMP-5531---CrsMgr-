@@ -21,23 +21,42 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
 }
 
 function addCourse() {
-    global $pdo; 
+    global $pdo;
 
     $courseName = $_POST['course_name'];
     $startDate = $_POST['start_date'];
     $endDate = $_POST['end_date'];
+    $sections = explode(',', $_POST['sections']); // Split section numbers into an array
+    $instructors = explode(',', $_POST['instructors']); // Split instructor IDs into an array
 
     try {
+        // Insert the course into the Course table
         $query = "INSERT INTO Course (Name, StartDate, EndDate) VALUES (:courseName, :startDate, :endDate)";
         $stmt = $pdo->prepare($query);
         $stmt->execute([':courseName' => $courseName, ':startDate' => $startDate, ':endDate' => $endDate]);
+
+        // Retrieve the ID of the newly inserted course
+        $courseId = $pdo->lastInsertId();
+
+        // Insert section numbers into the CourseSection table
+        foreach ($sections as $section) {
+            $query = "INSERT INTO CourseSection (CourseID, SectionNumber) VALUES (:courseId, :section)";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':courseId' => $courseId, ':section' => $section]);
+        }
+
+        // Insert instructor IDs into the CourseInstructor table
+        foreach ($instructors as $instructor) {
+            $query = "INSERT INTO CourseInstructor (CourseID, InstructorID) VALUES (:courseId, :instructor)";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':courseId' => $courseId, ':instructor' => $instructor]);
+        }
 
         $_SESSION['message'] = "Course added successfully";
     } catch (PDOException $e) {
         $_SESSION['error'] = "Error adding course: " . $e->getMessage();
     }
 
-   
     header('Location: manage_courses.php');
     exit;
 }

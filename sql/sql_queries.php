@@ -1,8 +1,13 @@
-DROP TABLE IF EXISTS EmailRecipient, InternalEmail, StudentGroupMembership, `Group`, CourseSection, CourseInstructor, Course, UserRole, `User`, Role, FAQ, CourseMaterial;
+-- Drop the existing database if it exists
+DROP DATABASE IF EXISTS crs_manager_final;
 
-CREATE DATABASE IF NOT EXISTS crs_manager_final;
+-- Create a new database
+CREATE DATABASE crs_manager_final;
+
+-- Use the created database
 USE crs_manager_final;
 
+-- Create tables
 CREATE TABLE IF NOT EXISTS `User` (
     UserID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255),
