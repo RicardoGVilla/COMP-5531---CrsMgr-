@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     throw new Exception('Failed to delete the user.');
                 }
                 if($stmt->rowCount() == 0){
-                    // No rows affected, meaning the user ID might not exist
+                
                     throw new Exception("User ID {$userID} not found.");
                 }
                 $_SESSION['message'] = "User deleted successfully";
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
         elseif ($_POST['action'] === 'update') {
-            $userID = $_POST['user_id'];
+            $userID = $_POST['user_id']; 
             $newName = $_POST['new_name'];
             $newEmail = $_POST['new_email'];
             $newPassword = $_POST['new_password'];
@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
                 // Start building the update query
                 $updateUserQuery = "UPDATE User SET Name = :newName, EmailAddress = :newEmail";
-                
+        
                 // Parameters for the SQL statement
                 $params = [
                     ':newName' => $newName,
@@ -83,7 +83,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmtUpdateUser = $pdo->prepare($updateUserQuery);
                 $stmtUpdateUser->execute($params);
         
-                // Ee assume roles are managed separately as previously described
+                // Update user role if it's changed
+                $queryUpdateUserRole = "UPDATE UserRole SET RoleID = :roleID WHERE UserID = :userID";
+                $stmtUpdateUserRole = $pdo->prepare($queryUpdateUserRole);
+                $stmtUpdateUserRole->execute([':roleID' => $newRole, ':userID' => $userID]);
         
                 $pdo->commit();
                 $_SESSION['message'] = "User updated successfully";
@@ -93,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
         
-        
+
         
     }
 
@@ -101,4 +104,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header('Location: manage_user.php');
     exit;
 }
+
+// Function to retrieve user roles
+function getUserRoles($userID, $pdo) {
+    $roles = [];
+    $query = "SELECT RoleName FROM Role JOIN UserRole ON Role.RoleID = UserRole.RoleID WHERE UserID = :userID";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([':userID' => $userID]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $roles[] = $row['RoleName'];
+    }
+    
+    // Check if the user has both Student and TA roles
+    $hasStudentRole = in_array('Student', $roles);
+    $hasTARole = in_array('TA', $roles);
+    if ($hasStudentRole && $hasTARole) {
+        return ['TA'];
+    }
+    
+    return $roles;
+}
+
+
 ?>

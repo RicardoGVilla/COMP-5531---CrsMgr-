@@ -5,7 +5,9 @@ session_start(); // Start the session at the very beginning.
 include('../../database.php');
 
 // Fetch users from the database
-$query = "SELECT * FROM User";
+$query = "SELECT `User`.UserID, `User`.Name, `User`.EmailAddress, Role.RoleName FROM `User`
+          JOIN UserRole ON `User`.UserID = UserRole.UserID
+          JOIN Role ON UserRole.RoleID = Role.RoleID";
 $stmt = $pdo->query($query);
 
 // Initialize an empty array to store users
@@ -28,6 +30,7 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']); 
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,35 +65,34 @@ if (isset($_SESSION['error'])) {
             </form>
         </div>
 
-          <!-- Update User Form -->
-    <div id="update-user" class="user-form" style="display: none;">
-        <h2>Update User</h2>
-        <form method="POST" action="edit_user_endpoint.php">
-            <input type="hidden" name="action" value="update"> 
-            <input type="text" name="user_id" placeholder="User ID" required />
-            <input type="text" name="new_name" placeholder="New Full Name" />
-            <input type="email" name="new_email" placeholder="New Email" />
-            <input type="password" name="new_password" placeholder="New Password" />
-            <select name="new_role">
-                <option value="1">Student</option>
-                <option value="2">Instructor</option>
-                <option value="3">TA</option>
-                <option value="4">Admin</option>
-            </select>
-            <button type="submit">Update User</button>
-        </form>
-    </div>
+        <!-- Update User Form -->
+        <div id="update-user" class="user-form" style="display: none;">
+            <h2>Update User</h2>
+            <form method="POST" action="edit_user_endpoint.php">
+                <input type="hidden" name="action" value="update"> 
+                <input type="text" name="user_id" placeholder="User ID" required />
+                <input type="text" name="new_name" placeholder="New Full Name" />
+                <input type="email" name="new_email" placeholder="New Email" />
+                <input type="password" name="new_password" placeholder="New Password" />
+                <select name="new_role">
+                    <option value="1">Student</option>
+                    <option value="2">Instructor</option>
+                    <option value="3">TA</option>
+                    <option value="4">Admin</option>
+                </select>
+                <button type="submit">Update User</button>
+            </form>
+        </div>
 
-    <!-- Delete User Form -->
-<div id="delete-user" class="user-form" style="display: none;">
-    <h2>Delete User</h2>
-    <form method="POST" action="edit_user_endpoint.php">
-        <input type="hidden" name="action" value="delete">
-        <input type="text" name="user_id" placeholder="User ID" required />
-        <button type="submit">Delete User</button>
-    </form>
-</div>
-
+        <!-- Delete User Form -->
+        <div id="delete-user" class="user-form" style="display: none;">
+            <h2>Delete User</h2>
+            <form method="POST" action="edit_user_endpoint.php">
+                <input type="hidden" name="action" value="delete">
+                <input type="text" name="user_id" placeholder="User ID" required />
+                <button type="submit">Delete User</button>
+            </form>
+        </div>
 
         <div class="user-actions">
             <button onclick="showForm('add')">Add User</button>
@@ -107,6 +109,7 @@ if (isset($_SESSION['error'])) {
                         <th>User ID</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Role</th> <!-- New column for role -->
                     </tr>
                 </thead>
                 <tbody>
@@ -115,6 +118,7 @@ if (isset($_SESSION['error'])) {
                             <td><?php echo htmlspecialchars($user['UserID']); ?></td>
                             <td><?php echo htmlspecialchars($user['Name']); ?></td>
                             <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
+                            <td><?php echo htmlspecialchars($user['RoleName']); ?></td> <!-- Display role -->
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
