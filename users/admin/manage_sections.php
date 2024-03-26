@@ -56,21 +56,20 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
         <!-- Update Section Form -->
-        <div id="update-section" class="section-form" style="display: none;">
-            <h2>Update Section</h2>
-            <form method="POST" action="edit_sections_endpoint.php"> 
-                <input type="number" name="section_id" placeholder="Section ID" required />
-                <select name="new_course_id">
-                    <option value="">Select New Course (optional)</option>
-                    <option value="1">Introduction to Database Systems</option>
-                    <option value="2">Advanced Web Development</option>
-                </select>
-                <input type="number" name="new_section_number" placeholder="New Section Number" />
-                <input type="date" name="new_start_date" placeholder="New Start Date" />
-                <input type="date" name="new_end_date" placeholder="New End Date" />
-                <button type="submit">Update Section</button>
-            </form>
-        </div>
+<div id="update-section" class="section-form" style="display: none;">
+    <h2>Update Section</h2>
+    <form method="POST" action="edit_sections_endpoint.php"> 
+        <input type="hidden" name="action" value="update" />
+        <input type="number" name="section_id" placeholder="Section ID" required />
+        <select name="new_course_id">
+            <option value="">Select New Course (optional)</option>
+        </select>
+        <input type="number" name="new_section_number" placeholder="New Section Number" />
+        <input type="date" name="new_start_date" placeholder="New Start Date" />
+        <input type="date" name="new_end_date" placeholder="New End Date" />
+        <button type="submit">Update Section</button>
+    </form>
+</div>
 
         
         <!-- Delete Section Form -->
