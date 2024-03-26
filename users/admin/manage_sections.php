@@ -1,3 +1,28 @@
+<?php
+session_start();
+require_once '../../database.php';
+
+
+// Assuming $pdo is your PDO database connection
+$query = "SELECT 
+            CourseSection.SectionID, 
+            Course.Name AS CourseName, 
+            Course.StartDate, 
+            Course.EndDate, 
+            CourseSection.SectionNumber, 
+            User.Name AS InstructorName 
+          FROM CourseSection
+          JOIN Course ON CourseSection.CourseID = Course.CourseID
+          LEFT JOIN CourseInstructor ON Course.CourseID = CourseInstructor.CourseID
+          LEFT JOIN `User` ON CourseInstructor.InstructorID = User.UserID
+          ORDER BY Course.Name, CourseSection.SectionNumber ASC";
+
+$stmt = $pdo->prepare($query);
+$stmt->execute();
+$sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,30 +39,29 @@
 
     <div class="main-content">
         <!-- Add Section Form -->
-        <div id="add-section" class="section-form">
-            <h2>Add Section</h2>
-            <form method="POST" action="add_section_endpoint.php"> <!-- Update action to your endpoint script -->
-                <select name="course_id" required>
-                    <option value="">Select Course</option>
-                    <!-- Populate with courses from the database -->
-                    <option value="1">Introduction to Database Systems</option>
-                    <option value="2">Advanced Web Development</option>
-                </select>
-                <input type="number" name="section_number" placeholder="Section Number" required />
-                <input type="date" name="start_date" placeholder="Start Date" required />
-                <input type="date" name="end_date" placeholder="End Date" required />
-                <button type="submit">Add Section</button>
-            </form>
-        </div>
+<div id="add-section" class="section-form">
+    <h2>Add Section</h2>
+    <form method="POST" action="edit_sections_endpoint.php"> 
+        <select name="course_id" required>
+            <option value="">Select Course</option>
+            <!-- Populate with courses from the database -->
+            <option value="1">Introduction to Database Systems</option>
+            <option value="2">Advanced Web Development</option>
+        </select>
+        <input type="number" name="section_number" placeholder="Section Number" required />
+        <input type="date" name="start_date" placeholder="Start Date" required />
+        <input type="date" name="end_date" placeholder="End Date" required />
+        <button type="submit">Add Section</button>
+    </form>
+</div>
 
         <!-- Update Section Form -->
         <div id="update-section" class="section-form" style="display: none;">
             <h2>Update Section</h2>
-            <form method="POST" action="update_section_endpoint.php"> <!-- Update action to your endpoint script -->
+            <form method="POST" action="edit_sections_endpoint.php"> 
                 <input type="number" name="section_id" placeholder="Section ID" required />
                 <select name="new_course_id">
                     <option value="">Select New Course (optional)</option>
-                    <!-- Populate with courses from the database -->
                     <option value="1">Introduction to Database Systems</option>
                     <option value="2">Advanced Web Development</option>
                 </select>
@@ -48,21 +72,53 @@
             </form>
         </div>
 
+        
         <!-- Delete Section Form -->
-        <div id="delete-section" class="section-form" style="display: none;">
-            <h2>Delete Section</h2>
-            <form method="POST" action="delete_section_endpoint.php"> <!-- Update action to your endpoint script -->
-                <input type="number" name="section_id" placeholder="Section ID" required />
-                <button type="submit">Delete Section</button>
-            </form>
-        </div>
+<div id="delete-section" class="section-form" style="display: none;">
+    <h2>Delete Section</h2>
+    <form method="POST" action="edit_sections_endpoint.php">
+        <input type="hidden" name="action" value="delete" />
+        <input type="number" name="section_id" placeholder="Section ID" required />
+        <button type="submit">Delete Section</button>
+    </form>
+</div>
+
 
         <div class="section-actions">
             <button onclick="showForm('add')">Add Section</button>
             <button onclick="showForm('update')">Update Section</button>
             <button onclick="showForm('delete')">Delete Section</button>
         </div>
+
+        <div class="course-table">
+    <h2>Current Sections</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Section ID</th>
+                <th>Course Name</th>
+                <th>Section Number</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Instructor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($sections as $section): ?>
+            <tr>
+                <td><?= htmlspecialchars($section['SectionID']) ?></td>
+                <td><?= htmlspecialchars($section['CourseName']) ?></td>
+                <td><?= htmlspecialchars($section['SectionNumber']) ?></td>
+                <td><?= htmlspecialchars($section['StartDate']) ?></td>
+                <td><?= htmlspecialchars($section['EndDate']) ?></td>
+                <td><?= htmlspecialchars($section['InstructorName'] ?: 'No instructor') ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
     </div>
+
 
     <div class="footer">
         <button onclick="location.href='../home.php'">Home</button>
