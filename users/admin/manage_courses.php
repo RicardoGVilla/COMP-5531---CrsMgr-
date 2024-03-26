@@ -1,3 +1,28 @@
+<?php
+// Start session and include database configuration
+session_start();
+require_once '../../database.php';
+
+// all courses with their sections and instructors from the database
+try {
+    $query = "SELECT Course.CourseID, Course.Name AS CourseName, Course.StartDate, Course.EndDate, 
+              GROUP_CONCAT(DISTINCT CourseSection.SectionNumber ORDER BY CourseSection.SectionNumber ASC SEPARATOR ', ') AS Sections,
+              GROUP_CONCAT(DISTINCT User.Name ORDER BY User.Name ASC SEPARATOR ', ') AS Instructors
+              FROM Course
+              LEFT JOIN CourseSection ON Course.CourseID = CourseSection.CourseID
+              LEFT JOIN CourseInstructor ON Course.CourseID = CourseInstructor.CourseID
+              LEFT JOIN `User` ON CourseInstructor.InstructorID = User.UserID
+              GROUP BY Course.CourseID";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $_SESSION['error'] = "Error fetching courses: " . $e->getMessage();
+    $courses = [];
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +37,7 @@
         <header class="header">
             <h1>Welcome Admin</h1>
         </header> 
-
+       
         <div class="sidebar">
             <button onclick="location.href='manage_user.php'">Manage Users</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
@@ -30,10 +55,27 @@
             <!-- Add Course Form -->
             <div id="add-course" class="course-form">
                 <h2>Add Course</h2>
-                <form method="POST" action="add_course_endpoint.php"> <!-- Update action to your endpoint script -->
+                <form method="POST" action="edit_courses_endpoint.php">
+                    <input type="hidden" name="action" value="add" />
                     <input type="text" name="course_name" placeholder="Course Name" required />
                     <input type="date" name="start_date" placeholder="Start Date" required />
                     <input type="date" name="end_date" placeholder="End Date" required />
+
+                    <!-- Dropdown menu for selecting instructors -->
+                    <select name="instructors" required>
+                        <option value="" disabled selected>Select Instructor</option>
+                        <?php foreach ($courses as $course): ?>
+                            <?php if ($course['Instructors']): ?>
+                                <?php $instructors = explode(', ', $course['Instructors']); ?>
+                                <?php foreach ($instructors as $instructor): ?>
+                                    <option value="<?= htmlspecialchars($instructor) ?>">
+                                        <?= htmlspecialchars($instructor) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+
                     <button type="submit">Add Course</button>
                 </form>
             </div>
@@ -41,11 +83,38 @@
             <!-- Update Course Form -->
             <div id="update-course" class="course-form" style="display: none;">
                 <h2>Update Course</h2>
-                <form method="POST" action="update_course_endpoint.php"> <!-- Update action to your endpoint script -->
-                    <input type="text" name="course_id" placeholder="Course ID" required />
+                <form method="POST" action="edit_courses_endpoint.php">
+                    <input type="hidden" name="action" value="update" />
+                    
+                    <!-- Dropdown menu for selecting the course to update -->
+                    <select name="course_id" required>
+                        <option value="" disabled selected>Select Course</option>
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?= htmlspecialchars($course['CourseID']) ?>">
+                                <?= htmlspecialchars($course['CourseName']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    
                     <input type="text" name="new_course_name" placeholder="New Course Name" />
                     <input type="date" name="new_start_date" placeholder="New Start Date" />
                     <input type="date" name="new_end_date" placeholder="New End Date" />
+                    
+                    <!-- Dropdown menu for selecting instructors -->
+                    <select name="new_instructors" required>
+                        <option value="" disabled selected>Select Instructor</option>
+                        <?php foreach ($courses as $course): ?>
+                            <?php if ($course['Instructors']): ?>
+                                <?php $instructors = explode(', ', $course['Instructors']); ?>
+                                <?php foreach ($instructors as $instructor): ?>
+                                    <option value="<?= htmlspecialchars($instructor) ?>">
+                                        <?= htmlspecialchars($instructor) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+                    
                     <button type="submit">Update Course</button>
                 </form>
             </div>
@@ -53,7 +122,8 @@
             <!-- Delete Course Form -->
             <div id="delete-course" class="course-form" style="display: none;">
                 <h2>Delete Course</h2>
-                <form method="POST" action="delete_course_endpoint.php"> <!-- Update action to your endpoint script -->
+                <form method="POST" action="edit_courses_endpoint.php">
+                    <input type="hidden" name="action" value="delete" />
                     <input type="text" name="course_id" placeholder="Course ID" required />
                     <button type="submit">Delete Course</button>
                 </form>
@@ -64,12 +134,40 @@
                 <button onclick="showForm('update')">Update Course</button>
                 <button onclick="showForm('delete')">Delete Course</button>
             </div>
-        </div>
 
-        <footer class="footer">
+            <!-- Table to display courses with sections and instructors -->
+            <div class="course-table">
+                <h2>Current Courses</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Course ID</th>
+                            <th>Course Name</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Sections</th>
+                            <th>Instructors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($courses as $course): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($course['CourseID']) ?></td>
+                                <td><?= htmlspecialchars($course['CourseName']) ?></td>
+                                <td><?= htmlspecialchars($course['StartDate']) ?></td>
+                                <td><?= htmlspecialchars($course['EndDate']) ?></td>
+                                <td><?= htmlspecialchars($course['Sections'] ?: 'N/A') ?></td>
+                                <td><?= htmlspecialchars($course['Instructors'] ?: 'No instructors') ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <form class="footer">
             <button onclick="location.href='../home.php'">Home</button>
             <button onclick="location.href='logout.php'">Logout</button>
-        </footer>
+        </form>
     </div>
 
     <script>

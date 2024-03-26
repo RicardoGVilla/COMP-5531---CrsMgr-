@@ -10,7 +10,7 @@
         <header class="header">
             <h1>Welcome Admin</h1>
         </header>
-
+        
         <div class="sidebar">
             <button onclick="location.href='manage_user.php'">Manage Users</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>

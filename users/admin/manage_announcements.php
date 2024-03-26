@@ -10,8 +10,8 @@
     <div class="page">
         <header class="header">
             <h1>Welcome Admin</h1>
-        </header>
-
+        </header> 
+    
         <div class="sidebar">
             <button onclick="location.href='manage_user.php'">Manage Users</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
@@ -44,10 +44,10 @@
             </div>
         </div>
 
-        <footer class="footer">
+        <form class="footer">
             <button onclick="location.href='../home.php'">Home</button>
             <button onclick="location.href='logout.php'">Logout</button>
-        </footer>
+        </form>
     </div>
 
     <!-- Additional JavaScript can be added here for dynamic functionality as needed -->

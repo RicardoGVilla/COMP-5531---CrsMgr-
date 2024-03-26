@@ -21,7 +21,7 @@
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         </div>
-    
+        
         <div class="main">
             <div class="main-header">
                 <h2>Manage Groups</h2>
