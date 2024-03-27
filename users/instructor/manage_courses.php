@@ -1,9 +1,23 @@
+<?php
+session_start();
+require_once '../../database.php'; 
+
+try {
+    // Fetch courses from the database
+    $query = "SELECT CourseID, Name, StartDate, EndDate FROM Course";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Could not connect to the database: " . $e->getMessage());
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Information</title>
+    <title>Group Information</title>
     <style>
         .modal {
             display: none;
@@ -38,35 +52,27 @@
     </style>
 </head>
 <body>
-    <h2>Computer Science Courses</h2>
+    <h2>Group Information</h2>
     <table>
         <thead>
             <tr>
-                <th>Course Name</th>
-                <th>Course Section</th>
-                <th>Class Size</th>
+                <th>Course ID</th>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
+            <?php foreach ($courses as $course): ?>
             <tr>
-                <td>Introduction to Programming</td>
-                <td>CS101</td>
-                <td>50</td>
-                <td><button onclick="openModal('CS101')">Add Student</button></td>
+                <td><?= htmlspecialchars($course['CourseID']) ?></td>
+                <td><?= htmlspecialchars($course['Name']) ?></td>
+                <td><?= htmlspecialchars($course['StartDate']) ?></td>
+                <td><?= htmlspecialchars($course['EndDate']) ?></td>
+                <td><button onclick="openModal(<?= $course['CourseID'] ?>)">Add Members</button></td>
             </tr>
-            <tr>
-                <td>Data Structures and Algorithms</td>
-                <td>CS202</td>
-                <td>40</td>
-                <td><button onclick="openModal('CS202')">Add Student</button></td>
-            </tr>
-            <tr>
-                <td>Database Management Systems</td>
-                <td>CS303</td>
-                <td>35</td>
-                <td><button onclick="openModal('CS303')">Add Student</button></td>
-            </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 
@@ -91,38 +97,31 @@
         // Get the modal
         var modal = document.getElementById('myModal');
 
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user clicks on the button, open the modal
-        function openModal(courseName) {
-            modal.style.display = "block";
-            // Set a custom attribute to store the course name
-            modal.setAttribute('data-course', courseName);
-        }
-
-        // When the user clicks on <span> (x), close the modal
         function closeModal() {
             modal.style.display = "none";
         }
-
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
             if (event.target == modal) {
-                modal.style.display = "none";
+                closeModal();
             }
         }
 
         // Handle form submission
         document.getElementById('studentForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
-            var courseName = modal.getAttribute('data-course');
             var firstName = document.getElementById('fname').value;
             var lastName = document.getElementById('lname').value;
             var studentId = document.getElementById('studentId').value;
-            console.log('Course:', courseName, 'First Name:', firstName, 'Last Name:', lastName, 'Student ID:', studentId);
+            console.log('First Name:', firstName, 'Last Name:', lastName, 'Student ID:', studentId);
             closeModal();
         });
+
+        // Function to open the modal
+        function openModal(courseID) {
+            // Set a custom attribute to store the course ID
+            modal.setAttribute('data-course', courseID);
+            modal.style.display = "block";
+        }
     </script>
 </body>
 </html>
