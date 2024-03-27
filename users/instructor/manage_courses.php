@@ -1,10 +1,29 @@
 <?php
 session_start();
-require_once '../../database.php'; 
+require_once '../../database.php';
 
 try {
-    // Fetch courses from the database
-    $query = "SELECT CourseID, Name, StartDate, EndDate FROM Course";
+    $query = "
+        SELECT 
+            c.CourseID, 
+            c.Name, 
+            cs.SectionNumber, 
+            cs.StartDate, 
+            cs.EndDate, 
+            COUNT(sgm.StudentID) AS ClassSize
+        FROM 
+            Course c
+        JOIN 
+            CourseSection cs ON c.CourseID = cs.CourseID
+        LEFT JOIN 
+            `Group` g ON c.CourseID = g.CourseID
+        LEFT JOIN 
+            StudentGroupMembership sgm ON g.GroupID = sgm.GroupID
+        GROUP BY 
+            c.CourseID, cs.SectionNumber, cs.StartDate, cs.EndDate
+        ORDER BY 
+            c.CourseID, cs.SectionNumber;
+    ";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -17,11 +36,10 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Group Information</title>
+    <title>Courses Information</title>
     <style>
-        /* Styles for modal */
         .modal {
-            display: none;
+            display: none; 
             position: fixed;
             z-index: 1;
             left: 0;
@@ -52,8 +70,11 @@ try {
         }
     </style>
 </head>
+    <meta charset="UTF-8">
+    <title>Courses Information</title>
+</head>
 <body>
-    <h2>Group Information</h2>
+    <h2>Courses Information</h2>
     <table>
         <thead>
             <tr>
@@ -61,6 +82,8 @@ try {
                 <th>Name</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Class Section</th>
+                <th>Class Size</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -71,14 +94,16 @@ try {
                 <td><?= htmlspecialchars($course['Name']) ?></td>
                 <td><?= htmlspecialchars($course['StartDate']) ?></td>
                 <td><?= htmlspecialchars($course['EndDate']) ?></td>
+                <td><?= htmlspecialchars($course['SectionNumber']) ?></td>
+                <td><?= htmlspecialchars($course['ClassSize']) ?></td>
                 <td><button onclick="openModal(<?= $course['CourseID'] ?>)">Add Members</button></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-
-    <!-- Modal -->
-    <div id="myModal" class="modal">
+    
+     <!-- Modal -->
+     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h3>Add Student</h3>
@@ -97,6 +122,12 @@ try {
     <script>
         // Get the modal
         var modal = document.getElementById('myModal');
+
+        // Function to open the modal
+        function openModal(courseID) {
+            modal.setAttribute('data-course', courseID);
+            modal.style.display = "block";
+        }
 
         // When the user clicks on <span> (x), close the modal
         function closeModal() {
@@ -119,12 +150,6 @@ try {
             console.log('First Name:', firstName, 'Last Name:', lastName, 'Student ID:', studentId);
             closeModal();
         });
-
-        // Function to open the modal
-        function openModal(courseID) {
-            modal.setAttribute('data-course', courseID);
-            modal.style.display = "block";
-        }
     </script>
 </body>
 </html>
