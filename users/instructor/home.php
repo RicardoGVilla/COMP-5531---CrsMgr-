@@ -11,8 +11,8 @@
         <h1>Welcome Instructor</h1>
     </div>
     <div class="admin-menu">
-        <button onclick="location.href='manage_user.php'">Manage Courses</button>
-        <button onclick="location.href='manage_courses.php'">Manage Student Groups</button>
+        <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+        <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
         <button onclick="location.href='manage_sections.php'">Manage FAQSs</button>
     </div>
     <div class="main-content">
