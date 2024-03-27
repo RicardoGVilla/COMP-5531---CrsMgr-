@@ -19,6 +19,7 @@ try {
     <meta charset="UTF-8">
     <title>Group Information</title>
     <style>
+        /* Styles for modal */
         .modal {
             display: none;
             position: fixed;
@@ -97,9 +98,12 @@ try {
         // Get the modal
         var modal = document.getElementById('myModal');
 
+        // When the user clicks on <span> (x), close the modal
         function closeModal() {
             modal.style.display = "none";
         }
+
+        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
@@ -118,7 +122,6 @@ try {
 
         // Function to open the modal
         function openModal(courseID) {
-            // Set a custom attribute to store the course ID
             modal.setAttribute('data-course', courseID);
             modal.style.display = "block";
         }
