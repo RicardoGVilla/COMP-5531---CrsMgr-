@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course FAQs</title>
     <style>
-        /* Styles for modal and table */
         .modal {
             display: none;
             position: fixed;
@@ -61,28 +60,31 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Database Systems</td>
-                <td>
-                    <ul>
-                        <li>What is a relational database?</li>
-                        <li>What is SQL?</li>
-                        <li>What are the advantages of using indexes in databases?</li>
-                    </ul>
-                </td>
-                <td><button onclick="openModal('Database Systems')">Add FAQs</button></td>
-            </tr>
-            <tr>
-                <td>Algorithms and Data Structures</td>
-                <td>
-                    <ul>
-                        <li>What is a linked list?</li>
-                        <li>What is a binary search tree?</li>
-                        <li>What is the time complexity of quicksort?</li>
-                    </ul>
-                </td>
-                <td><button onclick="openModal('Algorithms and Data Structures')">Add FAQs</button></td>
-            </tr>
+            <?php
+            // Fetch courses and FAQs from the database
+            try {
+                require_once '../../database.php';
+
+                $query = "SELECT Course.Name AS CourseName, FAQ.Question, FAQ.Answer FROM FAQ JOIN Course ON FAQ.CourseID = Course.CourseID";
+                $stmt = $pdo->prepare($query);
+                $stmt->execute();
+                $courseFaqs = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+
+                foreach ($courseFaqs as $courseName => $faqs) {
+                    echo "<tr>";
+                    echo "<td>$courseName</td>";
+                    echo "<td>";
+                    foreach ($faqs as $faq) {
+                        echo "<ul><li>{$faq['Question']}</li></ul>";
+                    }
+                    echo "</td>";
+                    echo "<td><button onclick=\"openModal(this)\">Add FAQs</button></td>";
+                    echo "</tr>";
+                }
+            } catch (PDOException $e) {
+                die("Could not connect to the database: " . $e->getMessage());
+            }
+            ?>
         </tbody>
     </table>
 
@@ -90,7 +92,9 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h3>Add FAQs</h3>
-            <form id="faqForm">
+            <form id="faqForm" action="edit_faq_endpoint.php" method="post">
+                <label for="course">Course:</label>
+                <input type="text" id="course" name="course" readonly><br><br>
                 <label for="question">Question:</label><br>
                 <input type="text" id="question" name="question" required><br><br>
                 <label for="answer">Answer:</label><br>
@@ -101,6 +105,25 @@
     </div>
 
     <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        function openModal(btn) {
+            var row = btn.parentNode.parentNode;
+            var courseName = row.cells[0].innerText;
+            document.getElementById('course').value = courseName;
+            modal.style.display = "block";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
     </script>
 </body>
 </html>
