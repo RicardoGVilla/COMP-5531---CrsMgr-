@@ -107,15 +107,16 @@ try {
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h3>Add Student</h3>
-            <form id="studentForm">
-                <label for="fname">First Name:</label>
-                <input type="text" id="fname" name="fname" required><br><br>
-                <label for="lname">Last Name:</label>
-                <input type="text" id="lname" name="lname" required><br><br>
-                <label for="studentId">Student ID:</label>
-                <input type="text" id="studentId" name="studentId" required><br><br>
-                <input type="submit" value="Add Student">
-            </form>
+            <form id="studentForm" method="post" action="edit_courses_endpoint.php">
+    <input type="hidden" name="action" value="enroll_student">
+    <input type="hidden" id="course_id" name="course_id" value="">
+    <input type="hidden" id="section_id" name="section_id" value="">
+    <label for="student_id">Student ID:</label>
+    <input type="text" id="student_id" name="student_id" required><br><br>
+    <input type="submit" value="Enroll Student">
+</form>
+
+
         </div>
     </div>
 
@@ -124,10 +125,12 @@ try {
         var modal = document.getElementById('myModal');
 
         // Function to open the modal
-        function openModal(courseID) {
-            modal.setAttribute('data-course', courseID);
-            modal.style.display = "block";
-        }
+        function openModal(courseID, sectionID) {
+            document.getElementById('course_id').value = courseID;
+    document.getElementById('section_id').value = sectionID;
+    modal.style.display = "block";
+}
+
 
         // When the user clicks on <span> (x), close the modal
         function closeModal() {
@@ -143,7 +146,6 @@ try {
 
         // Handle form submission
         document.getElementById('studentForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
             var firstName = document.getElementById('fname').value;
             var lastName = document.getElementById('lname').value;
             var studentId = document.getElementById('studentId').value;

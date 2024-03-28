@@ -93,14 +93,15 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <h3>Add FAQs</h3>
             <form id="faqForm" action="edit_faq_endpoint.php" method="post">
-                <label for="course">Course:</label>
-                <input type="text" id="course" name="course" readonly><br><br>
-                <label for="question">Question:</label><br>
-                <input type="text" id="question" name="question" required><br><br>
-                <label for="answer">Answer:</label><br>
-                <textarea id="answer" name="answer" rows="4" required></textarea><br><br>
-                <input type="submit" value="Submit">
-            </form>
+    <label for="course">Course:</label>
+    <input type="text" id="course" name="course" readonly><br><br>
+    <label for="question">Question:</label><br>
+    <input type="text" id="question" name="question" required><br><br>
+    <label for="answer">Answer:</label><br>
+    <textarea id="answer" name="answer" rows="4" required></textarea><br><br>
+    <input type="submit" value="Submit">
+</form>
+
         </div>
     </div>
 
