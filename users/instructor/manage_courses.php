@@ -4,26 +4,24 @@ require_once '../../database.php';
 
 try {
     $query = "
-        SELECT 
-            c.CourseID, 
-            c.Name, 
-            cs.SectionID, 
-            cs.SectionNumber, 
-            cs.StartDate, 
-            cs.EndDate, 
-            COUNT(sgm.StudentID) AS ClassSize
-        FROM 
-            Course c
-        JOIN 
-            CourseSection cs ON c.CourseID = cs.CourseID
-        LEFT JOIN 
-            `Group` g ON c.CourseID = g.CourseID
-        LEFT JOIN 
-            StudentGroupMembership sgm ON g.GroupID = sgm.GroupID
-        GROUP BY 
-            c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
-        ORDER BY 
-            c.CourseID, cs.SectionNumber;
+    SELECT 
+    c.CourseID, 
+    c.Name, 
+    cs.SectionID, 
+    cs.SectionNumber, 
+    cs.StartDate, 
+    cs.EndDate, 
+    COUNT(se.StudentID) AS ClassSize
+FROM 
+    Course c
+JOIN 
+    CourseSection cs ON c.CourseID = cs.CourseID
+LEFT JOIN 
+    StudentEnrollment se ON cs.SectionID = se.SectionID
+GROUP BY 
+    c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
+ORDER BY 
+    c.CourseID, cs.SectionNumber;
     ";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
