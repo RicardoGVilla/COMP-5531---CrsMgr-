@@ -5,62 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage FAQs</title>
     <link rel="stylesheet" href="../../css/home.css">
-<body>
-    <div class="header">
-        <h1>Manage FAQs</h1>
-    </div>
-
-    <div class="main-content">
-        <!-- Add FAQ Form -->
-        <div id="add-faq" class="faq-form">
-            <h2>Add New FAQ</h2>
-            <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
-                <input type="text" name="question" placeholder="FAQ Question" required />
-                <textarea name="answer" placeholder="FAQ Answer" required></textarea>
-                <select name="course_id">
-                    <option value="">Select Course (optional)</option>
-                    <option value="1">Introduction to Database Systems</option>
-                    <option value="2">Advanced Web Development</option>
-                </select>
-                <button type="submit">Add FAQ</button>
-            </form>
+    <body>
+    <div class="page">
+        <header class="header">
+            <h1>Welcome Admin</h1>
+        </header>
+        
+        <div class="sidebar">
+            <button onclick="location.href='manage_user.php'">Manage Users</button>
+            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_sections.php'">Manage Sections</button>
+            <button onclick="location.href='manage_groups.php'">Manage Groups</button>
+            <button onclick="location.href='manage_assignments.php'">Assignments/Projects</button>
+            <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
+            <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         </div>
 
-        <!-- Update FAQ Form - Simplified version without dynamic data loading -->
-        <div id="update-faq" class="faq-form" style="display: none;">
-            <h2>Update FAQ</h2>
-            <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
-                <input type="number" name="faq_id" placeholder="FAQ ID" required />
-                <input type="text" name="new_question" placeholder="New Question" />
-                <textarea name="new_answer" placeholder="New Answer"></textarea>
-                <select name="new_course_id">
-                    <option value="">Select New Course (optional)</option>
-                    <option value="1">Introduction to Database Systems</option>
-                    <option value="2">Advanced Web Development</option>
-                </select>
-                <button type="submit">Update FAQ</button>
-            </form>
+        <div class="main">
+            <div class="main-header">
+                <h2>Manage FAQs</h2>
+            </div>
+            <!-- Add FAQ Form -->
+            <div id="add-faq" class="faq-form">
+                <h2>Add New FAQ</h2>
+                <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                    <input type="text" name="question" placeholder="FAQ Question" required />
+                    <textarea name="answer" placeholder="FAQ Answer" required></textarea>
+                    <select name="course_id">
+                        <option value="">Select Course (optional)</option>
+                        <option value="1">Introduction to Database Systems</option>
+                        <option value="2">Advanced Web Development</option>
+                    </select>
+                    <button type="submit">Add FAQ</button>
+                </form>
+            </div>
+
+            <!-- Update FAQ Form - Simplified version without dynamic data loading -->
+            <div id="update-faq" class="faq-form" style="display: none;">
+                <h2>Update FAQ</h2>
+                <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                    <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                    <input type="text" name="new_question" placeholder="New Question" />
+                    <textarea name="new_answer" placeholder="New Answer"></textarea>
+                    <select name="new_course_id">
+                        <option value="">Select New Course (optional)</option>
+                        <option value="1">Introduction to Database Systems</option>
+                        <option value="2">Advanced Web Development</option>
+                    </select>
+                    <button type="submit">Update FAQ</button>
+                </form>
+            </div>
+
+            <!-- Delete FAQ Form -->
+            <div id="delete-faq" class="faq-form" style="display: none;">
+                <h2>Delete FAQ</h2>
+                <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                    <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                    <button type="submit">Delete FAQ</button>
+                </form>
+            </div>
+
+            <div class="faq-actions">
+                <button onclick="showForm('add')">Add FAQ</button>
+                <button onclick="showForm('update')">Update FAQ</button>
+                <button onclick="showForm('delete')">Delete FAQ</button>
+            </div>
         </div>
 
-        <!-- Delete FAQ Form -->
-        <div id="delete-faq" class="faq-form" style="display: none;">
-            <h2>Delete FAQ</h2>
-            <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
-                <input type="number" name="faq_id" placeholder="FAQ ID" required />
-                <button type="submit">Delete FAQ</button>
-            </form>
-        </div>
-
-        <div class="faq-actions">
-            <button onclick="showForm('add')">Add FAQ</button>
-            <button onclick="showForm('update')">Update FAQ</button>
-            <button onclick="showForm('delete')">Delete FAQ</button>
-        </div>
-    </div>
-
-    <div class="footer">
-        <button onclick="location.href='../home.php'">Home</button>
-        <button onclick="location.href='logout.php'">Logout</button>
+        <footer class="footer">
+            <button onclick="location.href='../home.php'">Home</button>
+            <button onclick="location.href='logout.php'">Logout</button>
+        </footer>
     </div>
 
     <script>
