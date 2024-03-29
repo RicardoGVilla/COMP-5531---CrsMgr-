@@ -7,6 +7,7 @@ try {
         SELECT 
             c.CourseID, 
             c.Name, 
+            cs.SectionID, 
             cs.SectionNumber, 
             cs.StartDate, 
             cs.EndDate, 
@@ -20,7 +21,7 @@ try {
         LEFT JOIN 
             StudentGroupMembership sgm ON g.GroupID = sgm.GroupID
         GROUP BY 
-            c.CourseID, cs.SectionNumber, cs.StartDate, cs.EndDate
+            c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
         ORDER BY 
             c.CourseID, cs.SectionNumber;
     ";
@@ -70,9 +71,6 @@ try {
         }
     </style>
 </head>
-    <meta charset="UTF-8">
-    <title>Courses Information</title>
-</head>
 <body>
     <h2>Courses Information</h2>
     <table>
@@ -96,62 +94,46 @@ try {
                 <td><?= htmlspecialchars($course['EndDate']) ?></td>
                 <td><?= htmlspecialchars($course['SectionNumber']) ?></td>
                 <td><?= htmlspecialchars($course['ClassSize']) ?></td>
-                <td><button onclick="openModal(<?= $course['CourseID'] ?>)">Add Members</button></td>
+                <td><button onclick="openModal(<?= $course['CourseID'] ?>, <?= $course['SectionID'] ?>)">Add Members</button></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
     
-     <!-- Modal -->
-     <div id="myModal" class="modal">
+    <!-- Modal -->
+    <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h3>Add Student</h3>
             <form id="studentForm" method="post" action="edit_courses_endpoint.php">
-    <input type="hidden" name="action" value="enroll_student">
-    <input type="hidden" id="course_id" name="course_id" value="">
-    <input type="hidden" id="section_id" name="section_id" value="">
-    <label for="student_id">Student ID:</label>
-    <input type="text" id="student_id" name="student_id" required><br><br>
-    <input type="submit" value="Enroll Student">
-</form>
-
-
+                <input type="hidden" name="action" value="enroll_student">
+                <input type="hidden" id="course_id" name="course_id" value="">
+                <input type="hidden" id="section_id" name="section_id" value="">
+                <label for="student_id">Student ID:</label>
+                <input type="text" id="student_id" name="student_id" required><br><br>
+                <input type="submit" value="Enroll Student">
+            </form>
         </div>
     </div>
 
     <script>
-        // Get the modal
         var modal = document.getElementById('myModal');
 
-        // Function to open the modal
         function openModal(courseID, sectionID) {
             document.getElementById('course_id').value = courseID;
-    document.getElementById('section_id').value = sectionID;
-    modal.style.display = "block";
-}
+            document.getElementById('section_id').value = sectionID;
+            modal.style.display = "block";
+        }
 
-
-        // When the user clicks on <span> (x), close the modal
         function closeModal() {
             modal.style.display = "none";
         }
 
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
             }
         }
-
-        // Handle form submission
-        document.getElementById('studentForm').addEventListener('submit', function(event) {
-            var firstName = document.getElementById('fname').value;
-            var lastName = document.getElementById('lname').value;
-            var studentId = document.getElementById('studentId').value;
-            console.log('First Name:', firstName, 'Last Name:', lastName, 'Student ID:', studentId);
-            closeModal();
-        });
     </script>
 </body>
 </html>
