@@ -1,11 +1,20 @@
--- Drop the existing database if it exists
-DROP DATABASE IF EXISTS crs_manager_final;
-
--- Create a new database
-CREATE DATABASE crs_manager_final;
-
--- Use the created database
+CREATE DATABASE IF NOT EXISTS crs_manager_final;
 USE crs_manager_final;
+
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS CourseMaterial;
+DROP TABLE IF EXISTS FAQ;
+DROP TABLE IF EXISTS EmailRecipient;
+DROP TABLE IF EXISTS InternalEmail;
+DROP TABLE IF EXISTS StudentEnrollment;
+DROP TABLE IF EXISTS StudentGroupMembership;
+DROP TABLE IF EXISTS `Group`;
+DROP TABLE IF EXISTS CourseSection;
+DROP TABLE IF EXISTS CourseInstructor;
+DROP TABLE IF EXISTS Course;
+DROP TABLE IF EXISTS UserRole;
+DROP TABLE IF EXISTS Role;
+DROP TABLE IF EXISTS `User`;
 
 -- Create User table
 CREATE TABLE IF NOT EXISTS `User` (
@@ -33,6 +42,7 @@ CREATE TABLE IF NOT EXISTS UserRole (
 -- Create Course table
 CREATE TABLE IF NOT EXISTS Course (
     CourseID INT AUTO_INCREMENT PRIMARY KEY,
+    CourseCode VARCHAR(10) UNIQUE NOT NULL,
     Name VARCHAR(255),
     StartDate DATE,
     EndDate DATE
@@ -51,7 +61,7 @@ CREATE TABLE IF NOT EXISTS CourseInstructor (
 CREATE TABLE IF NOT EXISTS CourseSection (
     SectionID INT AUTO_INCREMENT PRIMARY KEY,
     CourseID INT,
-    SectionNumber INT,
+    SectionNumber VARCHAR(10), -- Changed data type to VARCHAR
     StartDate DATE,
     EndDate DATE,
     FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
