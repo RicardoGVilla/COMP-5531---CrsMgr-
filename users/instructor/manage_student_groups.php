@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Information</title>
+    <link rel="stylesheet" href="../../css/home.css">
     <style>
         /* Styles for modal */
         .modal {
@@ -39,43 +40,62 @@
     </style>
 </head>
 <body>
-    <h2>Group Information</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Group Number</th>
-                <th>Group Size</th>
-                <th>Group Leader</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>5</td>
-                <td>John Doe</td>
-                <td><button onclick="openModal(1)">Add Members</button></td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>4</td>
-                <td>Jane Smith</td>
-                <td><button onclick="openModal(2)">Add Members</button></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- Modal -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Add Members to Group</h3>
-            <form id="memberForm" enctype="multipart/form-data">
-                <label for="file">Upload CSV File:</label>
-                <input type="file" id="file" name="file" accept=".csv" required><br><br>
-                <input type="submit" value="Upload File">
-            </form>
+    <div class="page">
+        <header class="header">
+            <h1>Welcome Instructor</h1>
+        </header> 
+    
+        <div class="sidebar">
+            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
         </div>
+
+        <main class="main">
+            <h2>Group Information</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Group Number</th>
+                        <th>Group Size</th>
+                        <th>Group Leader</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>5</td>
+                        <td>John Doe</td>
+                        <td><button onclick="openModal(1)">Add Members</button></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>Jane Smith</td>
+                        <td><button onclick="openModal(2)">Add Members</button></td>
+                    </tr>
+                </tbody>
+            </table>
+    
+            <!-- Modal -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h3>Add Members to Group</h3>
+                    <form id="memberForm" enctype="multipart/form-data">
+                        <label for="file">Upload CSV File:</label>
+                        <input type="file" id="file" name="file" accept=".csv" required><br><br>
+                        <input type="submit" value="Upload File">
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <button onclick="location.href='../home.php'">Home</button>
+            <button onclick="location.href='logout.php'">Logout</button>
+        </footer>
     </div>
 
     <script>

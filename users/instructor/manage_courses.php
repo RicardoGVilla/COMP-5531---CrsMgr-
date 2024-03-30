@@ -11,7 +11,7 @@ try {
     cs.SectionNumber, 
     cs.StartDate, 
     cs.EndDate, 
-    COUNT(se.StudentID) AS ClassSize
+    COUNT(se.StubdentID) AS ClassSize
 FROM 
     Course c
 JOIN 
@@ -36,6 +36,7 @@ ORDER BY
 <head>
     <meta charset="UTF-8">
     <title>Courses Information</title>
+    <link rel="stylesheet" href="../../css/home.css">
     <style>
         .modal {
             display: none; 
@@ -70,48 +71,67 @@ ORDER BY
     </style>
 </head>
 <body>
-    <h2>Courses Information</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Course ID</th>
-                <th>Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Class Section</th>
-                <th>Class Size</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($courses as $course): ?>
-            <tr>
-                <td><?= htmlspecialchars($course['CourseID']) ?></td>
-                <td><?= htmlspecialchars($course['Name']) ?></td>
-                <td><?= htmlspecialchars($course['StartDate']) ?></td>
-                <td><?= htmlspecialchars($course['EndDate']) ?></td>
-                <td><?= htmlspecialchars($course['SectionNumber']) ?></td>
-                <td><?= htmlspecialchars($course['ClassSize']) ?></td>
-                <td><button onclick="openModal(<?= $course['CourseID'] ?>, <?= $course['SectionID'] ?>)">Add Members</button></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<div class="page">
+        <header class="header">
+            <h1>Welcome Instructor</h1>
+        </header> 
     
-    <!-- Modal -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Add Student</h3>
-            <form id="studentForm" method="post" action="edit_courses_endpoint.php">
-                <input type="hidden" name="action" value="enroll_student">
-                <input type="hidden" id="course_id" name="course_id" value="">
-                <input type="hidden" id="section_id" name="section_id" value="">
-                <label for="student_id">Student ID:</label>
-                <input type="text" id="student_id" name="student_id" required><br><br>
-                <input type="submit" value="Enroll Student">
-            </form>
+        <div class="sidebar">
+            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
         </div>
+
+        <main class="main">
+            <h2>Courses Information</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Class Section</th>
+                        <th>Class Size</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($courses as $course): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($course['CourseID']) ?></td>
+                        <td><?= htmlspecialchars($course['Name']) ?></td>
+                        <td><?= htmlspecialchars($course['StartDate']) ?></td>
+                        <td><?= htmlspecialchars($course['EndDate']) ?></td>
+                        <td><?= htmlspecialchars($course['SectionNumber']) ?></td>
+                        <td><?= htmlspecialchars($course['ClassSize']) ?></td>
+                        <td><button onclick="openModal(<?= $course['CourseID'] ?>, <?= $course['SectionID'] ?>)">Add Members</button></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <!-- Modal -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h3>Add Student</h3>
+                    <form id="studentForm" method="post" action="edit_courses_endpoint.php">
+                        <input type="hidden" name="action" value="enroll_student">
+                        <input type="hidden" id="course_id" name="course_id" value="">
+                        <input type="hidden" id="section_id" name="section_id" value="">
+                        <label for="student_id">Student ID:</label>
+                        <input type="text" id="student_id" name="student_id" required><br><br>
+                        <input type="submit" value="Enroll Student">
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <button onclick="location.href='../home.php'">Home</button>
+            <button onclick="location.href='logout.php'">Logout</button>
+        </footer>
+    
     </div>
 
     <script>

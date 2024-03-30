@@ -7,19 +7,24 @@
     <link rel="stylesheet" href="../../css/home.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Welcome Instructor</h1>
-    </div>
-    <div class="admin-menu">
-        <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-        <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-        <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
-    </div>
-    <div class="main-content">
-    </div>
-    <div class="footer">
-        <button onclick="location.href='home.php'">Home</button>
-        <button onclick="location.href='logout.php'">Logout</button>
+    <div class="page">
+        <header class="header">
+            <h1>Welcome Instructor</h1>
+        </header>
+
+        <div class="sidebar">
+            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
+        </div>
+
+        <div class="main">
+        </div>
+
+        <footer class="footer">
+            <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='logout.php'">Logout</button>
+        </footer>
     </div>
 </body>
 </html>
