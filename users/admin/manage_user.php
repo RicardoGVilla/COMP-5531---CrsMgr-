@@ -145,7 +145,7 @@ if (isset($_SESSION['error'])) {
                                 <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
                                 <td><?php echo htmlspecialchars($user['RoleName']); ?></td> <!-- Display role -->
                                 <td>
-                                    <button class="button" onclick="location.href='./delete_user_endpoint.php?id=<?php echo $user['UserID']; ?>'">Delete User</button>
+                                    <button class="button is-secondary" onclick="location.href='./delete_user_endpoint.php?id=<?php echo $user['UserID']; ?>'">Delete User</button>
                                 </td>
                                 
                             </tr>

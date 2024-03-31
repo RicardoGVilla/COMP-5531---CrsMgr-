@@ -1,5 +1,5 @@
-.button{
-  border: none;
+.button {
+  border: 1px solid transparent;
   padding-inline: 1rem;
   padding-block: .5rem;
   display: inline-block;
@@ -8,8 +8,28 @@
   cursor: pointer;
   color: currentColor;
   background: transparent;
+  border-radius: .25rem;
 }
 
-.buton:active{
+.buton:active {
   transform: scale(.9);
+}
+
+.button.is-primary {
+  background: #A8B545;
+  color: white;
+}
+
+.button.is-secondary {
+  background: #e25454;
+  color: white;
+
+}
+
+.button.is-outline-primary {
+  border: 1px solid #A8B545;
+}
+
+.button.is-outline-secondary {
+  border: 1px solid #C13540;
 }
