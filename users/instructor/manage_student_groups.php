@@ -1,7 +1,6 @@
 <?php
 session_start();
-require_once '../../database.php'; // Ensure this path is correct for your setup.
-
+require_once '../../database.php'; 
 function generateRandomPassword($length = 8) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $password = '';
@@ -27,35 +26,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["studentGroupFile"])) 
         }
 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            if (empty(array_filter($data, 'strlen'))) {
+                continue;
+            }
             if ($data[0] === 'Student ID') {
                 $groupLeaderData = fgetcsv($handle, 1000, ",");
-                $groupLeaderId = $groupLeaderData[0]; // The first student is the group leader
-                $studentIds[] = $groupLeaderId; // Include the group leader in the student IDs list
+                $groupLeaderId = $groupLeaderData[0];
+                $studentIds[] = $groupLeaderId;
                 
                 while (($studentData = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    $studentIds[] = $studentData[0]; // Add subsequent students
+                    if (empty(array_filter($studentData, 'strlen'))) {
+                        continue;
+                    }
+                    $studentIds[] = $studentData[0];
                 }
                 break;
             }
         }
+        
         fclose($handle);
     }
 
-    if (!empty($studentIds)) {
-        // Assuming Course ID 1 for simplicity
-        $courseId = 1;
-        $stmt = $pdo->prepare("INSERT INTO `Group` (CourseID, GroupLeaderID, DatabasePassword, MaxSize) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$courseId, $groupLeaderId, $randomPassword, count($studentIds)]);
-        $newGroupId = $pdo->lastInsertId();
+    if (!empty($courseCode) && !empty($studentIds)) {
+        // Find the course ID by the course code
+        $stmt = $pdo->prepare("SELECT CourseID FROM Course WHERE CourseCode = ?");
+        $stmt->execute([$courseCode]);
+        $courseId = $stmt->fetchColumn();
+        
+        if ($courseId) {
+            $stmt = $pdo->prepare("INSERT INTO `Group` (CourseID, GroupLeaderID, DatabasePassword, MaxSize) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$courseId, $groupLeaderId, $randomPassword, count($studentIds)]);
+            $newGroupId = $pdo->lastInsertId();
 
-        foreach ($studentIds as $studentId) {
-            $stmt = $pdo->prepare("INSERT INTO StudentGroupMembership (StudentID, GroupID) VALUES (?, ?)");
-            $stmt->execute([$studentId, $newGroupId]);
+            foreach ($studentIds as $studentId) {
+                $stmt = $pdo->prepare("INSERT INTO StudentGroupMembership (StudentID, GroupID) VALUES (?, ?)");
+                $stmt->execute([$studentId, $newGroupId]);
+            }
         }
     }
 }
 
-// Fetching courses and groups associated with the instructor
 $courses = [];
 $groups = [];
 
@@ -96,6 +106,7 @@ if ($currentInstructorId) {
         <h2>Upload CSV File</h2>
         <form action="" method="post" enctype="multipart/form-data">
             <input type="file" name="studentGroupFile" required>
+            <input type="hidden" name="form_submitted" value="1">
             <input type="submit" value="Upload File">
         </form>
 
