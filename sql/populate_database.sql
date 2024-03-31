@@ -1,9 +1,5 @@
 -- Roles
-INSERT INTO Role (RoleName) VALUES
-('Student'),
-('Instructor'),
-('TA'),
-('Admin');
+INSERT INTO Role (RoleName) VALUES ('Student'), ('Instructor'), ('TA'), ('Admin');
 
 -- Users
 INSERT INTO `User` (Name, EmailAddress, Password) VALUES
