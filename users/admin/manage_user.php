@@ -60,7 +60,7 @@ if (isset($_SESSION['error'])) {
         </header>
 
         <div class="sidebar">
-            <button onclick="location.href='manage_user.php'">Manage Users</button>
+            <button class="is-selected" onclick="location.href='manage_user.php'">Manage Users</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
@@ -128,30 +128,33 @@ if (isset($_SESSION['error'])) {
             <!-- User Table -->
             <div class="user-table">
                 <h2>Current Users</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th> <!-- New column for role -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($users as $user): ?>
+                <div class="table-wrapper">
+                    <table class="content-table">
+                        <thead>
                             <tr>
-                                <td><?php echo htmlspecialchars($user['UserID']); ?></td>
-                                <td><?php echo htmlspecialchars($user['Name']); ?></td>
-                                <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
-                                <td><?php echo htmlspecialchars($user['RoleName']); ?></td> <!-- Display role -->
-                                <td>
-                                    <button class="button is-secondary" onclick="location.href='./delete_user_endpoint.php?id=<?php echo $user['UserID']; ?>'">Delete User</button>
-                                </td>
-                                
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th> <!-- New column for role -->
+                                <th></th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($users as $user): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($user['UserID']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['Name']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['RoleName']); ?></td> <!-- Display role -->
+                                    <td>
+                                        <button class="button is-delete" onclick="location.href='./delete_user_endpoint.php?id=<?php echo $user['UserID']; ?>'">Delete User</button>
+                                    </td>
+                                    
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
 

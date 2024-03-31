@@ -10,7 +10,6 @@ body{
     grid-template-rows: 80px 1fr 60px;
     block-size: 100vh;
     grid-template-areas: "header header" "sidebar main" "footer footer";
-
 }
 
 .page .header{
@@ -43,6 +42,21 @@ body{
     text-align: left;
 
 }
+.sidebar button.is-selected{
+    display: block;
+    width: 100%;
+    padding: 10px;
+    padding-left: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: #006fbf;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    text-align: left;
+
+}
 
 .sidebar button:hover {
     background-color: #005fa3;
@@ -52,6 +66,7 @@ body{
     grid-area: main;
     padding: 20px;
     background-color: #f1f1f1;
+    overflow-y: auto; 
 }
 
 .page .footer{
