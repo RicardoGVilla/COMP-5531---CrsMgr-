@@ -74,9 +74,9 @@ CREATE TABLE IF NOT EXISTS StudentEnrollment (
   CourseID INT,
   SectionID INT,
   EnrollmentDate DATE,
-  FOREIGN KEY (StudentID) REFERENCES `User`(UserID),
-  FOREIGN KEY (CourseID) REFERENCES Course(CourseID),
-  FOREIGN KEY (SectionID) REFERENCES CourseSection(SectionID)
+  FOREIGN KEY (StudentID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+  FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
+  FOREIGN KEY (SectionID) REFERENCES CourseSection(SectionID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS InternalEmail (
