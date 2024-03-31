@@ -12,7 +12,6 @@ INSERT INTO `User` (Name, EmailAddress, Password) VALUES
 ('Simon Smith', 'simon.smith@example.edu', 'hashed_password678'),
 ('Tina Turner', 'tina.turner@example.edu', 'hashed_password789');
 
--- User roles
 INSERT INTO UserRole (UserID, RoleID) VALUES
 (1, 1), -- Alice as Student
 (2, 2), -- Bob as Instructor
