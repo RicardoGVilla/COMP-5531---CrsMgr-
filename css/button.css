@@ -1,0 +1,15 @@
+.button{
+  border: none;
+  padding-inline: 1rem;
+  padding-block: .5rem;
+  display: inline-block;
+  font: var(--button-button);
+  text-decoration: none;
+  cursor: pointer;
+  color: currentColor;
+  background: transparent;
+}
+
+.buton:active{
+  transform: scale(.9);
+}

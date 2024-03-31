@@ -138,7 +138,7 @@ if ($currentInstructorId) {
 
     <footer class="footer">
         <button onclick="location.href='../home.php'">Home</button>
-        <button onclick="location.href='logout.php'">Logout</button>
+        <button onclick="location.href='../../logout.php'">Logout</button>
     </footer>
 </div>
 </body>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course FAQs</title>
-    <link rel="stylesheet" href="../../css/home.css">
+    <link rel="stylesheet" href="../../css/index.css">
     <style>
         .modal {
             display: none;
@@ -121,7 +121,7 @@
 
         <footer class="footer">
             <button onclick="location.href='../home.php'">Home</button>
-            <button onclick="location.href='logout.php'">Logout</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
 
@@ -246,7 +246,7 @@
 
         <footer class="footer">
             <button onclick="location.href='../home.php'">Home</button>
-            <button onclick="location.href='logout.php'">Logout</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
 
