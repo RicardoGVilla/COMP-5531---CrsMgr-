@@ -36,7 +36,7 @@ ORDER BY
 <head>
     <meta charset="UTF-8">
     <title>Courses Information</title>
-    <link rel="stylesheet" href="../../css/home.css">
+    <link rel="stylesheet" href="../../css/index.css">
     <style>
         .modal {
             display: none; 
@@ -129,7 +129,7 @@ ORDER BY
 
         <footer class="footer">
             <button onclick="location.href='../home.php'">Home</button>
-            <button onclick="location.href='logout.php'">Logout</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     
     </div>

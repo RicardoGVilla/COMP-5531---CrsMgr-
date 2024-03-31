@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage FAQs</title>
-    <link rel="stylesheet" href="../../css/home.css">
+    <link rel="stylesheet" href="../../css/index.css">
     <body>
     <div class="page">
         <header class="header">
@@ -21,7 +21,7 @@
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         </div>
 
-        <div class="main">
+        <main class="main">
             <div class="main-header">
                 <h2>Manage FAQs</h2>
             </div>
@@ -70,11 +70,11 @@
                 <button onclick="showForm('update')">Update FAQ</button>
                 <button onclick="showForm('delete')">Delete FAQ</button>
             </div>
-        </div>
+        </main>
 
         <footer class="footer">
             <button onclick="location.href='../home.php'">Home</button>
-            <button onclick="location.href='logout.php'">Logout</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
 

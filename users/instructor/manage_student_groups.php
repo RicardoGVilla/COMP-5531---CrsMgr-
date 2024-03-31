@@ -78,7 +78,40 @@ if ($currentInstructorId) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Information</title>
-    <link rel="stylesheet" href="../../css/home.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <style>
+        /* Styles for modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <div class="page">
@@ -136,10 +169,49 @@ if ($currentInstructorId) {
         <?php endif; ?>
     </main>
 
-    <footer class="footer">
-        <button onclick="location.href='../home.php'">Home</button>
-        <button onclick="location.href='logout.php'">Logout</button>
-    </footer>
-</div>
+        <footer class="footer">
+            <button onclick="location.href='../home.php'">Home</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
+        </footer>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal
+        function openModal(groupNumber) {
+            modal.style.display = "block";
+            // Set a custom attribute to store the group number
+            modal.setAttribute('data-group', groupNumber);
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('memberForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            var groupNumber = modal.getAttribute('data-group');
+            var file = document.getElementById('file').files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+            console.log('Group Number:', groupNumber, 'File:', file);
+            // Close the modal
+            closeModal();
+        });
+    </script>
 </body>
 </html>
