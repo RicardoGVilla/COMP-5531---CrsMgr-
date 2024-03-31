@@ -1,3 +1,22 @@
+<?php
+session_start();
+require_once '../../database.php'; 
+
+try {
+    $query = "SELECT c.CourseCode, c.Name AS CourseName, f.Question, f.Answer 
+              FROM Course c
+              LEFT JOIN FAQ f ON c.CourseID = f.CourseID
+              ORDER BY c.CourseCode, f.Question";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $faqsByCourse = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $faqsByCourse[$row['CourseCode']][] = $row;
+    }
+} catch (PDOException $e) {
+    die("Could not connect to the database: " . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,12 +73,12 @@
     <div class="page">
         <header class="header">
             <h1>Welcome Instructor</h1>
-        </header> 
+        </header>
     
         <div class="sidebar">
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
         </div>
 
         <main class="main">
@@ -67,37 +86,29 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Course Code</th>
                         <th>Course Name</th>
                         <th>Current FAQs</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    // Fetch courses and FAQs from the database
-                    try {
-                        require_once '../../database.php';
-    
-                        $query = "SELECT Course.Name AS CourseName, FAQ.Question, FAQ.Answer FROM FAQ JOIN Course ON FAQ.CourseID = Course.CourseID";
-                        $stmt = $pdo->prepare($query);
-                        $stmt->execute();
-                        $courseFaqs = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-    
-                        foreach ($courseFaqs as $courseName => $faqs) {
-                            echo "<tr>";
-                            echo "<td>$courseName</td>";
-                            echo "<td>";
-                            foreach ($faqs as $faq) {
-                                echo "<ul><li>{$faq['Question']}</li></ul>";
-                            }
-                            echo "</td>";
-                            echo "<td><button onclick=\"openModal(this)\">Add FAQs</button></td>";
-                            echo "</tr>";
-                        }
-                    } catch (PDOException $e) {
-                        die("Could not connect to the database: " . $e->getMessage());
-                    }
-                    ?>
+                    <?php foreach ($faqsByCourse as $courseCode => $faqs): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($courseCode); ?></td>
+                            <td><?php echo htmlspecialchars($faqs[0]['CourseName']); ?></td>
+                            <td>
+                                <ul>
+                                    <?php foreach ($faqs as $faq): ?>
+                                        <li><?php echo htmlspecialchars($faq['Question']); ?> - <?php echo htmlspecialchars($faq['Answer']); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </td>
+                            <td>
+                                <button onclick="openModal('<?php echo htmlspecialchars($courseCode); ?>')">Add FAQs</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
     
@@ -106,15 +117,13 @@
                     <span class="close" onclick="closeModal()">&times;</span>
                     <h3>Add FAQs</h3>
                     <form id="faqForm" action="edit_faq_endpoint.php" method="post">
-                        <label for="course">Course:</label>
-                        <input type="text" id="course" name="course" readonly><br><br>
+                        <input type="hidden" id="courseCode" name="courseCode">
                         <label for="question">Question:</label><br>
                         <input type="text" id="question" name="question" required><br><br>
                         <label for="answer">Answer:</label><br>
                         <textarea id="answer" name="answer" rows="4" required></textarea><br><br>
                         <input type="submit" value="Submit">
                     </form>
-    
                 </div>
             </div>
         </main>
@@ -126,17 +135,14 @@
     </div>
 
     <script>
-        // Get the modal
         var modal = document.getElementById('myModal');
 
         function closeModal() {
             modal.style.display = "none";
         }
 
-        function openModal(btn) {
-            var row = btn.parentNode.parentNode;
-            var courseName = row.cells[0].innerText;
-            document.getElementById('course').value = courseName;
+        function openModal(courseCode) {
+            document.getElementById('courseCode').value = courseCode; 
             modal.style.display = "block";
         }
 
@@ -148,5 +154,3 @@
     </script>
 </body>
 </html>
-
-
