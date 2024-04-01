@@ -1,5 +1,5 @@
-.button{
-  border: none;
+.button {
+  border: 1px solid transparent;
   padding-inline: 1rem;
   padding-block: .5rem;
   display: inline-block;
@@ -8,8 +8,46 @@
   cursor: pointer;
   color: currentColor;
   background: transparent;
+  border-radius: .25rem;
 }
 
-.buton:active{
-  transform: scale(.9);
+.button:active {
+  transform: scale(.95);
+}
+
+.button.is-primary {
+  background: #449DD1;
+  color: var(--white);
+}
+
+.button.is-secondary {
+  background: #004C8C;
+  color: var(--white);
+
+}
+
+.button.is-delete {
+  background: var(--red10);
+  color: var(--white);
+
+}
+
+.button.is-outline-primary {
+  border: 1px solid var(--green10);
+}
+
+.button.is-outline-secondary {
+  border: 1px solid var(--red10);
+}
+
+.button.is-primary:hover {
+  background: var(--green20);
+}
+
+.button.is-secondary:hover {
+  background: #56CBF9;
+}
+
+.button.is-delete:hover {
+  background: var(--red20);
 }
