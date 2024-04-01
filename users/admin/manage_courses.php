@@ -40,7 +40,7 @@ try {
        
         <div class="sidebar">
             <button onclick="location.href='manage_user.php'">Manage Users</button>
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
             <button onclick="location.href='manage_assignments.php'">Assignments/Projects</button>
@@ -138,30 +138,32 @@ try {
             <!-- Table to display courses with sections and instructors -->
             <div class="course-table">
                 <h2>Current Courses</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Course ID</th>
-                            <th>Course Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Sections</th>
-                            <th>Instructors</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($courses as $course): ?>
+                <div class="table-wrapper">
+                    <table class="content-table">
+                        <thead>
                             <tr>
-                                <td><?= htmlspecialchars($course['CourseID']) ?></td>
-                                <td><?= htmlspecialchars($course['CourseName']) ?></td>
-                                <td><?= htmlspecialchars($course['StartDate']) ?></td>
-                                <td><?= htmlspecialchars($course['EndDate']) ?></td>
-                                <td><?= htmlspecialchars($course['Sections'] ?: 'N/A') ?></td>
-                                <td><?= htmlspecialchars($course['Instructors'] ?: 'No instructors') ?></td>
+                                <th>Course ID</th>
+                                <th>Course Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Sections</th>
+                                <th>Instructors</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($courses as $course): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($course['CourseID']) ?></td>
+                                    <td><?= htmlspecialchars($course['CourseName']) ?></td>
+                                    <td><?= htmlspecialchars($course['StartDate']) ?></td>
+                                    <td><?= htmlspecialchars($course['EndDate']) ?></td>
+                                    <td><?= htmlspecialchars($course['Sections'] ?: 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($course['Instructors'] ?: 'No instructors') ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
         <footer class="footer">

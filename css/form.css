@@ -1,0 +1,41 @@
+.form{
+  padding: 20px;
+}
+
+.input{
+  width: 100%;
+  margin-block: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.input input,
+.input select {
+  height: 50px;
+  width: 100%;
+  outline: none;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  padding-inline: 15px;
+  margin-block-start: 5px;
+  font-size: 1rem;
+}
+
+.input input::placeholder {
+  color: #999999;
+  font-weight: 300; 
+}
+
+.input input,
+.input textarea {
+  /* flex: 1; */
+}
+
+.input label {
+  
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}

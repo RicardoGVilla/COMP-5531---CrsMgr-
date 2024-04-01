@@ -41,7 +41,7 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="sidebar">
             <button onclick="location.href='manage_user.php'">Manage Users</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_sections.php'">Manage Sections</button>
+            <button class="is-selected" onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
             <button onclick="location.href='manage_assignments.php'">Assignments/Projects</button>
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
@@ -106,30 +106,32 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="course-table">
                 <h2>Current Sections</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Section ID</th>
-                            <th>Course Name</th>
-                            <th>Section Number</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Instructor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($sections as $section): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($section['SectionID']) ?></td>
-                            <td><?= htmlspecialchars($section['CourseName']) ?></td>
-                            <td><?= htmlspecialchars($section['SectionNumber']) ?></td>
-                            <td><?= htmlspecialchars($section['StartDate']) ?></td>
-                            <td><?= htmlspecialchars($section['EndDate']) ?></td>
-                            <td><?= htmlspecialchars($section['InstructorName'] ?: 'No instructor') ?></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="table-wrapper">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Section ID</th>
+                                <th>Course Name</th>
+                                <th>Section Number</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Instructor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($sections as $section): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($section['SectionID']) ?></td>
+                                <td><?= htmlspecialchars($section['CourseName']) ?></td>
+                                <td><?= htmlspecialchars($section['SectionNumber']) ?></td>
+                                <td><?= htmlspecialchars($section['StartDate']) ?></td>
+                                <td><?= htmlspecialchars($section['EndDate']) ?></td>
+                                <td><?= htmlspecialchars($section['InstructorName'] ?: 'No instructor') ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
 

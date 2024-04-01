@@ -1,0 +1,46 @@
+.user-table {
+  padding: 25px;
+}
+
+.table-wrapper {
+  padding: 25px;
+  background: var(--white);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); 
+  border-radius: 5px;
+  min-width: 600px;
+}
+
+.content-table {
+  border-collapse: collapse;
+  font-size: 0.9em;
+  min-width: 400px;
+  width: 100%;
+}
+
+.content-table thead th {
+  background-color: #f1f1f1;
+}
+
+.content-table thead tr {
+  text-align: left;
+}
+
+
+.content-table th, 
+.content-table td {
+  padding: .5rem;
+  /* padding-block: .5rem; */
+}
+
+.content-table tbody tr {
+  position: relative;
+}
+
+.content-table tbody tr::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid #dddddd;
+}
