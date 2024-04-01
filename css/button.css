@@ -16,12 +16,12 @@
 }
 
 .button.is-primary {
-  background: #449DD1;
+  background: var(--blue20);
   color: var(--white);
 }
 
 .button.is-secondary {
-  background: #004C8C;
+  background: var(--blue40);
   color: var(--white);
 
 }
@@ -41,11 +41,11 @@
 }
 
 .button.is-primary:hover {
-  background: var(--green20);
+  background: var(--blue25);
 }
 
 .button.is-secondary:hover {
-  background: #56CBF9;
+  background: var(--blue45);
 }
 
 .button.is-delete:hover {

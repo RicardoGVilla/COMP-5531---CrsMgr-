@@ -18,7 +18,7 @@
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
             <button onclick="location.href='manage_assignments.php'">Assignments/Projects</button>
-            <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
+            <button class="is-selected" onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         </div>
 
