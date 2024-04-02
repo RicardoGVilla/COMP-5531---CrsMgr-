@@ -31,7 +31,7 @@ if (!isset($_SESSION["selectedCourseName"])) {
         </header>
 
         <div class="sidebar">
-            <button>Contact Information</button>
+            <button onclick="location.href='contact_information.php'">Contact Information</button>
             <button>FAQ</button>
             <button>My Group (Internal Communication)</button>
             <button>Course Material</button>
