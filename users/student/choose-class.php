@@ -1,7 +1,6 @@
 <?php
 // Start the session
 session_start();
-
 // Include database connection
 include_once '../../database.php';
 
@@ -10,6 +9,9 @@ if (!isset($_SESSION["user"]["UserID"])) {
     header("Location: login.php"); // Redirect to login page if not logged in
     exit;
 }
+
+// Get the user's name from session data
+$userName = $_SESSION["user"]["Name"];
 
 $userId = $_SESSION["user"]["UserID"];
 
@@ -39,7 +41,8 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <div class="container">
-        <h2>Select Your Class</h2>
+        <h2>Welcome, <?php echo htmlspecialchars($userName); ?>!</h2>
+        <h3>Select Your Class</h3>
         <form action="student-redirect.php" method="post">
             <div class="form-group">
                 <label for="courseSelect">Choose a course:</label>

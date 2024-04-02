@@ -5,7 +5,7 @@ session_start();
 // Include database connection
 include_once '../../database.php';
 
-// Check if the form was submitted
+// Check if the form was submitted and a course was selected
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
     $selectedCourseId = $_POST['course'];
     $userId = $_SESSION["user"]["UserID"];

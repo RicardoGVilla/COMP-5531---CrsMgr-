@@ -1,3 +1,21 @@
+<?php
+// Start the session
+session_start();
+
+// Check if user is logged in and has a user ID stored in session
+if (!isset($_SESSION["user"]["UserID"])) {
+    header("Location: ../../login.php"); // Redirect to login page if not logged in
+    exit;
+}
+
+// Check if selected course information is available in session
+if (!isset($_SESSION["selectedCourseName"])) {
+    // Redirect to choose-class.php to select a course if no course is selected
+    header("Location: choose-class.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +38,6 @@
         </div>
 
         <main class="main">
-            <!-- Display the selected course name as an identifier -->
             <h2>Current Course: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
         </main>
 
