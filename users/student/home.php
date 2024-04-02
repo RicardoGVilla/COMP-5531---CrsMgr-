@@ -4,27 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - CrsMgr+</title>
-    <link rel="stylesheet" href="css/home.css"> 
+    <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Welcome Student</h1>
-    </div>
-    <div class="admin-menu">
-        <button>Manage Users</button>
-        <button>Manage Courses</button>
-        <button>Manage Sections</button>
-        <button>Manage Groups</button>
-        <button>Assignments/Projects</button>
-        <button>Discussion Forum</button>
-        <button>Course Announcements</button>
-        <button>FAQ Management</button>
-    </div>
-    <div class="main-content">
-    </div>
-    <div class="footer">
-        <button onclick="location.href='home.php'">Home</button>
-        <button onclick="location.href='logout.php'">Logout</button>
+    <div class="page">
+        <header class="header">
+            <h1>Welcome Student</h1>
+        </header>
+
+        <div class="sidebar">
+            <button>Contact Information</button>
+            <button>FAQ</button>
+            <button>My Group (Internal Communication)</button>
+            <button>Course Material</button>
+        </div>
+
+        <main class="main">
+
+
+        </main>
+
+        <footer class="footer">
+            <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
+        </footer>
     </div>
 </body>
 </html>

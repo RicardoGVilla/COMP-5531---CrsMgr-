@@ -23,6 +23,7 @@ INSERT INTO UserRole (UserID, RoleID) VALUES
 (7, 1), -- Simon Smith as Student
 (8, 1); -- Tina Turner as Student
 
+
 -- Courses
 INSERT INTO Course (CourseCode, Name, StartDate, EndDate) VALUES
 ('COMP5531', 'Software Engineering', '2024-09-01', '2025-01-15'),
@@ -56,7 +57,8 @@ INSERT INTO StudentEnrollment (StudentID, CourseID, SectionID, EnrollmentDate) V
 (5, 2, 2, '2024-09-01'), 
 (6, 2, 2, '2024-09-01'), 
 (7, 2, 2, '2024-09-01'), 
-(8, 2, 2, '2024-09-01'); 
+(8, 1, 1, '2024-09-01'), -- Tina enrolled in Software Engineering (Section ID 1)
+(8, 2, 2, '2024-09-01'); -- Tina also enrolled in Database Systems (Section ID 2)
 
 -- Internal emails
 INSERT INTO InternalEmail (SenderID, Subject, Body, Timestamp) VALUES
