@@ -3,7 +3,7 @@
 session_start();
 
 // Include database connection
-include_once 'database.php';
+include_once '../../database.php';
 
 // Check if user is logged in and has a user ID stored in session
 if (!isset($_SESSION["user"]["UserID"])) {

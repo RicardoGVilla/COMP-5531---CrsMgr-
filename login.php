@@ -1,59 +1,104 @@
 <?php
-// Start the session
+include_once 'database.php';
 session_start();
 
-// Include database connection
-include_once 'database.php';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
 
-// Check if user is logged in and has a user ID stored in session
-if (!isset($_SESSION["user"]["UserID"])) {
-    header("Location: login.php"); // Redirect to login page if not logged in
-    exit;
+    // Query the database to fetch user details along with all associated roles
+    $stmt = $pdo->prepare("SELECT u.UserID, u.Name, GROUP_CONCAT(r.RoleName ORDER BY FIELD(r.RoleName, 'Admin', 'Instructor', 'TA', 'Student') ASC) AS Roles
+                           FROM `User` u
+                           INNER JOIN UserRole ur ON u.UserID = ur.UserID
+                           INNER JOIN Role r ON ur.RoleID = r.RoleID
+                           WHERE u.EmailAddress = :email AND u.Password = :password
+                           GROUP BY u.UserID");
+    $stmt->execute(['email' => $email, 'password' => $password]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user) {
+        $_SESSION["user"] = $user;
+        $roles = explode(',', $user['Roles']);
+
+        if (in_array('Admin', $roles)) {
+            header("Location: users/admin/home.php");
+        } elseif (in_array('Instructor', $roles)) {
+            header("Location: users/instructor/home.php");
+        } elseif (in_array('TA', $roles)) {
+            header("Location: users/ta/choose-role.php");
+        } elseif (in_array('Student', $roles)) {
+            // Additional check for the number of courses the student is enrolled in
+            $stmtCourses = $pdo->prepare("SELECT COUNT(DISTINCT CourseID) AS CourseCount FROM StudentEnrollment WHERE StudentID = :userId");
+            $stmtCourses->execute(['userId' => $user['UserID']]);
+            $coursesResult = $stmtCourses->fetch(PDO::FETCH_ASSOC);
+
+            if ($coursesResult && $coursesResult['CourseCount'] > 1) {
+                header("Location: users/student/choose-class.php");
+            } elseif ($coursesResult && $coursesResult['CourseCount'] == 1) {
+                header("Location: users/student/home.php");
+            } else {
+                // Handle the case where a student is not enrolled in any course
+                // Redirect to a generic page or show an error message
+                header("Location: home.php");
+            }
+        } else {
+            header("Location: home.php");
+        }
+        exit;
+    } else {
+        header("Location: login.php?error=invalid_credentials");
+        exit;
+    }
 }
-
-$userId = $_SESSION["user"]["UserID"];
-
-// Prepare a SQL query to fetch courses the logged-in user is enrolled in
-$sql = "SELECT c.CourseID, c.Name 
-        FROM Course c 
-        INNER JOIN StudentEnrollment se ON c.CourseID = se.CourseID 
-        WHERE se.StudentID = :userId 
-        GROUP BY c.CourseID";
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['userId' => $userId]);
-
-// Fetch all courses the user is enrolled in
-$courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Class</title>
-    <link rel="stylesheet" href="css/style.css"> <!-- Adjust the path as needed -->
-    <style>
-        /* Add your styles here */
-    </style>
+    <title>CGA System</title>
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h2>Select Your Class</h2>
-        <form action="student-redirect.php" method="post">
-            <div class="form-group">
-                <label for="courseSelect">Choose a course:</label>
-                <select name="course" id="courseSelect" class="form-control">
-                    <?php foreach ($courses as $course): ?>
-                        <option value="<?php echo htmlspecialchars($course['CourseID']); ?>">
-                            <?php echo htmlspecialchars($course['Name']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+    <div class="login-container">
+        <div class="container">
+            <div class="login-header">
+                <div class="text">
+                    <h1>Welcome to CrsMgr</h1>
+                    <h2>-- The Course Manager System! --</h2>
+                </div>
             </div>
-            <button type="submit" class="form-button">Go to Class</button>
-        </form>
+            <div class="form-container">
+                <form id="login-form" action="login.php" method="post">
+                    
+                    <div class="inputs">
+                        <div class="input-container">
+                            <img src="" alt="" />
+                            <input id="email" type="email" name='email' placeholder='Email' required/>
+                        </div>
+                    </div>
+                    <div class="inputs">
+                    <div class="input-container">
+                        <img src="" alt="" />
+                        <input id="password" type="password" name='password' placeholder='Password' required/>
+                    </div>
+                    </div>
+                    <div class="submit-container">
+                        <button class="submit" name="submit" type="submit">Login</button>
+                    </div>
+                    <div class="forgot-password">Forgot Password? <span>Click here</span></div>
+                
+                    <?php
+                    if (isset($_GET["error"]) && $_GET["error"] === "invalid_credentials") {
+                        echo "<p style='color: red;'>Invalid email or password. Please try again.</p>";
+                    }
+                    ?>
+                </form>
+            </div>
+        </div>
     </div>
+    
 </body>
-</html>
+</html> 
