@@ -33,9 +33,8 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Class</title>
-    <link rel="stylesheet" href="css/style.css"> <!-- Adjust the path as needed -->
+    <link rel="stylesheet" href="css/style.css"> 
     <style>
-        /* Add your styles here */
     </style>
 </head>
 <body>
