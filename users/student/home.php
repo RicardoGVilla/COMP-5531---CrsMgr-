@@ -14,6 +14,8 @@ if (!isset($_SESSION["selectedCourseName"])) {
     header("Location: choose-class.php");
     exit;
 }
+
+$selectedCourseID = $_SESSION["selectedCourseName"];
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +34,7 @@ if (!isset($_SESSION["selectedCourseName"])) {
 
         <div class="sidebar">
             <button onclick="location.href='contact_information.php'">Contact Information</button>
-            <button>FAQ</button>
+            <button onclick="location.href='faq-information.php'">FAQ</button>
             <button>My Group (Internal Communication)</button>
             <button>Course Material</button>
         </div>
