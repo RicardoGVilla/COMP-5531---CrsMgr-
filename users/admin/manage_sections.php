@@ -15,11 +15,18 @@ $query = "SELECT
           JOIN Course ON CourseSection.CourseID = Course.CourseID
           LEFT JOIN CourseInstructor ON Course.CourseID = CourseInstructor.CourseID
           LEFT JOIN `User` ON CourseInstructor.InstructorID = User.UserID
+
           ORDER BY Course.Name, CourseSection.SectionNumber ASC";
 
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$_currentSections = array_unique(array_map(function ($value) {
+    return  $value['CourseName'];
+}, $sections));
+
+
 ?>
 
 
@@ -59,10 +66,16 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h2>Add Section</h2>
                 <form method="POST" action="edit_sections_endpoint.php"> 
                     <select name="course_id" required>
-                        <option value="">Select Course</option>
+                        <!--option value="">Select Course</option-->
                         <!-- Populate with courses from the database -->
-                        <option value="1">Introduction to Database Systems</option>
-                        <option value="2">Advanced Web Development</option>
+                        <!--option value="1">Introduction to Database Systems</option-->
+                        <!--option value="2">Advanced Web Development</option-->
+                    <?php
+                        print_r($_currentSections);
+                        ?>
+                    <?php foreach ($_currentSections as $row): ?>
+                            <option> <?=$row?> </option>
+                        <?php endforeach ?>
                     </select>
                     <input type="number" name="section_number" placeholder="Section Number" required />
                     <input type="date" name="start_date" placeholder="Start Date" required />
