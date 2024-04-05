@@ -29,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION["user"]["UserID"])) 
         echo "Course not found.";
     }
 } else {
-    // Redirect to login page or show an error if the user is not logged in
     header("Location: login.php?error=not_logged_in");
 }
 ?>
