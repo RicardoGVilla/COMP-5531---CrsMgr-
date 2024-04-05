@@ -3,12 +3,16 @@ session_start();
 require_once '../../database.php'; 
 
 try {
+    $instructorID = $_SESSION["user"]["UserID"]; // Get the instructor's ID from session
+
     $query = "SELECT c.CourseCode, c.Name AS CourseName, f.Question, f.Answer 
               FROM Course c
               LEFT JOIN FAQ f ON c.CourseID = f.CourseID
+              JOIN CourseInstructor ci ON c.CourseID = ci.CourseID
+              WHERE ci.InstructorID = :instructorID
               ORDER BY c.CourseCode, f.Question";
     $stmt = $pdo->prepare($query);
-    $stmt->execute();
+    $stmt->execute(['instructorID' => $instructorID]); // Bind the instructor ID to the query
     $faqsByCourse = [];
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $faqsByCourse[$row['CourseCode']][] = $row;
