@@ -33,6 +33,10 @@
 }
 
 .content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+/* 
+.content-table tbody tr {
   position: relative;
 }
 
@@ -43,4 +47,4 @@
   left: 0;
   width: 100%;
   border-bottom: 1px solid #dddddd;
-}
+} */
