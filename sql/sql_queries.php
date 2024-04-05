@@ -1,0 +1,117 @@
+CREATE DATABASE IF NOT EXISTS crs_manager_final;
+USE crs_manager_final;
+
+-- Drop existing tables in reverse order of dependency
+DROP TABLE IF EXISTS CourseMaterial, FAQ, EmailRecipient, InternalEmail, StudentEnrollment, StudentGroupMembership, `Group`, CourseSection, CourseInstructor, Course, UserRole, Role, `User`;
+
+-- Create tables
+CREATE TABLE IF NOT EXISTS `User` (
+  UserID BIGINT AUTO_INCREMENT PRIMARY KEY,
+  Name VARCHAR(255),
+  EmailAddress VARCHAR(255) UNIQUE NOT NULL,
+  Password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Role (
+  RoleID INT AUTO_INCREMENT PRIMARY KEY,
+  RoleName VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS UserRole (
+  UserID BIGINT,
+  RoleID INT,
+  PRIMARY KEY (UserID, RoleID),
+  FOREIGN KEY (UserID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+  FOREIGN KEY (RoleID) REFERENCES Role(RoleID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Course (
+  CourseID INT AUTO_INCREMENT PRIMARY KEY,
+  CourseCode VARCHAR(10) UNIQUE NOT NULL,
+  Name VARCHAR(255),
+  StartDate DATE,
+  EndDate DATE
+);
+
+CREATE TABLE IF NOT EXISTS CourseInstructor (
+  CourseID INT,
+  InstructorID BIGINT,
+  PRIMARY KEY (CourseID, InstructorID),
+  FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
+  FOREIGN KEY (InstructorID) REFERENCES `User`(UserID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS CourseSection (
+  SectionID INT AUTO_INCREMENT PRIMARY KEY,
+  CourseID INT,
+  SectionNumber VARCHAR(10),
+  StartDate DATE,
+  EndDate DATE,
+  FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `Group` (
+  GroupID INT AUTO_INCREMENT PRIMARY KEY,
+  CourseID INT,
+  GroupLeaderID BIGINT,
+  DatabasePassword VARCHAR(255),
+  MaxSize INT,
+  FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
+  FOREIGN KEY (GroupLeaderID) REFERENCES `User`(UserID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS StudentGroupMembership (
+  StudentID BIGINT,
+  GroupID INT,
+  PRIMARY KEY (StudentID, GroupID),
+  FOREIGN KEY (StudentID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+  FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS StudentEnrollment (
+  EnrollmentID INT AUTO_INCREMENT PRIMARY KEY,
+  StudentID BIGINT,
+  CourseID INT,
+  SectionID INT,
+  EnrollmentDate DATE,
+  FOREIGN KEY (StudentID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+  FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
+  FOREIGN KEY (SectionID) REFERENCES CourseSection(SectionID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS InternalEmail (
+  EmailID INT AUTO_INCREMENT PRIMARY KEY,
+  SenderID BIGINT,
+  Subject VARCHAR(255),
+  Body TEXT,
+  Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (SenderID) REFERENCES `User`(UserID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS EmailRecipient (
+  EmailID INT,
+  RecipientID BIGINT,
+  PRIMARY KEY (EmailID, RecipientID),
+  FOREIGN KEY (EmailID) REFERENCES InternalEmail(EmailID) ON DELETE CASCADE,
+  FOREIGN KEY (RecipientID) REFERENCES `User`(UserID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS FAQ (
+  FAQID INT AUTO_INCREMENT PRIMARY KEY,
+  Question TEXT NOT NULL,
+  Answer TEXT,
+  ContributorID BIGINT,
+  CourseID INT DEFAULT NULL,
+  FOREIGN KEY (ContributorID) REFERENCES `User`(UserID) ON DELETE CASCADE,
+  FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS CourseMaterial (
+  MaterialID INT AUTO_INCREMENT PRIMARY KEY,
+  GroupID INT,
+  Title VARCHAR(255),
+  Description TEXT,
+  URL_Path TEXT,
+  UploadTimestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID) ON DELETE CASCADE
+);
