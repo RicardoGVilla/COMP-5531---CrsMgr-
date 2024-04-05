@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION["user"]["UserID"])) 
 
         if ($insertSuccess) {
             // Redirect or show success message, depending on your application structure
-            header("Location: success_page.php"); // Adjust the redirection URL as needed
+            header("Location: manage_faqs.php"); // Adjust the redirection URL as needed
         } else {
             // Handle insertion error
             echo "An error occurred while inserting the FAQ.";
