@@ -2,29 +2,41 @@
 session_start();
 require_once '../../database.php';
 
+// Check if user is logged in and has a user ID stored in session
+if (!isset($_SESSION["user"]["UserID"]) || !isset($_SESSION["selectedCourseId"])) {
+    header("Location: login.php"); // Redirect to login page if not logged in or course not selected
+    exit;
+}
+
 try {
+    $instructorID = $_SESSION["user"]["UserID"]; // Get the instructor's ID from session
+
     $query = "
     SELECT 
-    c.CourseID, 
-    c.Name, 
-    cs.SectionID, 
-    cs.SectionNumber, 
-    cs.StartDate, 
-    cs.EndDate, 
-    COUNT(se.StudentID) AS ClassSize
-FROM 
-    Course c
-JOIN 
-    CourseSection cs ON c.CourseID = cs.CourseID
-LEFT JOIN 
-    StudentEnrollment se ON cs.SectionID = se.SectionID
-GROUP BY 
-    c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
-ORDER BY 
-    c.CourseID, cs.SectionNumber;
+        c.CourseID, 
+        c.Name, 
+        cs.SectionID, 
+        cs.SectionNumber, 
+        cs.StartDate, 
+        cs.EndDate, 
+        COUNT(se.StudentID) AS ClassSize
+    FROM 
+        Course c
+    JOIN 
+        CourseSection cs ON c.CourseID = cs.CourseID
+    LEFT JOIN 
+        StudentEnrollment se ON cs.SectionID = se.SectionID
+    JOIN
+        CourseInstructor ci ON c.CourseID = ci.CourseID
+    WHERE
+        ci.InstructorID = :instructorID
+    GROUP BY 
+        c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
+    ORDER BY 
+        c.CourseID, cs.SectionNumber;
     ";
     $stmt = $pdo->prepare($query);
-    $stmt->execute();
+    $stmt->execute(['instructorID' => $instructorID]); // Bind the instructor ID to the query
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Could not connect to the database: " . $e->getMessage());
