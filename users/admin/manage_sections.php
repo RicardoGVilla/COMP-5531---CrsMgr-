@@ -3,7 +3,6 @@ session_start();
 require_once '../../database.php';
 
 
-// Assuming $pdo is your PDO database connection
 $query = "SELECT 
             CourseSection.SectionID, 
             Course.Name AS CourseName, 
@@ -61,15 +60,10 @@ $_currentSections = array_unique(array_map(function ($value) {
                 <h2>Manage Sections</h2>
             </div>
 
-            <!-- Add Section Form -->
             <div id="add-section" class="section-form">
                 <h2>Add Section</h2>
                 <form method="POST" action="edit_sections_endpoint.php"> 
                     <select name="course_id" required>
-                        <!--option value="">Select Course</option-->
-                        <!-- Populate with courses from the database -->
-                        <!--option value="1">Introduction to Database Systems</option-->
-                        <!--option value="2">Advanced Web Development</option-->
                     <?php
                         print_r($_currentSections);
                         ?>

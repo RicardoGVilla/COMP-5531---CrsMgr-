@@ -1,3 +1,14 @@
+<?php
+session_start();
+require_once '../../database.php';
+
+// Fetch course data from the database
+$query = "SELECT CourseID, Name FROM Course";
+$stmt = $pdo->prepare($query);
+$stmt->execute();
+$courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,8 +44,9 @@
                     <select name="course_id" required>
                         <option value="">Select Course</option>
                         <!-- Populate with courses from the database -->
-                        <option value="1">Introduction to Database Systems</option>
-                        <option value="2">Advanced Web Development</option>
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?= $course['CourseID'] ?>"><?= $course['Name'] ?></option>
+                        <?php endforeach ?>
                     </select>
                     <input type="number" name="group_leader_id" placeholder="Group Leader ID" required />
                     <input type="text" name="database_password" placeholder="Database Password" required />
@@ -51,8 +63,9 @@
                     <select name="new_course_id">
                         <option value="">Select New Course (optional)</option>
                         <!-- Populate with courses from the database -->
-                        <option value="1">Introduction to Database Systems</option>
-                        <option value="2">Advanced Web Development</option>
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?= $course['CourseID'] ?>"><?= $course['Name'] ?></option>
+                        <?php endforeach ?>
                     </select>
                     <input type="number" name="new_group_leader_id" placeholder="New Group Leader ID" />
                     <input type="text" name="new_database_password" placeholder="New Database Password" />
