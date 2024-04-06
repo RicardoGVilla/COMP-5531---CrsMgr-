@@ -87,7 +87,7 @@ if (isset($_SESSION['error'])) {
                         <option value="3">TA</option>
                         <option value="4">Admin</option>
                     </select>
-                    <button class="button" type="submit">Add User</button>
+                    <button class="button is-primary" type="submit">Add User</button>
                 </form>
             </div>
 
@@ -134,7 +134,7 @@ if (isset($_SESSION['error'])) {
                                 <th>User ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th> <!-- New column for role -->
+                                <th>Role</th> 
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -243,8 +243,6 @@ if (isset($_SESSION['error'])) {
                 closeModal();
             }
         }
-
-        
 
     </script>
 </body>
