@@ -1,10 +1,27 @@
+<?php
+// Start session and include database configuration
+session_start();
+require_once '../../database.php';
+
+// Fetch course names from the database
+try {
+    $query = "SELECT CourseID, Name FROM Course";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $_SESSION['error'] = "Error fetching courses: " . $e->getMessage();
+    $courses = [];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Course Announcements</title>
-    <link rel="stylesheet" href="../../css/index.css"> <!-- Ensure this path is correct for your CSS file -->
+    <link rel="stylesheet" href="../../css/index.css"> 
 </head>
 <body>
     <div class="page">
@@ -26,19 +43,17 @@
             <div class="main-header">
                 <h2>Manage Course Announcements</h2>
             </div>
-            <!-- Add Announcement Form -->
             <div id="add-announcement" class="announcement-form">
                 <h2>Add New Announcement</h2>
-                <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                <form action="post_announcement.php" method="post"> 
                     <select name="course_id" required>
                         <option value="">Select Course</option>
-                        <!-- Option values are hardcoded for demonstration purposes -->
-                        <option value="1">Introduction to Database Systems</option>
-                        <option value="2">Advanced Web Development</option>
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?php echo $course['CourseID']; ?>"><?php echo $course['Name']; ?></option>
+                        <?php endforeach; ?>
                     </select>
                     <input type="text" name="title" placeholder="Announcement Title" required />
                     <textarea name="content" placeholder="Announcement Content" required></textarea>
-                    <!-- Typically, you would include a date field here to specify when the announcement is made -->
                     <button type="submit">Post Announcement</button>
                 </form>
             </div>
@@ -49,7 +64,5 @@
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
-
-    <!-- Additional JavaScript can be added here for dynamic functionality as needed -->
 </body>
 </html>
