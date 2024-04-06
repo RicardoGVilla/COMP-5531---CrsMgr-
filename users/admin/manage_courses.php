@@ -76,7 +76,7 @@ try {
                         <?php endforeach; ?>
                     </select>
 
-                    <button type="submit">Add Course</button>
+                    <button class="button is-primary" type="submit">Add Course</button>
                 </form>
             </div>
 
@@ -115,7 +115,7 @@ try {
                         <?php endforeach; ?>
                     </select>
                     
-                    <button type="submit">Update Course</button>
+                    <button class="button is-secondary" type="submit">Update Course</button>
                 </form>
             </div>
 
@@ -130,9 +130,8 @@ try {
             </div>
 
             <div class="course-actions">
-                <button onclick="showForm('add')">Add Course</button>
-                <button onclick="showForm('update')">Update Course</button>
-                <button onclick="showForm('delete')">Delete Course</button>
+                <button class="button is-primary" onclick="showForm('add')">Add Course</button>
+                <button class="button is-secondary" onclick="showForm('update')">Update Course</button>
             </div>
 
             <!-- Table to display courses with sections and instructors -->
@@ -148,6 +147,7 @@ try {
                                 <th>End Date</th>
                                 <th>Sections</th>
                                 <th>Instructors</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -159,6 +159,9 @@ try {
                                     <td><?= htmlspecialchars($course['EndDate']) ?></td>
                                     <td><?= htmlspecialchars($course['Sections'] ?: 'N/A') ?></td>
                                     <td><?= htmlspecialchars($course['Instructors'] ?: 'No instructors') ?></td>
+                                    <td>
+                                        <button class="button is-delete" onclick="confirmDelete(<?php echo $course['CourseID']; ?>)">Delete Course</button>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -181,6 +184,25 @@ try {
 
             // Show the selected form
             document.getElementById(formId + '-course').style.display = 'block';
+        }
+
+        function confirmDelete(courseId) {
+            if (confirm("Are you sure you want to delete this course?")) {
+                deleteCourse(courseId);
+            }
+        }
+
+        function deleteCourse(courseId) {
+            // Send an asynchronous request to edit_courses_endpoint.php with course ID to delete
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "edit_courses_endpoint.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    window.location.reload();
+                }
+            };
+            xhr.send("action=delete&course_id=" + courseId);
         }
     </script>
 </body>

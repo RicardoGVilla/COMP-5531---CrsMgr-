@@ -28,7 +28,7 @@
             <!-- Add FAQ Form -->
             <div id="add-faq" class="faq-form">
                 <h2>Add New FAQ</h2>
-                <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                <form class="form" onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
                     <input type="text" name="question" placeholder="FAQ Question" required />
                     <textarea name="answer" placeholder="FAQ Answer" required></textarea>
                     <select name="course_id">

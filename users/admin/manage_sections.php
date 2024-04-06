@@ -80,7 +80,7 @@ $_currentSections = array_unique(array_map(function ($value) {
                     <input type="number" name="section_number" placeholder="Section Number" required />
                     <input type="date" name="start_date" placeholder="Start Date" required />
                     <input type="date" name="end_date" placeholder="End Date" required />
-                    <button type="submit">Add Section</button>
+                    <button class="button is-primary" type="submit">Add Section</button>
                 </form>
             </div>
 
@@ -99,8 +99,7 @@ $_currentSections = array_unique(array_map(function ($value) {
                     <button type="submit">Update Section</button>
                 </form>
             </div>
-
-        
+     
             <!-- Delete Section Form -->
             <div id="delete-section" class="section-form" style="display: none;">
                 <h2>Delete Section</h2>
@@ -112,9 +111,8 @@ $_currentSections = array_unique(array_map(function ($value) {
             </div>
 
             <div class="section-actions">
-                <button onclick="showForm('add')">Add Section</button>
-                <button onclick="showForm('update')">Update Section</button>
-                <button onclick="showForm('delete')">Delete Section</button>
+                <button class="button is-primary" onclick="showForm('add')">Add Section</button>
+                <button class="button is-secondary" onclick="showForm('update')">Update Section</button>
             </div>
 
             <div class="course-table">
@@ -129,6 +127,7 @@ $_currentSections = array_unique(array_map(function ($value) {
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Instructor</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -140,6 +139,9 @@ $_currentSections = array_unique(array_map(function ($value) {
                                 <td><?= htmlspecialchars($section['StartDate']) ?></td>
                                 <td><?= htmlspecialchars($section['EndDate']) ?></td>
                                 <td><?= htmlspecialchars($section['InstructorName'] ?: 'No instructor') ?></td>
+                                <td>
+                                    <button class="button is-delete" onclick="confirmDelete(<?php echo $section['SectionID']; ?>)">Delete Section</button>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -164,6 +166,24 @@ $_currentSections = array_unique(array_map(function ($value) {
 
             // Show the selected form
             document.getElementById(formId + '-section').style.display = 'block';
+        }
+        function confirmDelete(sectionId) {
+            if (confirm("Are you sure you want to delete this section?")) {
+                deleteSection(sectionId);
+            }
+        }
+
+        function deleteSection(sectionId) {
+            // Send an asynchronous request to edit_sections_endpoint.php with section ID to delete
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "edit_sections_endpoint.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    window.location.reload();
+                }
+            };
+            xhr.send("action=delete&section_id=" + sectionId);
         }
     </script>
 </body>

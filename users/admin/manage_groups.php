@@ -39,7 +39,7 @@
                     <input type="number" name="group_leader_id" placeholder="Group Leader ID" required />
                     <input type="text" name="database_password" placeholder="Database Password" required />
                     <input type="number" name="max_size" placeholder="Max Size" required />
-                    <button type="submit">Add Group</button>
+                    <button class="button is-primary" type="submit">Add Group</button>
                 </form>
             </div>
 
@@ -71,9 +71,9 @@
             </div>
 
             <div class="group-actions">
-                <button onclick="showForm('add')">Add Group</button>
-                <button onclick="showForm('update')">Update Group</button>
-                <button onclick="showForm('delete')">Delete Group</button>
+                <button class="button is-primary" onclick="showForm('add')">Add Group</button>
+                <button class="button is-secondary" onclick="showForm('update')">Update Group</button>
+                <button class="button is-delete"onclick="showForm('delete')">Delete Group</button>
             </div>
         </main>
 
