@@ -26,33 +26,41 @@
                 <h2>Manage FAQs</h2>
             </div>
             <!-- Add FAQ Form -->
-            <div id="add-faq" class="faq-form">
+            <div id="add-faq" class="faq-form table-wrapper">
                 <h2>Add New FAQ</h2>
-                <form class="form" onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
-                    <input type="text" name="question" placeholder="FAQ Question" required />
+                <form class="inline-form" onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                    <div class="input-body">
+                        <input type="text" name="question" placeholder="FAQ Question" required />
+                        <select name="course_id">
+                            <option value="">Select Course (optional)</option>
+                            <option value="1">Introduction to Database Systems</option>
+                            <option value="2">Advanced Web Development</option>
+                        </select>
+                    </div>
                     <textarea name="answer" placeholder="FAQ Answer" required></textarea>
-                    <select name="course_id">
-                        <option value="">Select Course (optional)</option>
-                        <option value="1">Introduction to Database Systems</option>
-                        <option value="2">Advanced Web Development</option>
-                    </select>
-                    <button type="submit">Add FAQ</button>
+                    <div>
+                        <button class="button is-primary" type="submit">Add FAQ</button>
+                    </div>
                 </form>
             </div>
 
             <!-- Update FAQ Form - Simplified version without dynamic data loading -->
-            <div id="update-faq" class="faq-form" style="display: none;">
+            <div id="update-faq" class="faq-form table-wrapper" style="display: none;">
                 <h2>Update FAQ</h2>
-                <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
-                    <input type="number" name="faq_id" placeholder="FAQ ID" required />
-                    <input type="text" name="new_question" placeholder="New Question" />
+                <form class="inline-form" onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                    <div class="input-body">
+                        <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                        <input type="text" name="new_question" placeholder="New Question" />
+                        <select name="new_course_id">
+                            <option value="">Select New Course (optional)</option>
+                            <option value="1">Introduction to Database Systems</option>
+                            <option value="2">Advanced Web Development</option>
+                        </select>
+                    </div>
                     <textarea name="new_answer" placeholder="New Answer"></textarea>
-                    <select name="new_course_id">
-                        <option value="">Select New Course (optional)</option>
-                        <option value="1">Introduction to Database Systems</option>
-                        <option value="2">Advanced Web Development</option>
-                    </select>
-                    <button type="submit">Update FAQ</button>
+                    <div>
+                        <button class="button is-secondary" type="submit">Update FAQ</button>
+                    </div>
                 </form>
             </div>
 
@@ -66,9 +74,9 @@
             </div>
 
             <div class="faq-actions">
-                <button onclick="showForm('add')">Add FAQ</button>
-                <button onclick="showForm('update')">Update FAQ</button>
-                <button onclick="showForm('delete')">Delete FAQ</button>
+                <button class="button is-primary"  onclick="showForm('add')">Add FAQ</button>
+                <button class="button is-secondary" onclick="showForm('update')">Update FAQ</button>
+                <button class="button is-delete"  onclick="showForm('delete')">Delete FAQ</button>
             </div>
         </main>
 
