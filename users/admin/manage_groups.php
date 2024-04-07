@@ -38,39 +38,47 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h2>Manage Groups</h2>
             </div>
             <!-- Add Group Form -->
-            <div id="add-group" class="group-form">
+            <div id="add-group" class="group-form table-wrapper">
                 <h2>Add Group</h2>
-                <form method="POST" action="add_group_endpoint.php"> <!-- Update action to your endpoint script -->
-                    <select name="course_id" required>
-                        <option value="">Select Course</option>
-                        <!-- Populate with courses from the database -->
-                        <?php foreach ($courses as $course): ?>
-                            <option value="<?= $course['CourseID'] ?>"><?= $course['Name'] ?></option>
-                        <?php endforeach ?>
-                    </select>
-                    <input type="number" name="group_leader_id" placeholder="Group Leader ID" required />
-                    <input type="text" name="database_password" placeholder="Database Password" required />
-                    <input type="number" name="max_size" placeholder="Max Size" required />
-                    <button type="submit">Add Group</button>
+                <form class="inline-form" method="POST" action="add_group_endpoint.php"> <!-- Update action to your endpoint script -->
+                    <div class="input-body">
+                        <select name="course_id" required>
+                            <option value="">Select Course</option>
+                            <!-- Populate with courses from the database -->
+                            <?php foreach ($courses as $course): ?>
+                                <option value="<?= $course['CourseID'] ?>"><?= $course['Name'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                        <input type="number" name="group_leader_id" placeholder="Group Leader ID" required />
+                        <input type="text" name="database_password" placeholder="Database Password" required />
+                        <input type="number" name="max_size" placeholder="Max Size" required />
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add Group</button>
+                    </div>
                 </form>
             </div>
 
             <!-- Update Group Form -->
-            <div id="update-group" class="group-form" style="display: none;">
+            <div id="update-group" class="group-form table-wrapper" style="display: none;">
                 <h2>Update Group</h2>
-                <form method="POST" action="update_group_endpoint.php"> <!-- Update action to your endpoint script -->
-                    <input type="number" name="group_id" placeholder="Group ID" required />
-                    <select name="new_course_id">
-                        <option value="">Select New Course (optional)</option>
-                        <!-- Populate with courses from the database -->
-                        <?php foreach ($courses as $course): ?>
-                            <option value="<?= $course['CourseID'] ?>"><?= $course['Name'] ?></option>
-                        <?php endforeach ?>
-                    </select>
-                    <input type="number" name="new_group_leader_id" placeholder="New Group Leader ID" />
-                    <input type="text" name="new_database_password" placeholder="New Database Password" />
-                    <input type="number" name="new_max_size" placeholder="New Max Size" />
-                    <button type="submit">Update Group</button>
+                <form class="inline-form" method="POST" action="update_group_endpoint.php"> <!-- Update action to your endpoint script -->
+                    <div class="input-body">
+                        <input type="number" name="group_id" placeholder="Group ID" required />
+                        <select name="new_course_id">
+                            <option value="">Select New Course (optional)</option>
+                            <!-- Populate with courses from the database -->
+                            <?php foreach ($courses as $course): ?>
+                                <option value="<?= $course['CourseID'] ?>"><?= $course['Name'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                        <input type="number" name="new_group_leader_id" placeholder="New Group Leader ID" />
+                        <input type="text" name="new_database_password" placeholder="New Database Password" />
+                        <input type="number" name="new_max_size" placeholder="New Max Size" />
+                    </div>
+                    <div>
+                        <button class="button is-secondary" type="submit">Update Group</button>
+                    </div>
                 </form>
             </div>
 
@@ -84,9 +92,9 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="group-actions">
-                <button onclick="showForm('add')">Add Group</button>
-                <button onclick="showForm('update')">Update Group</button>
-                <button onclick="showForm('delete')">Delete Group</button>
+                <button class="button is-primary" onclick="showForm('add')">Add Group</button>
+                <button class="button is-secondary" onclick="showForm('update')">Update Group</button>
+                <button class="button is-delete"onclick="showForm('delete')">Delete Group</button>
             </div>
         </main>
 

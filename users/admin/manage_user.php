@@ -74,20 +74,26 @@ if (isset($_SESSION['error'])) {
                 <h2>Manage Users</h2>
             </div>
             <!-- Add User Form -->
-            <div id="add-user" class="user-form">
+            <div id="add-user" class="user-form table-wrapper">
                 <h2>Add User</h2>
-                <form method="POST" action="edit_user_endpoint.php"> 
-                    <input type="hidden" name="action" value="add"> 
-                    <input type="text" name="name" placeholder="Full Name" required />
-                    <input type="email" name="email" placeholder="Email" required />
-                    <input type="password" name="password" placeholder="Password" required />
-                    <select name="role">
-                        <option value="1">Student</option>
-                        <option value="2">Instructor</option>
-                        <option value="3">TA</option>
-                        <option value="4">Admin</option>
-                    </select>
-                    <button class="button" type="submit">Add User</button>
+                <form class="inline-form" method="POST" action="edit_user_endpoint.php"> 
+                    <div>
+                        <input type="hidden" name="action" value="add"> 
+                        <div class="input-body">
+                            <input type="text" name="name" placeholder="Full Name" required />
+                            <input type="email" name="email" placeholder="Email" required />
+                            <input type="password" name="password" placeholder="Password" required />
+                            <select name="role">
+                                <option value="1">Student</option>
+                                <option value="2">Instructor</option>
+                                <option value="3">TA</option>
+                                <option value="4">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add User</button>
+                    </div>
                 </form>
             </div>
 
@@ -95,17 +101,19 @@ if (isset($_SESSION['error'])) {
             <div id="update-user" class="user-form" style="display: none;">
                 <h2>Update User</h2>
                 <form method="POST" action="edit_user_endpoint.php">
-                    <input type="hidden" name="action" value="update"> 
-                    <input type="text" id="update_user_id" name="user_id" placeholder="User ID" required />
-                    <input type="text" id="update_new_name" name="new_name" placeholder="New Full Name" />
-                    <input type="email" id="update_new_email" name="new_email" placeholder="New Email" />
-                    <input type="password" id="update_new_password" name="new_password" placeholder="New Password" />
-                    <select id="update_new_role" name="new_role">
-                        <option value="1">Student</option>
-                        <option value="2">Instructor</option>
-                        <option value="3">TA</option>
-                        <option value="4">Admin</option>
-                    </select>
+                    <div>
+                        <input type="hidden" name="action" value="update"> 
+                        <input type="text" id="update_user_id" name="user_id" placeholder="User ID" required />
+                        <input type="text" id="update_new_name" name="new_name" placeholder="New Full Name" />
+                        <input type="email" id="update_new_email" name="new_email" placeholder="New Email" />
+                        <input type="password" id="update_new_password" name="new_password" placeholder="New Password" />
+                        <select id="update_new_role" name="new_role">
+                            <option value="1">Student</option>
+                            <option value="2">Instructor</option>
+                            <option value="3">TA</option>
+                            <option value="4">Admin</option>
+                        </select>
+                    </div>
                     <button class="button" type="submit">Update User</button>
                 </form>
             </div>
@@ -120,10 +128,6 @@ if (isset($_SESSION['error'])) {
                 </form>
             </div>
 
-            <div class="user-actions">
-                <button class="button is-primary" onclick="showForm('add')">Add User</button>
-            </div>
-
             <!-- User Table -->
             <div class="user-table">
                 <h2>Current Users</h2>
@@ -134,7 +138,7 @@ if (isset($_SESSION['error'])) {
                                 <th>User ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th> <!-- New column for role -->
+                                <th>Role</th> 
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -243,8 +247,6 @@ if (isset($_SESSION['error'])) {
                 closeModal();
             }
         }
-
-        
 
     </script>
 </body>
