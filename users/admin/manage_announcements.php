@@ -43,18 +43,24 @@ try {
             <div class="main-header">
                 <h2>Manage Course Announcements</h2>
             </div>
-            <div id="add-announcement" class="announcement-form">
+            <div id="add-announcement" class="announcement-form table-wrapper">
                 <h2>Add New Announcement</h2>
-                <form action="post_announcement.php" method="post"> 
-                    <select name="course_id" required>
-                        <option value="">Select Course</option>
-                        <?php foreach ($courses as $course): ?>
-                            <option value="<?php echo $course['CourseID']; ?>"><?php echo $course['Name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <input type="text" name="title" placeholder="Announcement Title" required />
-                    <textarea name="content" placeholder="Announcement Content" required></textarea>
-                    <button type="submit">Post Announcement</button>
+                <form class="inline-form" action="post_announcement.php" method="post"> 
+                    <div class="input-body">
+                        <select name="course_id" required>
+                            <option value="">Select Course</option>
+                            <?php foreach ($courses as $course): ?>
+                                <option value="<?php echo $course['CourseID']; ?>"><?php echo $course['Name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <input type="text" name="title" placeholder="Announcement Title" required />
+                    </div>
+                    <div class="input">
+                        <textarea name="content" placeholder="Announcement Content" required></textarea>
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Post Announcement</button>
+                    </div>
                 </form>
             </div>
         </main>
