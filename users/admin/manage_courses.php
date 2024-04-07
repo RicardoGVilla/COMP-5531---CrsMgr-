@@ -53,69 +53,100 @@ try {
                 <h2>Manage Courses</h2>
             </div>
             <!-- Add Course Form -->
-            <div id="add-course" class="course-form">
+            <div id="add-course" class="course-form table-wrapper">
                 <h2>Add Course</h2>
-                <form method="POST" action="edit_courses_endpoint.php">
-                    <input type="hidden" name="action" value="add" />
-                    <input type="text" name="course_name" placeholder="Course Name" required />
-                    <input type="date" name="start_date" placeholder="Start Date" required />
-                    <input type="date" name="end_date" placeholder="End Date" required />
+                <form class="inline-form"  method="POST" action="edit_courses_endpoint.php"> 
+                    <div class="label-input-body">
+                        <input type="hidden" name="action" value="add" />
+                        <div class="label-input">
+                            <label for="course_name">Course Name:</label>
+                            <input type="text" id="course_name" name="course_name" placeholder="Course Name" required />
+                        </div>
+                        <div class="label-input">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" placeholder="Start Date" required />
+                        </div>
+                        <div class="label-input">
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
+                        </div>
 
-                    <!-- Dropdown menu for selecting instructors -->
-                    <select name="instructors" required>
-                        <option value="" disabled selected>Select Instructor</option>
-                        <?php foreach ($courses as $course): ?>
-                            <?php if ($course['Instructors']): ?>
-                                <?php $instructors = explode(', ', $course['Instructors']); ?>
-                                <?php foreach ($instructors as $instructor): ?>
-                                    <option value="<?= htmlspecialchars($instructor) ?>">
-                                        <?= htmlspecialchars($instructor) ?>
-                                    </option>
+                        <div class="label-input">
+                            <label for="instructors">Instructors:</label>
+                            <!-- Dropdown menu for selecting instructors -->
+                            <select id="instructors" name="instructors" required>
+                                <option value="" disabled selected>Select Instructor</option>
+                                <?php foreach ($courses as $course): ?>
+                                    <?php if ($course['Instructors']): ?>
+                                        <?php $instructors = explode(', ', $course['Instructors']); ?>
+                                        <?php foreach ($instructors as $instructor): ?>
+                                            <option value="<?= htmlspecialchars($instructor) ?>">
+                                                <?= htmlspecialchars($instructor) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </select>
-
-                    <button class="button is-primary" type="submit">Add Course</button>
+                            </select>
+                        </div>
+    
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add Course</button>
+                    </div>
                 </form>
             </div>
 
             <!-- Update Course Form -->
-            <div id="update-course" class="course-form" style="display: none;">
+            <div id="update-course" class="course-form table-wrapper" style="display: none;">
                 <h2>Update Course</h2>
-                <form method="POST" action="edit_courses_endpoint.php">
-                    <input type="hidden" name="action" value="update" />
-                    
-                    <!-- Dropdown menu for selecting the course to update -->
-                    <select name="course_id" required>
-                        <option value="" disabled selected>Select Course</option>
-                        <?php foreach ($courses as $course): ?>
-                            <option value="<?= htmlspecialchars($course['CourseID']) ?>">
-                                <?= htmlspecialchars($course['CourseName']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    
-                    <input type="text" name="new_course_name" placeholder="New Course Name" />
-                    <input type="date" name="new_start_date" placeholder="New Start Date" />
-                    <input type="date" name="new_end_date" placeholder="New End Date" />
-                    
-                    <!-- Dropdown menu for selecting instructors -->
-                    <select name="new_instructors" required>
-                        <option value="" disabled selected>Select Instructor</option>
-                        <?php foreach ($courses as $course): ?>
-                            <?php if ($course['Instructors']): ?>
-                                <?php $instructors = explode(', ', $course['Instructors']); ?>
-                                <?php foreach ($instructors as $instructor): ?>
-                                    <option value="<?= htmlspecialchars($instructor) ?>">
-                                        <?= htmlspecialchars($instructor) ?>
+                <form class="inline-form" method="POST" action="edit_courses_endpoint.php">
+                    <div class="label-input-body">
+                        <input type="hidden" name="action" value="update" />
+                        <div class="label-input">
+                            <label for="course_id">Select Course:</label>
+                            <!-- Dropdown menu for selecting the course to update -->
+                            <select id="course_id" name="course_id" required>
+                                <option value="" disabled selected>Select Course</option>
+                                <?php foreach ($courses as $course): ?>
+                                    <option value="<?= htmlspecialchars($course['CourseID']) ?>">
+                                        <?= htmlspecialchars($course['CourseName']) ?>
                                     </option>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </select>
-                    
-                    <button class="button is-secondary" type="submit">Update Course</button>
+                            </select>
+                        </div>
+                        <div class="label-input">
+                            <label for="new_course_name">New Course Name:</label>
+                            <input type="text" id="new_course_name" name="new_course_name" placeholder="New Course Name" />
+                        </div>
+                        <div class="label-input">
+                            <label for="new_start_date">New Start Date:</label>
+                            <input type="date" name="new_start_date" placeholder="New Start Date" />
+                        </div>
+                        <div class="label-input">
+                            <label for="new_end_date">New End Date:</label>
+                            <input type="date" name="new_end_date" placeholder="New End Date" />
+                        </div>
+                        <div class="label-input">
+                            <label for="new_instructors">New Instructor:</label>
+                            <!-- Dropdown menu for selecting instructors -->
+                            <select id="new_instructors" name="new_instructors" required>
+                                <option value="" disabled selected>Select Instructor</option>
+                                <?php foreach ($courses as $course): ?>
+                                    <?php if ($course['Instructors']): ?>
+                                        <?php $instructors = explode(', ', $course['Instructors']); ?>
+                                        <?php foreach ($instructors as $instructor): ?>
+                                            <option value="<?= htmlspecialchars($instructor) ?>">
+                                                <?= htmlspecialchars($instructor) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="button is-secondary" type="submit">Update Course</button>
+                    </div>
                 </form>
             </div>
 

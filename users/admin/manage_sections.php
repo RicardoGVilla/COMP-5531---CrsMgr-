@@ -62,41 +62,76 @@ $_currentSections = array_unique(array_map(function ($value) {
             </div>
 
             <!-- Add Section Form -->
-            <div id="add-section" class="section-form">
+            <div id="add-section" class="section-form table-wrapper">
                 <h2>Add Section</h2>
-                <form method="POST" action="edit_sections_endpoint.php"> 
-                    <select name="course_id" required>
-                        <!--option value="">Select Course</option-->
-                        <!-- Populate with courses from the database -->
-                        <!--option value="1">Introduction to Database Systems</option-->
-                        <!--option value="2">Advanced Web Development</option-->
-                    <?php
-                        print_r($_currentSections);
-                        ?>
-                    <?php foreach ($_currentSections as $row): ?>
-                            <option> <?=$row?> </option>
-                        <?php endforeach ?>
-                    </select>
-                    <input type="number" name="section_number" placeholder="Section Number" required />
-                    <input type="date" name="start_date" placeholder="Start Date" required />
-                    <input type="date" name="end_date" placeholder="End Date" required />
-                    <button class="button is-primary" type="submit">Add Section</button>
+                <form class="inline-form"  method="POST" action="edit_sections_endpoint.php"> 
+                    <div class="label-input-body">
+                        <div class="label-input">
+                            <label for="course_id">Course Name:</label>
+                            <select id="" name="course_id" required>
+                                <!--option value="">Select Course</option-->
+                                <!-- Populate with courses from the database -->
+                                <!--option value="1">Introduction to Database Systems</option-->
+                                <!--option value="2">Advanced Web Development</option-->
+                            <?php
+                                print_r($_currentSections);
+                                ?>
+                            <?php foreach ($_currentSections as $row): ?>
+                                    <option> <?=$row?> </option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <div class="label-input">
+                            <label for="section_number">Section Number:</label>
+                            <input type="number" id="section_number" name="section_number" placeholder="Section Number" required />
+                        </div>
+                        <div class="label-input">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" placeholder="Start Date" required />
+                        </div>
+                        <div class="label-input">
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
+                        </div>
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add Section</button>
+                    </div>
                 </form>
             </div>
 
             <!-- Update Section Form -->
-            <div id="update-section" class="section-form" style="display: none;">
+            <div id="update-section" class="section-form table-wrapper" style="display: none;">
                 <h2>Update Section</h2>
-                <form method="POST" action="edit_sections_endpoint.php"> 
-                    <input type="hidden" name="action" value="update" />
-                    <input type="number" name="section_id" placeholder="Section ID" required />
-                    <select name="new_course_id">
-                        <option value="">Select New Course (optional)</option>
-                    </select>
-                    <input type="number" name="new_section_number" placeholder="New Section Number" />
-                    <input type="date" name="new_start_date" placeholder="New Start Date" />
-                    <input type="date" name="new_end_date" placeholder="New End Date" />
-                    <button type="submit">Update Section</button>
+                <form class="inline-form"  method="POST" action="edit_sections_endpoint.php">
+                    <div class="label-input-body">
+                        <input type="hidden" name="action" value="update" />
+                        <div class="label-input">
+                            <label for="section_id">Section ID:</label>
+                            <input type="number" id="section_id" name="section_id" placeholder="Section ID" required />
+                        </div>
+                        <div class="label-input">
+                            <label for="new_course_id">Select New Course (optional):</label>
+                            <select id="new_course_id" name="new_course_id">
+                                <option value="">Select New Course (optional)</option>
+                            </select>
+                        </div>
+                        <div class="label-input">
+                            <label for="new_section_number">New Section Number:</label>
+                            <input type="number" id="new_section_number" name="new_section_number" placeholder="New Section Number" />
+                        </div>
+                        <div class="label-input">
+                            <label for="new_start_date">New Start Date:</label>
+                            <input type="date" id="new_start_date" name="new_start_date" placeholder="New Start Date" />
+                        </div>
+                        <div class="label-input">
+                            <label for="new_end_date">New End Date:</label>
+                            <input type="date" id="new_end_date" name="new_end_date" placeholder="New End Date" />
+                        </div>
+                    </div> 
+                    <div>
+                        <button class="button is-secondary" type="submit">Update Section</button>
+                    </div>
                 </form>
             </div>
      

@@ -2,12 +2,54 @@
   padding: 20px;
 }
 
+.inline-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inline-form input {
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding-inline-start: 10px;
+  font-size: 0.9rem;
+}
+
+.label-input input {
+  height: 40px;
+  /* border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding-inline-start: 10px;
+  font-size: 0.9rem; */
+}
+
+.inline-form select {
+  height: 40px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding-inline-start: 10px;
+  font-size: 0.9rem;
+}
+
 .input{
   width: 100%;
   margin-block: 1.5rem;
   display: flex;
   flex-direction: column;
 }
+
+.input-body,
+.label-input-body {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.input-body input,
+.input-body select {
+  flex: 1;
+}
+
 
 .input input,
 .input select {
@@ -26,16 +68,14 @@
   font-weight: 300; 
 }
 
-.input input,
-.input textarea {
-  /* flex: 1; */
-}
-
-.input label {
-  
-}
-
 .button-container {
   display: flex;
   justify-content: flex-end;
+}
+
+.label-input {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 5px;
 }

@@ -1,6 +1,3 @@
-.user-table {
-  padding: 25px;
-}
 
 .table-wrapper {
   padding: 25px;
@@ -8,6 +5,11 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); 
   border-radius: 5px;
   min-width: 600px;
+  margin-block-end: 15px;
+}
+
+.table-wrapper h2 {
+  margin-block-start: 0;
 }
 
 .content-table {

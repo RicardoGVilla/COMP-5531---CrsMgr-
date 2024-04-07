@@ -64,7 +64,7 @@ body{
 
 .page .main{
     grid-area: main;
-    padding: 20px;
+    padding: 30px;
     background-color: #f1f1f1;
     overflow-y: auto; 
 }

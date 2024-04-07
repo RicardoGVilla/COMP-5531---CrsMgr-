@@ -27,19 +27,25 @@
                 <h2>Manage Course Announcements</h2>
             </div>
             <!-- Add Announcement Form -->
-            <div id="add-announcement" class="announcement-form">
+            <div id="add-announcement" class="announcement-form table-wrapper">
                 <h2>Add New Announcement</h2>
-                <form onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
-                    <select name="course_id" required>
-                        <option value="">Select Course</option>
-                        <!-- Option values are hardcoded for demonstration purposes -->
-                        <option value="1">Introduction to Database Systems</option>
-                        <option value="2">Advanced Web Development</option>
-                    </select>
-                    <input type="text" name="title" placeholder="Announcement Title" required />
-                    <textarea name="content" placeholder="Announcement Content" required></textarea>
-                    <!-- Typically, you would include a date field here to specify when the announcement is made -->
-                    <button type="submit">Post Announcement</button>
+                <form class="inline-form" onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                    <div class="input-body">
+                        <select name="course_id" required>
+                            <option value="">Select Course</option>
+                            <!-- Option values are hardcoded for demonstration purposes -->
+                            <option value="1">Introduction to Database Systems</option>
+                            <option value="2">Advanced Web Development</option>
+                        </select>
+                        <input type="text" name="title" placeholder="Announcement Title" required />
+                        <!-- Typically, you would include a date field here to specify when the announcement is made -->
+                    </div>
+                    <div class="input">
+                        <textarea name="content" placeholder="Announcement Content" required></textarea>
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Post Announcement</button>
+                    </div>
                 </form>
             </div>
         </main>
