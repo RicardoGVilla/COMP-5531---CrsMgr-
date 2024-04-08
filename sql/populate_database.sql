@@ -88,5 +88,6 @@ INSERT INTO EmailRecipient (EmailID, RecipientID) VALUES
 INSERT INTO FAQ (Question, Answer, ContributorID, CourseID) VALUES
 ('What is Agile Methodology?', 'Agile methodology is an iterative approach to project management.', 1234568, 1);
 
+
 -- Course Materials
 INSERT INTO CourseMaterial (GroupID, Title, Description, URL_Path, UploadTimestamp) VALUES
