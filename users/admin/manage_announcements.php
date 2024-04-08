@@ -55,9 +55,7 @@ try {
                         </select>
                         <input type="text" name="title" placeholder="Announcement Title" required />
                     </div>
-                    <div class="input">
-                        <textarea name="content" placeholder="Announcement Content" required></textarea>
-                    </div>
+                    <textarea name="content" placeholder="Announcement Content" required></textarea>
                     <div>
                         <button class="button is-primary" type="submit">Post Announcement</button>
                     </div>
