@@ -90,4 +90,4 @@ INSERT INTO FAQ (Question, Answer, ContributorID, CourseID) VALUES
 
 
 -- Course Materials
-INSERT INTO CourseMaterial (GroupID, Title, Description, URL_Path, UploadTimestamp) VALUES
+-- INSERT INTO CourseMaterial (GroupID, Title, Description, URL_Path, UploadTimestamp) VALUES
