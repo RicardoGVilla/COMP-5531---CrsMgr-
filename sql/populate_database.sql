@@ -1,21 +1,21 @@
 INSERT INTO Role (RoleName) VALUES ('Student'), ('Instructor'), ('TA'), ('Admin');
 
--- Users
-INSERT INTO `User` (UserID, Name, EmailAddress, Password) VALUES
-(1234567, 'Alice Anderson', 'alice.anderson@example.edu', 'hashed_password123'),
-(1234568, 'Bob Brown', 'bob.brown@example.edu', 'hashed_password456'),
-(1234569, 'Cathy Charles', 'cathy.charles@example.edu', 'hashed_password789'),
-(1234570, 'David Davis', 'david.davis@example.edu', 'hashed_password012'),
-(1234571, 'Quinn Quasar', 'quinn.quasar@example.edu', 'hashed_password456'),
-(1234572, 'Rachel Ray', 'rachel.ray@example.edu', 'hashed_password567'),
-(1234573, 'Simon Smith', 'simon.smith@example.edu', 'hashed_password678'),
-(1234574, 'Tina Turner', 'tina.turner@example.edu', 'hashed_password789'),
-(1234575, 'Eva Evans', 'eva.evans@example.edu', 'hashed_password123'),
-(1234576, 'Frank Franklin', 'frank.franklin@example.edu', 'hashed_password456'),
-(1234577, 'Grace Fulford', 'grace.fulford@example.edu', 'hashed_password789'),
-(1234578, 'Henry Harris', 'henry.harris@example.edu', 'hashed_password012'),
-(1234579, 'Ivy Ingram', 'ivy.ingram@example.edu', 'hashed_password345'),
-(1234580, 'David Johnson', 'david.johnson@example.edu', 'hashed_password678');
+-- Users, with Rachel Ray as the new user
+INSERT INTO `User` (UserID, Name, EmailAddress, Password, NewUser) VALUES
+(1234567, 'Alice Anderson', 'alice.anderson@example.edu', 'hashed_password123', FALSE),
+(1234568, 'Bob Brown', 'bob.brown@example.edu', 'hashed_password456', FALSE),
+(1234569, 'Cathy Charles', 'cathy.charles@example.edu', 'hashed_password789', FALSE),
+(1234570, 'David Davis', 'david.davis@example.edu', 'hashed_password012', FALSE),
+(1234571, 'Quinn Quasar', 'quinn.quasar@example.edu', 'hashed_password456', FALSE),
+(1234572, 'Rachel Ray', 'rachel.ray@example.edu', 'hashed_password567', TRUE), -- Marked as new user
+(1234573, 'Simon Smith', 'simon.smith@example.edu', 'hashed_password678', FALSE),
+(1234574, 'Tina Turner', 'tina.turner@example.edu', 'hashed_password789', FALSE),
+(1234575, 'Eva Evans', 'eva.evans@example.edu', 'hashed_password123', FALSE),
+(1234576, 'Frank Franklin', 'frank.franklin@example.edu', 'hashed_password456', FALSE),
+(1234577, 'Grace Fulford', 'grace.fulford@example.edu', 'hashed_password789', FALSE),
+(1234578, 'Henry Harris', 'henry.harris@example.edu', 'hashed_password012', FALSE),
+(1234579, 'Ivy Ingram', 'ivy.ingram@example.edu', 'hashed_password345', FALSE),
+(1234580, 'David Johnson', 'david.johnson@example.edu', 'hashed_password678', FALSE);
 
 -- User Roles
 INSERT INTO UserRole (UserID, RoleID) VALUES
