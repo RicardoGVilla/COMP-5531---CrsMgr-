@@ -1,33 +1,40 @@
-<?php
-// Start the session
+<!-- <?php
+include_once 'database.php';
 session_start();
 
-// Check if the user is logged in, otherwise redirect to the login page.
-if (!isset($_SESSION['user']['UserID'])) {
-    header('Location: ../../login.php');
+// Redirect to login page if no user ID is stored in the session
+if (!isset($_SESSION['change_password_user_id'])) {
+    header("Location: login.php");
     exit;
 }
 
-// Include database connection
-require_once 'database.php'; 
+$userID = $_SESSION['change_password_user_id']; // Retrieve the user's ID from the session
 
-// Handle the password change on form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['new_password'])) {
-    $userId = $_SESSION['user']['UserID'];
-    $newPassword = $_POST['new_password']; 
+// Handle the form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $newPassword = $_POST["new_password"];
 
-    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+    // Update the user's password and NewUser status in the database
+    try {
+        $stmt = $pdo->prepare("UPDATE `User` SET Password = :newPassword, NewUser = FALSE WHERE UserID = :userID");
+        $stmt->execute([
+            ':newPassword' => password_hash($newPassword, PASSWORD_DEFAULT),
+            ':userID' => $userID
+        ]);
 
-    // Prepare SQL query to update the user's password and NewUser status
-    $query = "UPDATE `User` SET Password = :newPassword, NewUser = FALSE WHERE UserID = :userId";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute(['newPassword' => $hashedPassword, 'userId' => $userId]);
+        // Optionally, clear the change_password_user_id from the session
+        unset($_SESSION['change_password_user_id']);
 
-    // After updating, redirect or display a success message
-    header('Location: home.php'); // Redirect to home page after successful update
-    exit;
+        // Redirect or notify the user of success
+        $_SESSION['message'] = "Your password has been updated successfully.";
+        header("Location: login.php");
+        exit;
+    } catch (PDOException $e) {
+        // Handle errors (e.g., log them and show an error message)
+        $_SESSION['error'] = "Error updating password: " . $e->getMessage();
+    }
 }
-?>
+?> -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -47,9 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['new_password'])) {
             </div>
             <button type="submit">Update Password</button>
         </form>
-        <footer class="footer">
-            <button onclick="location.href='home.php'">Return to Home Page</button>
-        </footer>
     </div>
 </body>
 </html>

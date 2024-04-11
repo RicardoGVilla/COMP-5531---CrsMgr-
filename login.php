@@ -6,51 +6,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // Query the database to fetch user details along with all associated roles
-    $stmt = $pdo->prepare("SELECT u.UserID, u.Name, GROUP_CONCAT(r.RoleName ORDER BY FIELD(r.RoleName, 'Admin', 'Instructor', 'TA', 'Student') ASC) AS Roles
-                           FROM `User` u
-                           INNER JOIN UserRole ur ON u.UserID = ur.UserID
-                           INNER JOIN Role r ON ur.RoleID = r.RoleID
-                           WHERE u.EmailAddress = :email AND u.Password = :password
-                           GROUP BY u.UserID");
-    $stmt->execute(['email' => $email, 'password' => $password]);
+    // Query the database to fetch user details by email, including the NewUser attribute
+    $stmt = $pdo->prepare("SELECT UserID, Name, Password, NewUser FROM `User` WHERE EmailAddress = :email");
+    $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        $_SESSION["user"] = $user;
-        $roles = explode(',', $user['Roles']);
+        $passwordMatch = false;
 
-        if (in_array('Admin', $roles)) {
-            header("Location: users/admin/home.php");
-        } elseif (in_array('Instructor', $roles)) {
-            header("Location: users/instructor/home.php");
-        } elseif (in_array('TA', $roles)) {
-            header("Location: users/ta/choose-role.php");
-        } elseif (in_array('Student', $roles)) {
-            // Additional check for the number of courses the student is enrolled in
-            $stmtCourses = $pdo->prepare("SELECT COUNT(DISTINCT CourseID) AS CourseCount FROM StudentEnrollment WHERE StudentID = :userId");
-            $stmtCourses->execute(['userId' => $user['UserID']]);
-            $coursesResult = $stmtCourses->fetch(PDO::FETCH_ASSOC);
+        // Check if the password submitted starts with "hashed_"
+        if (substr($password, 0, 7) === 'hashed_') {
+            // Perform a direct string comparison
+            $passwordMatch = ($user['Password'] === $password);
+        } else {
+            // Use password_verify() for comparison for non-prefixed passwords
+            $_SESSION['change_password_user_id'] = $user['UserID']; // Store the user's ID in the session
+            $passwordMatch = password_verify($password, $user['Password']);
+        }
 
-            if ($coursesResult && $coursesResult['CourseCount'] > 1) {
-                header("Location: users/student/choose-class.php");
-            } elseif ($coursesResult && $coursesResult['CourseCount'] == 1) {
-                header("Location: users/student/home.php");
+        if ($passwordMatch) {
+            // Password is correct, check if NewUser is TRUE
+            if ($user['NewUser']) {
+                // Redirect to new_password.php for the user to set a new password
+                header("Location: change_password.php");
+                exit;
+            }
+
+            // If NewUser is FALSE, continue with the role-based redirection logic
+            $_SESSION["user"] = $user;
+            $roles = getUserRoles($user['UserID'], $pdo);
+
+            if (in_array('Admin', $roles)) {
+                header("Location: users/admin/home.php");
+            } elseif (in_array('Instructor', $roles)) {
+                header("Location: users/instructor/home.php");
+            } elseif (in_array('TA', $roles)) {
+                header("Location: users/ta/choose-role.php");
+            } elseif (in_array('Student', $roles)) {
+                $stmtCourses = $pdo->prepare("SELECT COUNT(DISTINCT CourseID) AS CourseCount FROM StudentEnrollment WHERE StudentID = :userId");
+                $stmtCourses->execute(['userId' => $user['UserID']]);
+                $coursesResult = $stmtCourses->fetch(PDO::FETCH_ASSOC);
+
+                if ($coursesResult && $coursesResult['CourseCount'] > 1) {
+                    header("Location: users/student/choose-class.php");
+                } elseif ($coursesResult && $coursesResult['CourseCount'] == 1) {
+                    header("Location: users/student/home.php");
+                } else {
+                    header("Location: home.php");
+                }
             } else {
-                // Handle the case where a student is not enrolled in any course
-                // Redirect to a generic page or show an error message
                 header("Location: home.php");
             }
+            exit;
         } else {
-            header("Location: home.php");
+            // Invalid email or password
+            header("Location: login.php?error=invalid_credentials");
+            exit;
         }
-        exit;
     } else {
+        // If no user is found with the email
         header("Location: login.php?error=invalid_credentials");
         exit;
     }
 }
+
+function getUserRoles($userID, $pdo) {
+    $roles = [];
+    $query = "SELECT RoleName FROM Role JOIN UserRole ON Role.RoleID = UserRole.RoleID WHERE UserID = :userID";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute(['userID' => $userID]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $roles[] = $row['RoleName'];
+    }
+    
+    return $roles;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -101,4 +133,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     
 </body>
-</html> 
+</html>

@@ -24,25 +24,7 @@ function compareUsers($a, $b) {
 
 // Sort the users array using the compareUsers function
 usort($users, 'compareUsers');
-
-// header('Content-Type: application/json');
-// echo json_encode($users);
-// var_dump($users);
-
-
-// Display success message if set
-if (isset($_SESSION['message'])) {
-    echo "<p>" . $_SESSION['message'] . "</p>";
-    unset($_SESSION['message']); 
-}
-
-// Display error message if set
-if (isset($_SESSION['error'])) {
-    echo "<p>" . $_SESSION['error'] . "</p>";
-    unset($_SESSION['error']); 
-}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,26 +36,20 @@ if (isset($_SESSION['error'])) {
     <link rel="stylesheet" href="../../css/index.css"> 
 </head>
 <body>
-<div class="page">
+    <div class="page">
         <header class="header">
             <h1>Welcome Admin</h1>
         </header>
 
         <div class="sidebar">
             <button class="is-selected" onclick="location.href='manage_user.php'">Manage Users</button>
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_sections.php'">Manage Sections</button>
-            <button onclick="location.href='manage_groups.php'">Manage Groups</button>
-            <button onclick="location.href='manage_assignments.php'">Assignments/Projects</button>
-            <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
-            <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
+            <!-- Additional sidebar buttons -->
         </div>
         
         <main class="main">
             <div class="main-header">
                 <h2>Manage Users</h2>
             </div>
-            <!-- Add User Form -->
             <div id="add-user" class="user-form table-wrapper">
                 <h2>Add User</h2>
                 <form class="inline-form" method="POST" action="edit_user_endpoint.php"> 
@@ -82,7 +58,7 @@ if (isset($_SESSION['error'])) {
                         <div class="input-body">
                             <input type="text" name="name" placeholder="Full Name" required />
                             <input type="email" name="email" placeholder="Email" required />
-                            <input type="password" name="password" placeholder="Password" required />
+                            <!-- Removed password input field -->
                             <select name="role">
                                 <option value="1">Student</option>
                                 <option value="2">Instructor</option>
@@ -90,8 +66,6 @@ if (isset($_SESSION['error'])) {
                                 <option value="4">Admin</option>
                             </select>
                         </div>
-                    </div>
-                    <div>
                         <button class="button is-primary" type="submit">Add User</button>
                     </div>
                 </form>
@@ -164,6 +138,8 @@ if (isset($_SESSION['error'])) {
                     </table>
                 </div>
             </div>
+
+
             <!-- Modal -->
             <div id="myModal" class="modal">
                 <div class="modal-content">
@@ -209,6 +185,20 @@ if (isset($_SESSION['error'])) {
     </div>
 
     <script>
+
+        // Display popup alert for session messages
+        window.onload = function() {
+            <?php if (isset($_SESSION['message'])): ?>
+                alert("<?php echo addslashes($_SESSION['message']); ?>");
+                <?php unset($_SESSION['message']); ?>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['error'])): ?>
+                alert("<?php echo addslashes($_SESSION['error']); ?>");
+                <?php unset($_SESSION['error']); ?>
+            <?php endif; ?>
+        };
+        
         // JavaScript function to confirm user deletion
         function confirmDelete(userId) {
             if (confirm('Are you sure you want to delete this user?')) {
