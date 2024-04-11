@@ -72,15 +72,15 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
         </header>
 
         <div class="sidebar">
-            <button onclick="location.href='contact_information.php'">Contact Information</button>
+            <button class="is-selected" onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
             <button>My Group (Internal Communication)</button>
             <button>Course Material</button>
         </div>
         <main class="main">
-        <div class="container">
+            <div class="table-wrapper">
                 <h2>Selected Course Information</h2>
-                <table>
+                <table class="content-table">
                     <thead>
                         <tr>
                             <th>Course</th>
@@ -103,11 +103,7 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
                     </tbody>
                 </table>
             </div>
-      
-      
-
-
-    </main>
+        </main>
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>

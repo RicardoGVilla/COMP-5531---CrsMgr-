@@ -48,7 +48,8 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - CrsMgr+</title>
+    <!-- <title>Student Dashboard - CrsMgr+</title> -->
+    <title>FAQs - <?php echo htmlspecialchars($currentCourseName); ?></title>
     <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
@@ -59,48 +60,37 @@ try {
 
         <div class="sidebar">
             <button onclick="location.href='contact_information.php'">Contact Information</button>
-            <button onclick="location.href='faq-information.php'">FAQ</button>
+            <button class="is-selected" onclick="location.href='faq-information.php'">FAQ</button>
             <button>My Group (Internal Communication)</button>
             <button>Course Material</button>
         </div>
 
         <main class="main">
-            <h2>Current Course: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
-        
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQs - <?php echo htmlspecialchars($currentCourseName); ?></title>
-    <link rel="stylesheet" href="../../css/index.css">
-</head>
-<body>
-    <h3>FAQs</h3>
-    <?php if (!empty($faqs)): ?>
-    <table>
-        <thead>
-            <tr>
-                <th>Question</th>
-                <th>Answer</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($faqs as $faq): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($faq['Question']); ?></td>
-                    <td><?php echo htmlspecialchars($faq['Answer']); ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <?php else: ?>
-    <p>No FAQs available for this course.</p>
-    <?php endif; ?>
-</body>
-</html>
-
+            <div class="table-wrapper">
+                <h2>Current Course: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
+    
+                <h3>FAQs</h3>
+                <?php if (!empty($faqs)): ?>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Answer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($faqs as $faq): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($faq['Question']); ?></td>
+                                <td><?php echo htmlspecialchars($faq['Answer']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?php else: ?>
+                <p>No FAQs available for this course.</p>
+                <?php endif; ?>
+            </div>
         
         </main>
 
