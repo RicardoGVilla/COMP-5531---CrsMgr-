@@ -1,7 +1,6 @@
 <?php
 session_start();
-require_once '../../database.php'; // Ensure this path is correct for database connection
-
+require_once '../../database.php'; 
 function getUserRoles($userID, $pdo) {
     $roles = [];
     $query = "SELECT RoleName FROM Role JOIN UserRole ON Role.RoleID = UserRole.RoleID WHERE UserID = :userID";

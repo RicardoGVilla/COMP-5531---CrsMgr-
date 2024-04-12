@@ -2,7 +2,6 @@
 session_start();
 require_once '../../database.php';
 
-
 $query = "SELECT 
             CourseSection.SectionID, 
             Course.Name AS CourseName, 
@@ -14,7 +13,6 @@ $query = "SELECT
           JOIN Course ON CourseSection.CourseID = Course.CourseID
           LEFT JOIN CourseInstructor ON Course.CourseID = CourseInstructor.CourseID
           LEFT JOIN `User` ON CourseInstructor.InstructorID = User.UserID
-
           ORDER BY Course.Name, CourseSection.SectionNumber ASC";
 
 $stmt = $pdo->prepare($query);
@@ -24,10 +22,7 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $_currentSections = array_unique(array_map(function ($value) {
     return  $value['CourseName'];
 }, $sections));
-
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,46 +49,49 @@ $_currentSections = array_unique(array_map(function ($value) {
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         </div>
 
-        
         <main class="main">
             <div class="main-header">
                 <h2>Manage Sections</h2>
             </div>
 
-            <!-- Add Section Form -->
-            <div id="add-section" class="section-form table-wrapper">
-                <h2>Add Section</h2>
-                <form class="inline-form" method="POST" action="edit_sections_endpoint.php">
-                    <div class="label-input-body">
-                        <div class="label-input">
-                            <label for="course_id">Course Name:</label>
-                            <select id="course_id" name="course_id" required>
-                            <?php
-                                print_r($_currentSections);
-                                ?>
-                            <?php foreach ($_currentSections as $row): ?>
-                                    <option> <?=$row?> </option>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                        <div class="label-input">
-                            <label for="section_number">Section Number:</label>
-                            <input type="number" id="section_number" name="section_number" placeholder="Section Number" required />
-                        </div>
-                        <div class="label-input">
-                            <label for="start_date">Start Date:</label>
-                            <input type="date" id="start_date" name="start_date" placeholder="Start Date" required />
-                        </div>
-                        <div class="label-input">
-                            <label for="end_date">End Date:</label>
-                            <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
-                        </div>
-                    </div>
-                    <div>
-                        <button class="button is-primary" type="submit">Add Section</button>
-                    </div>
-                </form>
+           <!-- Add Section Form -->
+<div id="add-section" class="section-form table-wrapper">
+    <h2>Add Section</h2>
+    <form class="inline-form" method="POST" action="edit_sections_endpoint.php">
+        <div class="label-input-body">
+            <div class="label-input">
+                <label for="course_id">Course Name:</label>
+                <select id="course_id" name="course_id" required>
+                    <?php foreach ($_currentSections as $course): ?>
+                        <option> <?=$course?> </option>
+                    <?php endforeach ?>
+                </select>
             </div>
+            <div class="label-input">
+                <label for="section_number">Section Number:</label>
+                <select id="section_number" name="section_number" required>
+                    <?php foreach ($sections as $section): ?>
+                        <option value="<?= htmlspecialchars($section['SectionID']) ?>">
+                            <?= htmlspecialchars($section['SectionNumber']) ?>
+                        </option>
+                    <?php endforeach ?>
+                </select>
+            </div>
+            <div class="label-input">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" placeholder="Start Date" required />
+            </div>
+            <div class="label-input">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
+            </div>
+        </div>
+        <div>
+            <button class="button is-primary" type="submit">Add Section</button>
+        </div>
+    </form>
+</div>
+
 
             <!-- Update Section Form -->
             <div id="update-section" class="section-form table-wrapper" style="display: none;">
