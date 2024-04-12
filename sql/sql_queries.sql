@@ -1,8 +1,12 @@
 CREATE DATABASE IF NOT EXISTS crs_manager_final;
 USE crs_manager_final;
 
--- Drop existing tables in reverse order of dependency
-DROP TABLE IF EXISTS CourseMaterial, FAQ, EmailRecipient, InternalEmail, StudentEnrollment, StudentGroupMembership, `Group`, CourseSection, CourseInstructor, Course, UserRole, Role, `User`;
+DROP TABLE IF EXISTS CourseMaterial, FAQ, EmailRecipient, InternalEmail, StudentEnrollment, StudentGroupMembership;
+DROP TABLE IF EXISTS `Group`, CourseSection, CourseInstructor;
+DROP TABLE IF EXISTS Course;
+DROP TABLE IF EXISTS UserRole;
+DROP TABLE IF EXISTS Role;
+DROP TABLE IF EXISTS `User`;
 
 -- Create tables
 CREATE TABLE IF NOT EXISTS `User` (
@@ -23,7 +27,7 @@ CREATE TABLE IF NOT EXISTS UserRole (
   RoleID INT,
   PRIMARY KEY (UserID, RoleID),
   FOREIGN KEY (UserID) REFERENCES `User`(UserID) ON DELETE CASCADE,
-  FOREIGN KEY (RoleID) REFERENCES Role(RoleID) ON DELETE CASCADE
+  FOREIGN KEY (RoleID) REFERENCES Role(RoleID) 
 );
 
 CREATE TABLE IF NOT EXISTS Course (
@@ -115,4 +119,13 @@ CREATE TABLE IF NOT EXISTS CourseMaterial (
   URL_Path TEXT,
   UploadTimestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Announcement (
+  AnnouncementID INT AUTO_INCREMENT PRIMARY KEY,
+  CourseID INT,
+  Title VARCHAR(255),
+  Content TEXT,
+  AnnouncementDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
 );

@@ -1,5 +1,4 @@
 <?php
-// Start session and include database configuration
 session_start();
 require_once '../../database.php';
 
@@ -12,6 +11,53 @@ try {
 } catch (PDOException $e) {
     $_SESSION['error'] = "Error fetching courses: " . $e->getMessage();
     $courses = [];
+}
+
+// Check if form data is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve form data
+    $course_id = $_POST['course_id'];
+    $title = $_POST['title'];
+    $content = $_POST['content'];
+
+    // Validate form data (ensure required fields are not empty)
+    if (empty($course_id) || empty($title) || empty($content)) {
+        $_SESSION['error'] = "Please fill in all required fields.";
+        header("Location: manage_announcements.php");
+        exit();
+    }
+
+    // Insert announcement into the database
+    try {
+        $query = "INSERT INTO Announcement (CourseID, Title, Content, AnnouncementDate) 
+                  VALUES (:course_id, :title, :content, NOW())";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':course_id', $course_id);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':content', $content);
+        $stmt->execute();
+
+        $_SESSION['success'] = "Announcement posted successfully.";
+        header("Location: manage_announcements.php");
+        exit();
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Error posting announcement: " . $e->getMessage();
+        header("Location: manage_announcements.php");
+        exit();
+    }
+}
+
+// Fetch existing announcements associated with courses
+try {
+    $query = "SELECT AnnouncementID, Title, Content, AnnouncementDate, Course.Name AS CourseName 
+              FROM Announcement 
+              INNER JOIN Course ON Announcement.CourseID = Course.CourseID";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $_SESSION['error'] = "Error fetching announcements: " . $e->getMessage();
+    $announcements = [];
 }
 ?>
 
@@ -60,6 +106,24 @@ try {
                         <button class="button is-primary" type="submit">Post Announcement</button>
                     </div>
                 </form>
+            </div>
+
+            <div class="announcement-list">
+                <h2>Existing Announcements</h2>
+                <?php if (empty($announcements)): ?>
+                    <p>No announcements found.</p>
+                <?php else: ?>
+                    <ul>
+                        <?php foreach ($announcements as $announcement): ?>
+                            <li>
+                                <h3><?php echo $announcement['Title']; ?></h3>
+                                <p><?php echo $announcement['Content']; ?></p>
+                                <p><strong>Course:</strong> <?php echo $announcement['CourseName']; ?></p>
+                                <p><strong>Date:</strong> <?php echo $announcement['AnnouncementDate']; ?></p>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
             </div>
         </main>
 
