@@ -1,18 +1,33 @@
 <?php
-// Start session and include database configuration
 session_start();
 require_once '../../database.php';
 
-// all courses with their sections and instructors from the database
+// Fetch all instructors from the database for the dropdown menu
 try {
-    $query = "SELECT Course.CourseID, Course.Name AS CourseName, Course.StartDate, Course.EndDate, 
-              GROUP_CONCAT(DISTINCT CourseSection.SectionNumber ORDER BY CourseSection.SectionNumber ASC SEPARATOR ', ') AS Sections,
-              GROUP_CONCAT(DISTINCT User.Name ORDER BY User.Name ASC SEPARATOR ', ') AS Instructors
-              FROM Course
-              LEFT JOIN CourseSection ON Course.CourseID = CourseSection.CourseID
-              LEFT JOIN CourseInstructor ON Course.CourseID = CourseInstructor.CourseID
-              LEFT JOIN `User` ON CourseInstructor.InstructorID = User.UserID
-              GROUP BY Course.CourseID";
+    // Fetch all users with the role of 'Instructor'
+    $query = "SELECT u.UserID, u.Name
+              FROM User u
+              JOIN UserRole ur ON u.UserID = ur.UserID
+              JOIN Role r ON ur.RoleID = r.RoleID
+              WHERE r.RoleName = 'Instructor'";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $instructors = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+} catch (PDOException $e) {
+    // Handle any errors
+    $_SESSION['error'] = "Error fetching instructors: " . $e->getMessage();
+    $instructors = []; 
+}
+
+
+// Fetch all courses with sections and instructors from the database for the table
+try {
+    $query = "SELECT c.CourseID, c.Name AS CourseName, c.StartDate, c.EndDate, COUNT(cs.SectionID) AS Sections, GROUP_CONCAT(u.Name SEPARATOR ', ') AS Instructors
+              FROM Course c
+              LEFT JOIN CourseSection cs ON c.CourseID = cs.CourseID
+              LEFT JOIN CourseInstructor ci ON c.CourseID = ci.CourseID
+              LEFT JOIN User u ON ci.InstructorID = u.UserID
+              GROUP BY c.CourseID";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -76,15 +91,10 @@ try {
                             <!-- Dropdown menu for selecting instructors -->
                             <select id="instructors" name="instructors" required>
                                 <option value="" disabled selected>Select Instructor</option>
-                                <?php foreach ($courses as $course): ?>
-                                    <?php if ($course['Instructors']): ?>
-                                        <?php $instructors = explode(', ', $course['Instructors']); ?>
-                                        <?php foreach ($instructors as $instructor): ?>
-                                            <option value="<?= htmlspecialchars($instructor) ?>">
-                                                <?= htmlspecialchars($instructor) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
+                                <?php foreach ($instructors as $instructor): ?>
+                                    <option value="<?= htmlspecialchars($instructor['UserID']) ?>">
+                                        <?= htmlspecialchars($instructor['Name']) ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -94,6 +104,9 @@ try {
                         <button class="button is-primary" type="submit">Add Course</button>
                     </div>
                 </form>
+
+
+            
             </div>
 
             <!-- Update Course Form -->
@@ -131,15 +144,10 @@ try {
                             <!-- Dropdown menu for selecting instructors -->
                             <select id="new_instructors" name="new_instructors" required>
                                 <option value="" disabled selected>Select Instructor</option>
-                                <?php foreach ($courses as $course): ?>
-                                    <?php if ($course['Instructors']): ?>
-                                        <?php $instructors = explode(', ', $course['Instructors']); ?>
-                                        <?php foreach ($instructors as $instructor): ?>
-                                            <option value="<?= htmlspecialchars($instructor) ?>">
-                                                <?= htmlspecialchars($instructor) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
+                                <?php foreach ($instructors as $instructor): ?>
+                                    <option value="<?= htmlspecialchars($instructor['UserID']) ?>">
+                                        <?= htmlspecialchars($instructor['Name']) ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -201,7 +209,7 @@ try {
             </div>
         </main>
         <footer class="footer">
-            <button onclick="location.href='../home.php'">Home</button>
+            <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
