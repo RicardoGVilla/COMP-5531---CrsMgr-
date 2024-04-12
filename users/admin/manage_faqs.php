@@ -28,7 +28,7 @@
             <!-- Add FAQ Form -->
             <div id="add-faq" class="faq-form table-wrapper">
                 <h2>Add New FAQ</h2>
-                <form class="inline-form" onsubmit="event.preventDefault();"> <!-- Prevents actual submission for demonstration -->
+                <form class="inline-form" onsubmit="event.preventDefault();"> 
                     <div class="input-body">
                         <input type="text" name="question" placeholder="FAQ Question" required />
                         <select name="course_id">
@@ -81,7 +81,7 @@
         </main>
 
         <footer class="footer">
-            <button onclick="location.href='../home.php'">Home</button>
+            <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
