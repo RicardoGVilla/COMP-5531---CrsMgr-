@@ -53,7 +53,6 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
         </select>
     </div>
-    <!-- Add a hidden input field to send the course ID -->
     <input type="hidden" name="courseId" value="<?php echo htmlspecialchars($course['CourseID']); ?>">
     <button type="submit" class="form-button">Go to Course</button>
 </form>
