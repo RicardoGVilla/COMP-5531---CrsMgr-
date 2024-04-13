@@ -22,6 +22,10 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $_currentSections = array_unique(array_map(function ($value) {
     return  $value['CourseName'];
 }, $sections));
+
+// Extract unique start dates and end dates
+$startDates = array_unique(array_column($sections, 'StartDate'));
+$endDates = array_unique(array_column($sections, 'EndDate'));
 ?>
 
 <!DOCTYPE html>
@@ -54,80 +58,87 @@ $_currentSections = array_unique(array_map(function ($value) {
                 <h2>Manage Sections</h2>
             </div>
 
-           <!-- Add Section Form -->
-<div id="add-section" class="section-form table-wrapper">
-    <h2>Add Section</h2>
+            <!-- Add Section Form -->
+            <div id="add-section" class="section-form table-wrapper">
+                <h2>Add Section</h2>
+                <form class="inline-form" method="POST" action="edit_sections_endpoint.php">
+                    <div class="label-input-body">
+                        <div class="label-input">
+                            <label for="course_id">Course Name:</label>
+                            <select id="course_id" name="course_id" required>
+                                <?php foreach ($_currentSections as $course): ?>
+                                    <option> <?=$course?> </option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <div class="label-input">
+                            <label for="section_number">Section Number:</label>
+                            <select id="section_number" name="section_number" required>
+                                <?php foreach ($sections as $section): ?>
+                                    <option value="<?= htmlspecialchars($section['SectionID']) ?>">
+                                        <?= htmlspecialchars($section['SectionNumber']) ?>
+                                    </option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <div class="label-input">
+                            <label for="start_date">Start Date:</label>
+                            <select id="start_date" name="start_date" required>
+                                <?php foreach ($startDates as $date): ?>
+                                    <option value="<?= $date ?>"><?= $date ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <div class="label-input">
+                            <label for="end_date">End Date:</label>
+                            <select id="end_date" name="end_date" required>
+                                <?php foreach ($endDates as $date): ?>
+                                    <option value="<?= $date ?>"><?= $date ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add Section</button>
+                    </div>
+                </form>
+            </div>
+
+       <!-- Update Section Form -->
+<div id="update-section" class="section-form table-wrapper" style="display: none;">
+    <h2>Update Section</h2>
     <form class="inline-form" method="POST" action="edit_sections_endpoint.php">
         <div class="label-input-body">
+            <input type="hidden" name="action" value="update" />
             <div class="label-input">
-                <label for="course_id">Course Name:</label>
-                <select id="course_id" name="course_id" required>
-                    <?php foreach ($_currentSections as $course): ?>
-                        <option> <?=$course?> </option>
-                    <?php endforeach ?>
-                </select>
-            </div>
-            <div class="label-input">
-                <label for="section_number">Section Number:</label>
-                <select id="section_number" name="section_number" required>
+                <label for="section_id">Select Section:</label>
+                <select id="section_id" name="section_id" required>
+                    <option value="">Select Section</option>
                     <?php foreach ($sections as $section): ?>
                         <option value="<?= htmlspecialchars($section['SectionID']) ?>">
-                            <?= htmlspecialchars($section['SectionNumber']) ?>
+                            <?= htmlspecialchars($section['CourseName'] . ' - ' . $section['SectionNumber']) ?>
                         </option>
                     <?php endforeach ?>
                 </select>
             </div>
             <div class="label-input">
-                <label for="start_date">Start Date:</label>
-                <input type="date" id="start_date" name="start_date" placeholder="Start Date" required />
+                <label for="new_start_date">New Start Date:</label>
+                <input type="date" id="new_start_date" name="new_start_date" placeholder="New Start Date" />
             </div>
             <div class="label-input">
-                <label for="end_date">End Date:</label>
-                <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
+                <label for="new_end_date">New End Date:</label>
+                <input type="date" id="new_end_date" name="new_end_date" placeholder="New End Date" />
             </div>
-        </div>
+        </div> 
         <div>
-            <button class="button is-primary" type="submit">Add Section</button>
+            <button class="button is-secondary" type="submit">Update Section</button>
         </div>
     </form>
 </div>
 
 
-            <!-- Update Section Form -->
-            <div id="update-section" class="section-form table-wrapper" style="display: none;">
-                <h2>Update Section</h2>
-                <form class="inline-form"  method="POST" action="edit_sections_endpoint.php">
-                    <div class="label-input-body">
-                        <input type="hidden" name="action" value="update" />
-                        <div class="label-input">
-                            <label for="section_id">Section ID:</label>
-                            <input type="number" id="section_id" name="section_id" placeholder="Section ID" required />
-                        </div>
-                        <div class="label-input">
-                            <label for="new_course_id">Select New Course (optional):</label>
-                            <select id="new_course_id" name="new_course_id">
-                                <option value="">Select New Course (optional)</option>
-                            </select>
-                        </div>
-                        <div class="label-input">
-                            <label for="new_section_number">New Section Number:</label>
-                            <input type="number" id="new_section_number" name="new_section_number" placeholder="New Section Number" />
-                        </div>
-                        <div class="label-input">
-                            <label for="new_start_date">New Start Date:</label>
-                            <input type="date" id="new_start_date" name="new_start_date" placeholder="New Start Date" />
-                        </div>
-                        <div class="label-input">
-                            <label for="new_end_date">New End Date:</label>
-                            <input type="date" id="new_end_date" name="new_end_date" placeholder="New End Date" />
-                        </div>
-                    </div> 
-                    <div>
-                        <button class="button is-secondary" type="submit">Update Section</button>
-                    </div>
-                </form>
-            </div>
-     
+
+
             <!-- Delete Section Form -->
             <div id="delete-section" class="section-form" style="display: none;">
                 <h2>Delete Section</h2>

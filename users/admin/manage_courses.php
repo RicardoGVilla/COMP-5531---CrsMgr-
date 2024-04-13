@@ -37,7 +37,6 @@ try {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,6 +75,10 @@ try {
                         <div class="label-input">
                             <label for="course_name">Course Name:</label>
                             <input type="text" id="course_name" name="course_name" placeholder="Course Name" required />
+                        </div>
+                        <div class="label-input">
+                            <label for="course_code">Course Code:</label>
+                            <input type="text" id="course_code" name="course_code" placeholder="Course Code" required />
                         </div>
                         <div class="label-input">
                             <label for="start_date">Start Date:</label>
@@ -244,5 +247,15 @@ try {
             xhr.send("action=delete&course_id=" + courseId);
         }
     </script>
+    <script>
+    // Check if there is an error message in the session
+    <?php if(isset($_SESSION['error'])): ?>
+        // Display a pop-up window with the error message
+        alert("<?php echo $_SESSION['error']; ?>");
+        // Remove the error message from the session
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+</script>
+
 </body>
 </html>
