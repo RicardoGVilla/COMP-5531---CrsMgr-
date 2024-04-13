@@ -48,8 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
         </div>
 
         <main class="main">
-            <h2>Teaching: <?php echo htmlspecialchars($courseName); ?></h2>
-            <!-- Put your main content here -->
+            <h2> <?php echo htmlspecialchars($courseName); ?></h2>
         </main>
 
         <footer class="footer">

@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS crs_manager_final;
 CREATE DATABASE IF NOT EXISTS crs_manager_final;
 USE crs_manager_final;
 
