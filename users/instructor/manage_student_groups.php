@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../database.php'; 
+
 function generateRandomPassword($length = 8) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $password = '';
@@ -14,6 +15,9 @@ $courseCode = $section = $groupLeaderId = '';
 $studentIds = [];
 $randomPassword = generateRandomPassword();
 $currentInstructorId = $_SESSION['user']['UserID'] ?? null;
+$selectedCourseId = $_SESSION["selected_course_id"] ?? null;
+
+$errorMsg = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["studentGroupFile"])) {
     $filename = $_FILES["studentGroupFile"]["tmp_name"];
@@ -54,14 +58,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["studentGroupFile"])) 
         $courseId = $stmt->fetchColumn();
         
         if ($courseId) {
-            $stmt = $pdo->prepare("INSERT INTO `Group` (CourseID, GroupLeaderID, DatabasePassword, MaxSize) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$courseId, $groupLeaderId, $randomPassword, count($studentIds)]);
-            $newGroupId = $pdo->lastInsertId();
+            if ($courseId !== $selectedCourseId) {
+                $errorMsg = "The uploaded file does not correspond to the selected course.";
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO `Group` (CourseID, GroupLeaderID, DatabasePassword, MaxSize) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$courseId, $groupLeaderId, $randomPassword, count($studentIds)]);
+                $newGroupId = $pdo->lastInsertId();
 
-            foreach ($studentIds as $studentId) {
-                $stmt = $pdo->prepare("INSERT INTO StudentGroupMembership (StudentID, GroupID) VALUES (?, ?)");
-                $stmt->execute([$studentId, $newGroupId]);
+                foreach ($studentIds as $studentId) {
+                    $stmt = $pdo->prepare("INSERT INTO StudentGroupMembership (StudentID, GroupID) VALUES (?, ?)");
+                    $stmt->execute([$studentId, $newGroupId]);
+                }
             }
+        } else {
+            $errorMsg = "Course not found.";
         }
     }
 }
@@ -69,9 +79,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["studentGroupFile"])) 
 $courses = [];
 $groups = [];
 
-if ($currentInstructorId) {
-    $stmt = $pdo->prepare("SELECT c.CourseID, c.CourseCode, c.Name FROM Course c INNER JOIN CourseInstructor ci ON c.CourseID = ci.CourseID WHERE ci.InstructorID = ?");
-    $stmt->execute([$currentInstructorId]);
+if ($currentInstructorId && $selectedCourseId) {
+    $stmt = $pdo->prepare("SELECT c.CourseID, c.CourseCode, c.Name FROM Course c INNER JOIN CourseInstructor ci ON c.CourseID = ci.CourseID WHERE ci.InstructorID = ? AND c.CourseID = ?");
+    $stmt->execute([$currentInstructorId, $selectedCourseId]);
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($courses as $course) {
@@ -80,8 +90,9 @@ if ($currentInstructorId) {
         $groups[$course['CourseID']] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,6 +120,12 @@ if ($currentInstructorId) {
             <input type="hidden" name="form_submitted" value="1">
             <input type="submit" value="Upload File">
         </form>
+
+        <?php if (!empty($errorMsg)): ?>
+            <div class="error">
+                <p><?= $errorMsg ?></p>
+            </div>
+        <?php endif; ?>
 
         <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($courseCode)): ?>
             <div class="results">
@@ -148,7 +165,7 @@ if ($currentInstructorId) {
     </main>
 
     <footer class="footer">
-        <button onclick="location.href='../home.php'">Home</button>
+        <button onclick="location.href='home.php'">Home</button>
         <button onclick="location.href='../../logout.php'">Logout</button>
     </footer>
 </div>

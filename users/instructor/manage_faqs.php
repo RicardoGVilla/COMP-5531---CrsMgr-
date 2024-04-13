@@ -3,16 +3,15 @@ session_start();
 require_once '../../database.php'; 
 
 try {
-    $instructorID = $_SESSION["user"]["UserID"]; // Get the instructor's ID from session
+    $selectedCourseId = $_SESSION["selected_course_id"] ?? null;
 
-    $query = "SELECT c.CourseCode, c.Name AS CourseName, f.Question, f.Answer 
+    $query = "SELECT c.CourseCode, c.Name AS CourseName, f.FAQID, f.Question, f.Answer 
               FROM Course c
               LEFT JOIN FAQ f ON c.CourseID = f.CourseID
-              JOIN CourseInstructor ci ON c.CourseID = ci.CourseID
-              WHERE ci.InstructorID = :instructorID
+              WHERE c.CourseID = :courseId
               ORDER BY c.CourseCode, f.Question";
     $stmt = $pdo->prepare($query);
-    $stmt->execute(['instructorID' => $instructorID]); // Bind the instructor ID to the query
+    $stmt->execute(['courseId' => $selectedCourseId]);
     $faqsByCourse = [];
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $faqsByCourse[$row['CourseCode']][] = $row;
@@ -21,6 +20,8 @@ try {
     die("Could not connect to the database: " . $e->getMessage());
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,7 +105,10 @@ try {
                             <td>
                                 <ul>
                                     <?php foreach ($faqs as $faq): ?>
-                                        <li><?php echo htmlspecialchars($faq['Question']); ?> - <?php echo htmlspecialchars($faq['Answer']); ?></li>
+                                        <li><?php echo htmlspecialchars($faq['Question']); ?> - <?php echo htmlspecialchars($faq['Answer']); ?> 
+                                            <button onclick="updateFaq(<?php echo $faq['FAQID']; ?>)">Update</button> 
+                                            <button onclick="deleteFaq(<?php echo $faq['FAQID']; ?>)">Delete</button>
+                                        </li>
                                     <?php endforeach; ?>
                                 </ul>
                             </td>
@@ -148,6 +152,14 @@ try {
         function openModal(courseCode) {
             document.getElementById('courseCode').value = courseCode; 
             modal.style.display = "block";
+        }
+
+        function updateFaq(faqId) {
+            window.location.href = 'edit_faq_endpoint.php?faqId=' + faqId + '&action=update';
+        }
+
+        function deleteFaq(faqId) {
+            window.location.href = 'edit_faq_endpoint.php?faqId=' + faqId + '&action=delete';
         }
 
         window.onclick = function(event) {

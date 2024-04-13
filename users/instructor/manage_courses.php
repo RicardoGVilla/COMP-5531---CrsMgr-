@@ -3,41 +3,45 @@ session_start();
 require_once '../../database.php';
 
 // Check if user is logged in and has a user ID stored in session
-if (!isset($_SESSION["user"]["UserID"]) || !isset($_SESSION["selectedCourseId"])) {
+if (!isset($_SESSION["user"]["UserID"]) || !isset($_SESSION["selected_course_id"])) {
     header("Location: login.php"); // Redirect to login page if not logged in or course not selected
     exit;
 }
 
-try {
-    $instructorID = $_SESSION["user"]["UserID"]; // Get the instructor's ID from session
+// Get the selected course ID from the session
+$selectedCourseId = $_SESSION["selected_course_id"];
 
+try {
+    // Retrieve information about the selected course and its sections
     $query = "
-    SELECT 
-        c.CourseID, 
-        c.Name, 
-        cs.SectionID, 
-        cs.SectionNumber, 
-        cs.StartDate, 
-        cs.EndDate, 
-        COUNT(se.StudentID) AS ClassSize
-    FROM 
-        Course c
-    JOIN 
-        CourseSection cs ON c.CourseID = cs.CourseID
-    LEFT JOIN 
-        StudentEnrollment se ON cs.SectionID = se.SectionID
-    JOIN
-        CourseInstructor ci ON c.CourseID = ci.CourseID
-    WHERE
-        ci.InstructorID = :instructorID
-    GROUP BY 
-        c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
-    ORDER BY 
-        c.CourseID, cs.SectionNumber;
+        SELECT 
+            c.CourseID, 
+            c.Name AS CourseName,
+            cs.SectionID, 
+            cs.SectionNumber, 
+            cs.StartDate, 
+            cs.EndDate, 
+            COUNT(se.StudentID) AS ClassSize
+        FROM 
+            Course c
+        JOIN 
+            CourseSection cs ON c.CourseID = cs.CourseID
+        LEFT JOIN 
+            StudentEnrollment se ON cs.SectionID = se.SectionID
+        WHERE 
+            c.CourseID = :courseId
+        GROUP BY 
+            c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
+        ORDER BY 
+            cs.SectionNumber;
     ";
     $stmt = $pdo->prepare($query);
-    $stmt->execute(['instructorID' => $instructorID]); // Bind the instructor ID to the query
-    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute(['courseId' => $selectedCourseId]);
+    $courseSections = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch the course name and ID
+    $courseName = $courseSections[0]['CourseName']; 
+    $courseID = $courseSections[0]['CourseID']; 
 } catch (PDOException $e) {
     die("Could not connect to the database: " . $e->getMessage());
 }
@@ -49,121 +53,108 @@ try {
     <meta charset="UTF-8">
     <title>Courses Information</title>
     <link rel="stylesheet" href="../../css/index.css">
-    <style>
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
 <div class="page">
-        <header class="header">
-            <h1>Welcome Instructor</h1>
-        </header> 
+    <header class="header">
+        <h1>Welcome Instructor</h1>
+    </header> 
     
-        <div class="sidebar">
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
-        </div>
+    <div class="sidebar">
+        <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+        <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+        <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
+    </div>
 
-        <main class="main">
-            <h2>Courses Information</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course ID</th>
-                        <th>Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Class Section</th>
-                        <th>Class Size</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($courses as $course): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($course['CourseID']) ?></td>
-                        <td><?= htmlspecialchars($course['Name']) ?></td>
-                        <td><?= htmlspecialchars($course['StartDate']) ?></td>
-                        <td><?= htmlspecialchars($course['EndDate']) ?></td>
-                        <td><?= htmlspecialchars($course['SectionNumber']) ?></td>
-                        <td><?= htmlspecialchars($course['ClassSize']) ?></td>
-                        <td><button onclick="openModal(<?= $course['CourseID'] ?>, <?= $course['SectionID'] ?>)">Add Members</button></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+    <main class="main">
+        <h2>Course Information</h2>
+        <p>Course Name: <?php echo htmlspecialchars($courseName); ?></p>
+        <p>Course ID: <?php echo htmlspecialchars($courseID); ?></p>
+        <?php foreach ($courseSections as $section): ?>
+            <h3>Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
+            <p>Start Date: <?= htmlspecialchars($section['StartDate']) ?></p>
+            <p>End Date: <?= htmlspecialchars($section['EndDate']) ?></p>
+            <p>Class Size: <?= htmlspecialchars($section['ClassSize']) ?></p>
+            <?php if ($section['ClassSize'] > 0): ?>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        // Fetch student details for this section
+                        $sql = "SELECT u.UserID, u.Name, u.EmailAddress
+                                FROM StudentEnrollment se
+                                JOIN `User` u ON se.StudentID = u.UserID
+                                WHERE se.SectionID = :sectionId";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute(['sectionId' => $section['SectionID']]);
+                        $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        foreach ($students as $student): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($student['UserID']) ?></td>
+                                <td><?= htmlspecialchars($student['Name']) ?></td>
+                                <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>There are no students yet.</p>
+            <?php endif; ?>
+            <button onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
             <!-- Modal -->
-            <div id="myModal" class="modal">
+            <div id="myModal<?= $section['SectionID'] ?>" class="modal">
                 <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
+                    <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
                     <h3>Add Student</h3>
-                    <form id="studentForm" method="post" action="edit_courses_endpoint.php">
+                    <form id="studentForm<?= $section['SectionID'] ?>" method="post" action="edit_courses_endpoint.php">
                         <input type="hidden" name="action" value="enroll_student">
-                        <input type="hidden" id="course_id" name="course_id" value="">
-                        <input type="hidden" id="section_id" name="section_id" value="">
-                        <label for="student_id">Student ID:</label>
-                        <input type="text" id="student_id" name="student_id" required><br><br>
+                        <input type="hidden" name="course_id" value="<?= $courseID ?>">
+                        <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                        <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
+                        <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
                         <input type="submit" value="Enroll Student">
                     </form>
                 </div>
             </div>
-        </main>
+        <?php endforeach; ?>
+    </main>
 
-        <footer class="footer">
-            <button onclick="location.href='../home.php'">Home</button>
-            <button onclick="location.href='../../logout.php'">Logout</button>
-        </footer>
-    
-    </div>
+    <footer class="footer">
+        <button onclick="location.href='home.php'">Home</button>
+        <button onclick="location.href='../../logout.php'">Logout</button>
+    </footer>
+</div>
 
-    <script>
-        var modal = document.getElementById('myModal');
+<script>
+    // Modal functions
+    function openModal(sectionID) {
+        var modal = document.getElementById('myModal' + sectionID);
+        modal.style.display = "block";
+    }
 
-        function openModal(courseID, sectionID) {
-            document.getElementById('course_id').value = courseID;
-            document.getElementById('section_id').value = sectionID;
-            modal.style.display = "block";
-        }
+    function closeModal(sectionID) {
+        var modal = document.getElementById('myModal' + sectionID);
+        modal.style.display = "none";
+    }
 
-        function closeModal() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
+    window.onclick = function(event) {
+        var modals = document.getElementsByClassName('modal');
+        for (var i = 0; i < modals.length; i++) {
+            var modal = modals[i];
             if (event.target == modal) {
-                closeModal();
+                var sectionID = modal.id.replace('myModal', '');
+                closeModal(sectionID);
             }
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>

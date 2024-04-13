@@ -14,14 +14,15 @@ $userName = $_SESSION["user"]["Name"];
 // Check if the form was submitted and the selected course is set
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
     $courseId = $_POST['course'];
-    // Now you have the $courseId, you can use it to fetch and display course details
-    // Fetch course details from the database based on $courseId
+    // Store the selected course ID in the session
+    $_SESSION['selected_course_id'] = $courseId;
+
     $sql = "SELECT Name FROM Course WHERE CourseID = :courseId";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['courseId' => $courseId]);
     $courseName = $stmt->fetchColumn();
 } else {
-    // If no course is selected, redirect to home page
+    // If no course is selected or the request method is not POST, redirect to home page
     header("Location: home.php");
     exit;
 }
