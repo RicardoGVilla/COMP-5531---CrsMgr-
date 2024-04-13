@@ -13,12 +13,14 @@
             </div>
             <form class="inline-form" action="role_redirect.php" method="post">
                 <div class="">
-                    <div class="">
+                    <div class="label-input-body">
                         <input type="radio" id="ta" name="role" value="TA" checked>
                         <label for="ta">Teaching Assistant</label>
                     </div>
-                    <input type="radio" id="student" name="role" value="Student">
-                    <label for="student">Student</label>
+                    <div class="label-input-body">
+                        <input type="radio" id="student" name="role" value="Student">
+                        <label for="student">Student</label>
+                    </div>
                 </div>
                 <input class="button is-primary" type="submit" value="Proceed">
             </form>
