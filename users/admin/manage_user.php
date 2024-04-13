@@ -42,8 +42,8 @@ usort($users, 'compareUsers');
         </header>
 
         <div class="sidebar">
-        <button onclick="location.href='manage_user.php'">Manage Users</button>
-            <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button class="is-selected" onclick="location.href='manage_user.php'">Manage Users</button>
+            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
@@ -55,21 +55,24 @@ usort($users, 'compareUsers');
                 <h2>Manage Users</h2>
             </div>
 
+            <!-- Add User Form -->
             <div id="add-user" class="user-form table-wrapper">
-    <h2>Add User</h2>
-    <form class="inline-form" method="POST" action="edit_user_endpoint.php"> 
-        <div>
-            <input type="hidden" name="action" value="add">
-            <div class="input-body">
-                <input type="text" name="name" placeholder="Full Name" required />
-                <input type="email" name="email" placeholder="Email" required />
-                <input type="text" name="role" placeholder="Role ID" required />  
-                <small>Please enter the role ID: 1 - Student, 2 - Instructor, 3 - TA, 4 - Admin</small>
-                <button class="button is-primary" type="submit">Add User</button>
+                <h2>Add User</h2>
+                <form class="inline-form" method="POST" action="edit_user_endpoint.php"> 
+                    <div class="input-body">
+                        <input type="hidden" name="action" value="add">
+                        <div class="input-body">
+                            <input type="text" name="name" placeholder="Full Name" required />
+                            <input type="email" name="email" placeholder="Email" required />
+                            <input type="text" name="role" placeholder="Role ID" required />  
+                            <small>Please enter the role ID: 1 - Student, 2 - Instructor, 3 - TA, 4 - Admin</small>
+                        </div>
+                        <div>
+                            <button class="button is-primary" type="submit">Add User</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
-    </form>
-</div>
 
             <!-- Update User Form -->
             <div id="update-user" class="user-form" style="display: none;">
@@ -92,55 +95,53 @@ usort($users, 'compareUsers');
                 </form>
             </div>
 
-  <!-- Delete Role Modal -->
-<div id="deleteRoleModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeDeleteRoleModal()">&times;</span>
-        <h2>Delete User Role</h2>
-        <form id="deleteRoleForm" method="POST" action="edit_user_endpoint.php">
-            <input type="hidden" name="action" value="delete_role">
-            <label for="delete_role_id">Role ID:</label>
-            <input type="text" id="delete_role_id" name="role_id" placeholder="Enter Role ID" required>
-            <input type="hidden" id="delete_user_id" name="user_id">
-            <button type="submit" class="button is-delete">Delete Role</button>
-        </form>
-    </div>
-</div>
+            <!-- Delete Role Modal -->
+            <div id="deleteRoleModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeDeleteRoleModal()">&times;</span>
+                    <h2>Delete User Role</h2>
+                    <form id="deleteRoleForm" method="POST" action="edit_user_endpoint.php">
+                        <input type="hidden" name="action" value="delete_role">
+                        <label for="delete_role_id">Role ID:</label>
+                        <input type="text" id="delete_role_id" name="role_id" placeholder="Enter Role ID" required>
+                        <input type="hidden" id="delete_user_id" name="user_id">
+                        <button type="submit" class="button is-delete">Delete Role</button>
+                    </form>
+                </div>
+            </div>
 
 
             <!-- User Table -->
-<div class="user-table">
-    <h2>Current Users</h2>
-    <div class="table-wrapper">
-        <table class="content-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($users as $user): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($user['UserID']); ?></td>
-                        <td><?php echo htmlspecialchars($user['Name']); ?></td>
-                        <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
-                        <td><?php echo htmlspecialchars($user['RoleName']); ?></td>
-                        <td>
-                            <button class="button is-secondary" onclick="openModal('<?php echo $user['UserID']; ?>', '<?php echo htmlspecialchars($user['Name']); ?>', '<?php echo htmlspecialchars($user['EmailAddress']); ?>', '', '<?php echo $user['RoleName']; ?>')">Update</button>
-                            <button class="button is-delete" onclick="confirmDelete(<?php echo $user['UserID']; ?>, '<?php echo $user['RoleName']; ?>')">Delete</button>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
+            <div class="user-table">
+                <h2>Current Users</h2>
+                <div class="table-wrapper">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($users as $user): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($user['UserID']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['Name']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['RoleName']); ?></td>
+                                    <td>
+                                        <button class="button is-secondary" onclick="openModal('<?php echo $user['UserID']; ?>', '<?php echo htmlspecialchars($user['Name']); ?>', '<?php echo htmlspecialchars($user['EmailAddress']); ?>', '', '<?php echo $user['RoleName']; ?>')">Update</button>
+                                        <button class="button is-delete" onclick="confirmDelete(<?php echo $user['UserID']; ?>, '<?php echo $user['RoleName']; ?>')">Delete</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <!-- Modal -->
             <div id="myModal" class="modal">
@@ -183,7 +184,6 @@ usort($users, 'compareUsers');
     </div>
 
     <script>
-
         // Display popup alert for session messages
         window.onload = function() {
             <?php if (isset($_SESSION['message'])): ?>
@@ -198,20 +198,20 @@ usort($users, 'compareUsers');
         };
         
         function confirmDelete(userId) {
-    // Open modal to ask for role ID
-    document.getElementById('delete_user_id').value = userId;  // Set user ID in the hidden field
-    document.getElementById('deleteRoleModal').style.display = 'block';  // Show the modal
-}
+            // Open modal to ask for role ID
+            document.getElementById('delete_user_id').value = userId;  // Set user ID in the hidden field
+            document.getElementById('deleteRoleModal').style.display = 'block';  // Show the modal
+        }
 
-function closeDeleteRoleModal() {
-    document.getElementById('deleteRoleModal').style.display = 'none';
-}
+        function closeDeleteRoleModal() {
+            document.getElementById('deleteRoleModal').style.display = 'none';
+        }
 
-window.onclick = function(event) {
-    if (event.target == document.getElementById('deleteRoleModal')) {
-        closeDeleteRoleModal();
-    }
-}
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('deleteRoleModal')) {
+                closeDeleteRoleModal();
+            }
+        }
         function showForm(formId) {
             // Hide all forms
             document.getElementById('add-user').style.display = 'none';
@@ -243,7 +243,6 @@ window.onclick = function(event) {
                 closeModal();
             }
         }
-
     </script>
 </body>
 </html>
