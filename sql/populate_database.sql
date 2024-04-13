@@ -7,7 +7,7 @@ INSERT INTO `User` (UserID, Name, EmailAddress, Password, NewUser) VALUES
 (1234569, 'Cathy Charles', 'cathy.charles@example.edu', 'hashed_password789', FALSE),
 (1234570, 'David Davis', 'david.davis@example.edu', 'hashed_password012', FALSE),
 (1234571, 'Quinn Quasar', 'quinn.quasar@example.edu', 'hashed_password456', FALSE),
-(1234572, 'Rachel Ray', 'rachel.ray@example.edu', 'hashed_password567', TRUE), -- Marked as new user
+(1234572, 'Rachel Ray', 'rachel.ray@example.edu', 'hashed_password567', TRUE), 
 (1234573, 'Simon Smith', 'simon.smith@example.edu', 'hashed_password678', FALSE),
 (1234574, 'Tina Turner', 'tina.turner@example.edu', 'hashed_password789', FALSE),
 (1234575, 'Eva Evans', 'eva.evans@example.edu', 'hashed_password123', FALSE),
@@ -50,9 +50,9 @@ INSERT INTO CourseInstructor (CourseID, InstructorID) VALUES
 
 -- Course Sections
 INSERT INTO CourseSection (CourseID, SectionNumber, StartDate, EndDate) VALUES
-(1, 'COMP5531-NN', '2024-09-01', '2025-01-15'), -- Section NN of Software Engineering
-(2, 'COMP5552-DD', '2024-09-01', '2025-01-15'), -- Section DD of Database Systems
-(3, 'COMP5503-XX', '2024-09-01', '2025-01-15'); -- Section XX of Data Structures and Algorithms
+(1, 'NN', '2024-09-01', '2025-01-15'), -- Section NN of Software Engineering
+(2, 'DD', '2024-09-01', '2025-01-15'), -- Section DD of Database Systems
+(3, 'XX', '2024-09-01', '2025-01-15'); -- Section XX of Data Structures and Algorithms
 
 -- Student Enrollments
 INSERT INTO StudentEnrollment (StudentID, CourseID, SectionID, EnrollmentDate) VALUES

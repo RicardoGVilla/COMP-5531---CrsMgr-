@@ -1,103 +1,76 @@
 <?php
-session_start();
-require_once '../../database.php'; 
-function getUserRoles($userID, $pdo) {
-    $roles = [];
-    $query = "SELECT RoleName FROM Role JOIN UserRole ON Role.RoleID = UserRole.RoleID WHERE UserID = :userID";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([':userID' => $userID]);
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $roles[] = $row['RoleName'];
-    }
-    return $roles;
-}
+include('../../database.php');
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $userID = $_POST['user_id'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    switch ($_POST['action']) {
+        case 'add':
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $role = $_POST['role'];
+            $password = password_hash("defaultPassword", PASSWORD_DEFAULT); // Default password hash
 
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'add':
-                $name = $_POST['name'];
-                $email = $_POST['email'];
-                $password = substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(6 / strlen($x)))), 1, 6);
+            // Insert user into the database
+            $stmt = $pdo->prepare("INSERT INTO `User` (Name, EmailAddress, Password) VALUES (?, ?, ?)");
+            $stmt->execute([$name, $email, $password]);
+
+            $userId = $pdo->lastInsertId();
+
+            // Assign role to the new user
+            $stmt = $pdo->prepare("INSERT INTO UserRole (UserID, RoleID) VALUES (?, ?)");
+            $stmt->execute([$userId, $role]);
+
+            header('Location: manage_user.php?success=Added');
+            break;
+
+            case 'update_role':
+                $userId = $_POST['user_id'];
+                $newRoleId = $_POST['new_role_id'];
+            
+                // Start a transaction
+                $pdo->beginTransaction();
+            
                 try {
-                    $query = "INSERT INTO User (Name, EmailAddress, Password, NewUser) VALUES (:name, :email, :password, TRUE)";
-                    $stmt = $pdo->prepare($query);
-                    $stmt->execute([':name' => $name, ':email' => $email, ':password' => password_hash($password, PASSWORD_DEFAULT)]);
-                    $userID = $pdo->lastInsertId();
-                    $_SESSION['message'] = "User added successfully. Password emailed to $email. Password is $password";
-                } catch (PDOException $e) {
-                    $_SESSION['error'] = $e->getMessage();
-                }
-                break;
-
-            case 'delete':
-                try {
-                    $query = "DELETE FROM User WHERE UserID = :userID";
-                    $stmt = $pdo->prepare($query);
-                    $stmt->execute([':userID' => $userID]);
-                    $_SESSION['message'] = "User deleted successfully";
-                } catch (PDOException $e) {
-                    $_SESSION['error'] = "Error deleting user: " . $e->getMessage();
-                }
-                break;
-
-            case 'update':
-                $newName = $_POST['new_name'];
-                $newEmail = $_POST['new_email'];
-                $newPassword = $_POST['new_password'];
-                try {
-                    $pdo->beginTransaction();
-                    $updateUserQuery = "UPDATE User SET Name = :newName, EmailAddress = :newEmail WHERE UserID = :userID";
-                    $params = [':newName' => $newName, ':newEmail' => $newEmail, ':userID' => $userID];
-
-                    if (!empty($newPassword)) {
-                        $updateUserQuery .= ", Password = :newPassword";
-                        $params[':newPassword'] = password_hash($newPassword, PASSWORD_DEFAULT);
+                    // Check if the user already has this new role
+                    $roleCheckStmt = $pdo->prepare("SELECT 1 FROM UserRole WHERE UserID = ? AND RoleID = ?");
+                    $roleCheckStmt->execute([$userId, $newRoleId]);
+            
+                    if ($roleCheckStmt->rowCount() > 0) {
+                        // The user already has the role
+                        echo "<script>alert('User already has this role. No changes were made.');</script>";
+                    } else {
+                        // The user doesn't have the role, add it
+                        $insertRoleStmt = $pdo->prepare("INSERT INTO UserRole (UserID, RoleID) VALUES (?, ?)");
+                        $insertRoleStmt->execute([$userId, $newRoleId]);
+                        echo "<script>alert('Role added successfully.');</script>";
                     }
-
-                    $stmtUpdateUser = $pdo->prepare($updateUserQuery);
-                    $stmtUpdateUser->execute($params);
+            
+                    // Commit the transaction
                     $pdo->commit();
-                    $_SESSION['message'] = "User updated successfully";
-                } catch (PDOException $e) {
+                } catch (Exception $e) {
+                    // An error occurred, rollback the transaction
                     $pdo->rollBack();
-                    $_SESSION['error'] = "Error updating user: " . $e->getMessage();
-                }
-                break;
-
-            case 'add_role':
-                $roleID = $_POST['role_id']; // Role to add
-                try {
-                    $query = "INSERT INTO UserRole (UserID, RoleID) VALUES (:userID, :roleID)";
-                    $stmt = $pdo->prepare($query);
-                    $stmt->execute([':userID' => $userID, ':roleID' => $roleID]);
-                    $_SESSION['message'] = "Role added successfully.";
-                } catch (PDOException $e) {
-                    $_SESSION['error'] = "Error adding role: " . $e->getMessage();
+                    echo "<script>alert('An error occurred while updating the role: " . $e->getMessage() . "');</script>";
                 }
                 break;
             
-            case 'remove_role':
-                $roleID = $_POST['role_id']; // Role to remove
-                try {
-                    $query = "DELETE FROM UserRole WHERE UserID = :userID AND RoleID = :roleID";
-                    $stmt = $pdo->prepare($query);
-                    $stmt->execute([':userID' => $userID, ':roleID' => $roleID]);
-                    if ($stmt->rowCount() > 0) {
-                        $_SESSION['message'] = "Role removed successfully.";
-                    } else {
-                        $_SESSION['error'] = "No role found to remove.";
-                    }
-                } catch (PDOException $e) {
-                    $_SESSION['error'] = "Error removing role: " . $e->getMessage();
-                }
-                break;
-        }
-    }
 
-    header('Location: manage_user.php');
+        case 'delete_role':
+            $userId = $_POST['user_id'];
+            $roleId = $_POST['role_id'];
+
+            // Delete specific role from UserRole table
+            $stmt = $pdo->prepare("DELETE FROM UserRole WHERE UserID = ? AND RoleID = ?");
+            $stmt->execute([$userId, $roleId]);
+
+            header('Location: manage_user.php?success=RoleDeleted');
+            break;
+        
+        default:
+            // Redirect back if action is not specified or is unknown
+            header('Location: manage_user.php?error=Invalid action');
+            break;
+    }
     exit;
 }
+
 ?>

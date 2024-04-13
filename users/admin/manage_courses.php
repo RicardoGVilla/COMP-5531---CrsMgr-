@@ -4,12 +4,11 @@ require_once '../../database.php';
 
 // Fetch all instructors from the database for the dropdown menu
 try {
-    // Fetch all users with the role of 'Instructor'
-    $query = "SELECT u.UserID, u.Name
+    // Fetch distinct instructors associated with a course
+    $query = "SELECT DISTINCT u.UserID, u.Name
               FROM User u
-              JOIN UserRole ur ON u.UserID = ur.UserID
-              JOIN Role r ON ur.RoleID = r.RoleID
-              WHERE r.RoleName = 'Instructor'";
+              JOIN CourseInstructor ci ON u.UserID = ci.InstructorID
+              JOIN Course c ON ci.CourseID = c.CourseID";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $instructors = $stmt->fetchAll(PDO::FETCH_ASSOC); 
@@ -19,14 +18,16 @@ try {
     $instructors = []; 
 }
 
-
 // Fetch all courses with sections and instructors from the database for the table
 try {
-    $query = "SELECT c.CourseID, c.Name AS CourseName, c.StartDate, c.EndDate, COUNT(cs.SectionID) AS Sections, GROUP_CONCAT(u.Name SEPARATOR ', ') AS Instructors
+    $query = "SELECT c.CourseID, c.Name AS CourseName, c.StartDate, c.EndDate, COUNT(cs.SectionID) AS Sections, 
+              (SELECT GROUP_CONCAT(DISTINCT u.Name SEPARATOR ', ')
+               FROM User u
+               JOIN CourseInstructor ci ON u.UserID = ci.InstructorID
+               WHERE ci.CourseID = c.CourseID
+               ) AS Instructors
               FROM Course c
               LEFT JOIN CourseSection cs ON c.CourseID = cs.CourseID
-              LEFT JOIN CourseInstructor ci ON c.CourseID = ci.CourseID
-              LEFT JOIN User u ON ci.InstructorID = u.UserID
               GROUP BY c.CourseID";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
@@ -36,6 +37,7 @@ try {
     $courses = [];
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -57,7 +59,6 @@ try {
             <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
-            <button onclick="location.href='manage_assignments.php'">Assignments/Projects</button>
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         </div>
@@ -213,7 +214,7 @@ try {
         </main>
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
-            <button onclick="location.href='../../logout.php'">Logout</button>
+            <button onclick="location.href='logout.php'">Logout</button>
         </footer>
     </div>
 
