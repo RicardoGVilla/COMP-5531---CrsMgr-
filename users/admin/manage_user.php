@@ -123,6 +123,7 @@ usort($users, 'compareUsers');
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Actions</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,6 +135,8 @@ usort($users, 'compareUsers');
                                     <td><?php echo htmlspecialchars($user['RoleName']); ?></td>
                                     <td>
                                         <button class="button is-secondary" onclick="openModal('<?php echo $user['UserID']; ?>', '<?php echo htmlspecialchars($user['Name']); ?>', '<?php echo htmlspecialchars($user['EmailAddress']); ?>', '', '<?php echo $user['RoleName']; ?>')">Update</button>
+                                    </td>
+                                    <td>
                                         <button class="button is-delete" onclick="confirmDelete(<?php echo $user['UserID']; ?>, '<?php echo $user['RoleName']; ?>')">Delete</button>
                                     </td>
                                 </tr>

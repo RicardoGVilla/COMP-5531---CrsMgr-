@@ -20,7 +20,7 @@ try {
 
 // Fetch all courses with sections and instructors from the database for the table
 try {
-    $query = "SELECT c.CourseID, c.Name AS CourseName, c.StartDate, c.EndDate, COUNT(cs.SectionID) AS Sections, 
+    $query = "SELECT c.CourseID, c.CourseCode, c.Name AS CourseName, c.StartDate, c.EndDate, COUNT(cs.SectionID) AS Sections, 
               (SELECT GROUP_CONCAT(DISTINCT u.Name SEPARATOR ', ')
                FROM User u
                JOIN CourseInstructor ci ON u.UserID = ci.InstructorID
@@ -185,6 +185,7 @@ try {
                         <thead>
                             <tr>
                                 <th>Course ID</th>
+                                <th>Course Code</th>
                                 <th>Course Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -197,6 +198,7 @@ try {
                             <?php foreach ($courses as $course): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($course['CourseID']) ?></td>
+                                    <td><?= htmlspecialchars($course['CourseCode']) ?></td>
                                     <td><?= htmlspecialchars($course['CourseName']) ?></td>
                                     <td><?= htmlspecialchars($course['StartDate']) ?></td>
                                     <td><?= htmlspecialchars($course['EndDate']) ?></td>
@@ -256,7 +258,7 @@ try {
         // Remove the error message from the session
         <?php unset($_SESSION['error']); ?>
     <?php endif; ?>
-</script>
+    </script>
 
 </body>
 </html>
