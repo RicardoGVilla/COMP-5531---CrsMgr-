@@ -26,35 +26,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-function addCourse()
-{
+function addCourse() {
     global $pdo;
 
-    // Retrieve data from the POST request
     $courseName = $_POST['course_name'];
-    $courseCode = $_POST['course_code'];
     $startDate = $_POST['start_date'];
     $endDate = $_POST['end_date'];
-    $instructorID = $_POST['instructors'];
+    $sections = explode(',', $_POST['sections']); // Split section numbers into an array
+    $instructors = explode(',', $_POST['instructors']); // Split instructor IDs into an array
 
     try {
-        // Prepare the SQL statement for insertion
-        $query = "INSERT INTO Course (Name, Code, StartDate, EndDate) VALUES (?, ?, ?, ?)";
+        // Insert the course into the Course table
+        $query = "INSERT INTO Course (Name, StartDate, EndDate) VALUES (:courseName, :startDate, :endDate)";
         $stmt = $pdo->prepare($query);
-        $stmt->execute([$courseName, $courseCode, $startDate, $endDate]);
+        $stmt->execute([':courseName' => $courseName, ':startDate' => $startDate, ':endDate' => $endDate]);
 
         // Retrieve the ID of the newly inserted course
-        $courseID = $pdo->lastInsertId();
+        $courseId = $pdo->lastInsertId();
 
-        // Associate the instructor with the course
-        $query = "INSERT INTO CourseInstructor (CourseID, InstructorID) VALUES (?, ?)";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$courseID, $instructorID]);
+        // Insert section numbers into the CourseSection table
+        foreach ($sections as $section) {
+            $query = "INSERT INTO CourseSection (CourseID, SectionNumber) VALUES (:courseId, :section)";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':courseId' => $courseId, ':section' => $section]);
+        }
 
-        $_SESSION['success'] = "Course added successfully.";
+        // Insert instructor IDs into the CourseInstructor table
+        foreach ($instructors as $instructor) {
+            $query = "INSERT INTO CourseInstructor (CourseID, InstructorID) VALUES (:courseId, :instructor)";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':courseId' => $courseId, ':instructor' => $instructor]);
+        }
+
+        $_SESSION['message'] = "Course added successfully";
     } catch (PDOException $e) {
         $_SESSION['error'] = "Error adding course: " . $e->getMessage();
     }
+
+    header('Location: manage_courses.php');
+    exit;
 }
 
 function updateCourse()

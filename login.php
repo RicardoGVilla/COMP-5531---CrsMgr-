@@ -39,7 +39,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (in_array('Admin', $roles)) {
                 header("Location: users/admin/home.php");
             } elseif (in_array('Instructor', $roles)) {
-                header("Location: users/instructor/home.php");
+                $stmtCourses = $pdo->prepare("SELECT COUNT(DISTINCT CourseID) AS CourseCount FROM CourseInstructor WHERE InstructorID = :userId");
+                $stmtCourses->execute(['userId' => $user['UserID']]);
+                $coursesResult = $stmtCourses->fetch(PDO::FETCH_ASSOC);
+
+                if ($coursesResult && $coursesResult['CourseCount'] > 1) {
+                    // If the instructor teaches more than one course, redirect to choose_course.php
+                    header("Location: users/instructor/choose_course.php");
+                } else {
+                    // If the instructor teaches only one course, redirect to the instructor home page
+                    header("Location: users/instructor/home.php");
+                }
+                exit;
             } elseif (in_array('TA', $roles)) {
                 header("Location: users/ta/choose-role.php");
             } elseif (in_array('Student', $roles)) {
