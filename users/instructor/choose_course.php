@@ -61,6 +61,7 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <button class="button is-primary"  type="submit" class="form-button">Go to Course</button>
             </form>
         </div>
+
     </div>
 </body>
 </html>
