@@ -59,11 +59,11 @@ $endDates = array_unique(array_column($sections, 'EndDate'));
             <div class="main-header">
                 <h2>Manage Sections</h2>
             </div>
-
-            <!-- Add Section Form -->
+<!-- Add Section Form -->
 <div id="add-section" class="section-form table-wrapper">
     <h2>Add Section</h2>
     <form class="inline-form" method="POST" action="edit_sections_endpoint.php">
+        <input type="hidden" name="action" value="add">  <!-- Add this line -->
         <div class="label-input-body">
             <div class="label-input">
                 <label for="course_id">Course Name:</label>
@@ -91,6 +91,7 @@ $endDates = array_unique(array_column($sections, 'EndDate'));
         </div>
     </form>
 </div>
+
 
 
        <!-- Update Section Form -->
