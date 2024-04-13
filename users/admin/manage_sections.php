@@ -2,6 +2,12 @@
 session_start();
 require_once '../../database.php';
 
+// Retrieve all courses from the database
+$coursesQuery = "SELECT * FROM Course";
+$coursesStmt = $pdo->query($coursesQuery);
+$courses = $coursesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Retrieve all sections with associated course details
 $query = "SELECT 
             CourseSection.SectionID, 
             Course.Name AS CourseName, 
@@ -18,10 +24,6 @@ $query = "SELECT
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$_currentSections = array_unique(array_map(function ($value) {
-    return  $value['CourseName'];
-}, $sections));
 
 // Extract unique start dates and end dates
 $startDates = array_unique(array_column($sections, 'StartDate'));
@@ -59,50 +61,37 @@ $endDates = array_unique(array_column($sections, 'EndDate'));
             </div>
 
             <!-- Add Section Form -->
-            <div id="add-section" class="section-form table-wrapper">
-                <h2>Add Section</h2>
-                <form class="inline-form" method="POST" action="edit_sections_endpoint.php">
-                    <div class="label-input-body">
-                        <div class="label-input">
-                            <label for="course_id">Course Name:</label>
-                            <select id="course_id" name="course_id" required>
-                                <?php foreach ($_currentSections as $course): ?>
-                                    <option> <?=$course?> </option>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                        <div class="label-input">
-                            <label for="section_number">Section Number:</label>
-                            <select id="section_number" name="section_number" required>
-                                <?php foreach ($sections as $section): ?>
-                                    <option value="<?= htmlspecialchars($section['SectionID']) ?>">
-                                        <?= htmlspecialchars($section['SectionNumber']) ?>
-                                    </option>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                        <div class="label-input">
-                            <label for="start_date">Start Date:</label>
-                            <select id="start_date" name="start_date" required>
-                                <?php foreach ($startDates as $date): ?>
-                                    <option value="<?= $date ?>"><?= $date ?></option>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                        <div class="label-input">
-                            <label for="end_date">End Date:</label>
-                            <select id="end_date" name="end_date" required>
-                                <?php foreach ($endDates as $date): ?>
-                                    <option value="<?= $date ?>"><?= $date ?></option>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="button is-primary" type="submit">Add Section</button>
-                    </div>
-                </form>
+<div id="add-section" class="section-form table-wrapper">
+    <h2>Add Section</h2>
+    <form class="inline-form" method="POST" action="edit_sections_endpoint.php">
+        <div class="label-input-body">
+            <div class="label-input">
+                <label for="course_id">Course Name:</label>
+                <select id="course_id" name="course_id" required>
+                    <?php foreach ($courses as $course): ?>
+                        <option value="<?= $course['CourseID'] ?>"><?= $course['Name'] ?></option>
+                    <?php endforeach ?>
+                </select>
             </div>
+            <div class="label-input">
+                <label for="section_number">Section Number:</label>
+                <input type="text" id="section_number" name="section_number" placeholder="Section Number" required />
+            </div>
+            <div class="label-input">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" placeholder="Start Date" required />
+            </div>
+            <div class="label-input">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
+            </div>
+        </div>
+        <div>
+            <button class="button is-primary" type="submit">Add Section</button>
+        </div>
+    </form>
+</div>
+
 
        <!-- Update Section Form -->
 <div id="update-section" class="section-form table-wrapper" style="display: none;">
@@ -135,9 +124,6 @@ $endDates = array_unique(array_column($sections, 'EndDate'));
         </div>
     </form>
 </div>
-
-
-
 
             <!-- Delete Section Form -->
             <div id="delete-section" class="section-form" style="display: none;">
@@ -224,6 +210,18 @@ $endDates = array_unique(array_column($sections, 'EndDate'));
             };
             xhr.send("action=delete&section_id=" + sectionId);
         }
+
+        
     </script>
+
+<script>
+    // Check if there is an error message in the session
+    <?php if(isset($_SESSION['error'])): ?>
+        // Display a pop-up window with the error message
+        alert("<?php echo $_SESSION['error']; ?>");
+        // Remove the error message from the session
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+</script>
 </body>
 </html>
