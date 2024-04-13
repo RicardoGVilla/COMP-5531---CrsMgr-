@@ -34,30 +34,33 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Course</title>
-    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="../../css/index.css">  
     <style>
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Welcome, <?php echo htmlspecialchars($userName); ?>!</h2>
-        <h3>Select Your Course</h3>
-        <form action="home.php" method="post">
-    <div class="form-group">
-        <label for="courseSelect">Choose a course:</label>
-        <select name="course" id="courseSelect" class="form-control">
-            <?php foreach ($courses as $course): ?>
-                <option value="<?php echo htmlspecialchars($course['CourseID']); ?>">
-                    <?php echo htmlspecialchars($course['Name']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-    <!-- Add a hidden input field to send the course ID -->
-    <input type="hidden" name="courseId" value="<?php echo htmlspecialchars($course['CourseID']); ?>">
-    <button type="submit" class="form-button">Go to Course</button>
-</form>
-
+    <div class="hundredvh-container">
+        <div class=" table-wrapper">
+            <div class="login-header">
+                <h2>Welcome, <?php echo htmlspecialchars($userName); ?>!</h2>
+            </div>
+            <h3>Select Your Course</h3>
+            <form class="inline-form"  action="home.php" method="post">
+                <div class="form-group input-body">
+                    <label for="courseSelect">Choose a course:</label>
+                    <select name="course" id="courseSelect" class="form-control">
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?php echo htmlspecialchars($course['CourseID']); ?>">
+                                <?php echo htmlspecialchars($course['Name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <!-- Add a hidden input field to send the course ID -->
+                <input type="hidden" name="courseId" value="<?php echo htmlspecialchars($course['CourseID']); ?>">
+                <button class="button is-primary"  type="submit" class="form-button">Go to Course</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

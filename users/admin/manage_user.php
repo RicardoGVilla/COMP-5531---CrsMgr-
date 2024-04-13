@@ -59,18 +59,23 @@ usort($users, 'compareUsers');
             <div id="add-user" class="user-form table-wrapper">
                 <h2>Add User</h2>
                 <form class="inline-form" method="POST" action="edit_user_endpoint.php"> 
+                    <input type="hidden" name="action" value="add">
                     <div class="input-body">
-                        <input type="hidden" name="action" value="add">
-                        <div class="input-body">
-                            <input type="text" name="name" placeholder="Full Name" required />
-                            <input type="email" name="email" placeholder="Email" required />
-                            <input type="text" name="role" placeholder="Role ID" required />  
-                            <small>Please enter the role ID: 1 - Student, 2 - Instructor, 3 - TA, 4 - Admin</small>
-                        </div>
-                        <div>
-                            <button class="button is-primary" type="submit">Add User</button>
-                        </div>
+                        <input type="text" name="name" placeholder="Full Name" required />
+                        <input type="email" name="email" placeholder="Email" required />
+                        <input type="text" name="role" placeholder="Role ID" required /> 
+                        <small>
+                            <p>Please enter the role ID:</p>
+                            <p>1 - Student</p>
+                            <p>2 - Instructor</p>
+                            <p>3 - TA</p>
+                            <p>4 - Admin</p>
+                        </small> 
                     </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add User</button>
+                    </div>
+
                 </form>
             </div>
 
