@@ -2,12 +2,6 @@ DROP DATABASE IF EXISTS crs_manager_final;
 CREATE DATABASE IF NOT EXISTS crs_manager_final;
 USE crs_manager_final;
 
-DROP TABLE IF EXISTS CourseMaterial, FAQ, EmailRecipient, InternalEmail, StudentEnrollment, StudentGroupMembership;
-DROP TABLE IF EXISTS `Group`, CourseSection, CourseInstructor;
-DROP TABLE IF EXISTS Course;
-DROP TABLE IF EXISTS UserRole;
-DROP TABLE IF EXISTS Role;
-DROP TABLE IF EXISTS `User`;
 
 -- Create tables
 CREATE TABLE IF NOT EXISTS `User` (
