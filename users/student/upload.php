@@ -2,6 +2,9 @@
 // Start the session
 session_start();
 
+// Include your database connection file
+require_once('../../database.php');
+
 // Check if user is logged in and has a user ID stored in session
 if (!isset($_SESSION["user"]["UserID"])) {
     header("Location: ../../login.php"); // Redirect to login page if not logged in
@@ -15,17 +18,47 @@ if (!isset($_SESSION["selectedCourseName"])) {
     exit;
 }
 
-// Check if the user's group ID is available in session
-if (!isset($_SESSION["user"]["GroupID"])) {
-    echo "Error: User's group ID not found.";
-    exit;
+// Initialize variables
+$currentUserID = $_SESSION["user"]["UserID"];
+$currentCourseName = $_SESSION["selectedCourseName"];
+
+try {
+    // Fetch Course ID using the course name
+    $courseStmt = $pdo->prepare("SELECT CourseID FROM Course WHERE Name = ?");
+    $courseStmt->execute([$currentCourseName]);
+    $course = $courseStmt->fetch(PDO::FETCH_ASSOC);
+    $currentCourseID = $course['CourseID'] ?? null;
+
+    if (!$currentCourseID) {
+        throw new Exception("Course not found.");
+    }
+
+    // Fetch the first group associated with the current user ID (student) and selected course
+    $groupStmt = $pdo->prepare("SELECT g.GroupID 
+                                FROM `Group` g
+                                JOIN StudentGroupMembership sgm ON g.GroupID = sgm.GroupID
+                                WHERE g.CourseID = ? AND sgm.StudentID = ?
+                                LIMIT 1");
+    $groupStmt->execute([$currentCourseID, $currentUserID]);
+    $group = $groupStmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$group) {
+        echo "Error: No group found for the user in this course. Please join a group.";
+        exit;
+    }
+
+    // Store the group ID in the session
+    $_SESSION["user"]["GroupID"] = $group['GroupID'];
+
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
 }
 
 // Retrieve the user's group ID from session
 $groupID = $_SESSION["user"]["GroupID"];
 
 // Specify the folder where group files will be stored
-$groupFilesDir = "group-files/";
+$groupFilesDir = "../../group-files/";
 
 // Create the folder for the user's group if it doesn't exist
 $groupFolder = $groupFilesDir . "group-" . $groupID . "/";
@@ -41,8 +74,9 @@ if (isset($_FILES["file"]) && $_FILES["file"]["error"] === UPLOAD_ERR_OK) {
     // Get the temporary file name of the uploaded file
     $tempName = $_FILES["file"]["tmp_name"];
 
-    // Generate a unique file name to avoid overwriting existing files
-    $fileName = uniqid() . "_" . basename($_FILES["file"]["name"]);
+    // Sanitize the file name to avoid directory traversal issues
+    $safeFileName = basename($_FILES["file"]["name"]);
+    $fileName = uniqid() . "_" . $safeFileName;
 
     // Specify the destination path for the uploaded file
     $uploadPath = $groupFolder . $fileName;
@@ -54,6 +88,10 @@ if (isset($_FILES["file"]) && $_FILES["file"]["error"] === UPLOAD_ERR_OK) {
         echo "Error uploading file.";
     }
 } else {
-    echo "No file uploaded or an error occurred during upload.";
+    if (isset($_FILES["file"])) {
+        echo "Error: " . $_FILES["file"]["error"];
+    } else {
+        echo "No file uploaded or an error occurred during upload.";
+    }
 }
 ?>
