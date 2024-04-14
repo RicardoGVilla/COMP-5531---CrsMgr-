@@ -1,19 +1,14 @@
 <?php
-// Start the session
 session_start();
 
-// Include your database connection file
 require_once('../../database.php');
 
-// Check if user is logged in and has a user ID stored in session
 if (!isset($_SESSION["user"]["UserID"])) {
-    header("Location: ../../login.php"); // Redirect to login page if not logged in
+    header("Location: ../../login.php"); 
     exit;
 }
 
-// Check if selected course information is available in session
 if (!isset($_SESSION["selectedCourseName"])) {
-    // Redirect to choose-class.php to select a course if no course is selected
     header("Location: choose-class.php");
     exit;
 }
