@@ -16,6 +16,7 @@ if (!isset($_SESSION["selectedCourseName"])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,6 +40,7 @@ if (!isset($_SESSION["selectedCourseName"])) {
 
         <main class="main">
             <h2>Current Class: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
+            
         </main>
 
         <footer class="footer">
