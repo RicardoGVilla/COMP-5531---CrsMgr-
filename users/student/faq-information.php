@@ -3,23 +3,23 @@
 session_start();
 
 // Include your database connection file
-require_once('../../database.php'); // Adjust the path as needed
+require_once('../../database.php'); 
 
 // Check if user is logged in
 if (!isset($_SESSION["user"]["UserID"])) {
-    header("Location: ../../login.php"); // Redirect to login page if not logged in
+    header("Location: ../../login.php"); 
     exit;
 }
 
 // Check if selected course information is available in session
-if (!isset($_SESSION["selectedCourseName"])) { // Using course name now
-    header("Location: choose-class.php"); // Redirect if no course name is selected
+if (!isset($_SESSION["selectedCourseName"])) { 
+    header("Location: choose-class.php"); 
     exit;
 }
 
 // Initialize variables
-$currentUserName = $_SESSION["user"]["Name"]; // Assuming this is stored in the session
-$currentCourseName = $_SESSION["selectedCourseName"]; // Using course name from session
+$currentUserName = $_SESSION["user"]["Name"];
+$currentCourseName = $_SESSION["selectedCourseName"]; 
 
 // Fetch Course ID using the course name
 try {
@@ -48,7 +48,6 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <title>Student Dashboard - CrsMgr+</title> -->
     <title>FAQs - <?php echo htmlspecialchars($currentCourseName); ?></title>
     <link rel="stylesheet" href="../../css/index.css">
 </head>
@@ -59,10 +58,10 @@ try {
         </header>
 
         <div class="sidebar">
-            <button onclick="location.href='contact_information.php'">Contact Information</button>
-            <button class="is-selected" onclick="location.href='faq-information.php'">FAQ</button>
+        <button onclick="location.href='contact_information.php'">Contact Information</button>
+            <button onclick="location.href='faq-information.php'">FAQ</button>
+            <button onclick="location.href='group-information.php'">My Group Information </button>
             <button>My Group (Internal Communication)</button>
-            <button>Course Material</button>
         </div>
 
         <main class="main">
@@ -91,6 +90,22 @@ try {
                 <p>No FAQs available for this course.</p>
                 <?php endif; ?>
             </div>
+
+<h3>Add New FAQ</h3>
+<form action="add_faq.php" method="post">
+    <p>
+        <label for="question">Question:</label>
+        <input type="text" id="question" name="question" required>
+    </p>
+    <p>
+        <label for="answer">Answer:</label>
+        <textarea id="answer" name="answer" required></textarea>
+    </p>
+    <p>
+        <input type="submit" value="Submit FAQ">
+    </p>
+</form>
+
         
         </main>
 
