@@ -25,6 +25,47 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - CrsMgr+</title>
     <link rel="stylesheet" href="../../css/index.css">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .file-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #fff;
+            width: 100%;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="page">
@@ -41,9 +82,17 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
         </div>
 
         <main class="main">
-            <h2>Current Course: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
+            <div class="form-container">
+                <h3>Upload File</h3>
+                <form action="upload.php" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">Choose File:</label>
+                        <input type="file" id="file" name="file" class="file-input" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Upload</button>
+                </form>
+            </div>
         </main>
-
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
