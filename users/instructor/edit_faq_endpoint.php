@@ -2,62 +2,43 @@
 session_start();
 require_once '../../database.php';
 
-// Processing form data when the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $faqId = $_POST['faqId'] ?? null;
-    $courseCode = $_POST['courseCode'] ?? null; // This will be used for adding FAQs
+if (!isset($_SESSION["selected_course_id"])) {
+    die("No course selected.");
+}
+
+$selectedCourseId = $_SESSION["selected_course_id"];
+
+// Handling form submissions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'];
+    $faq_id = $_POST['faq_id'] ?? null;
     $question = $_POST['question'] ?? '';
     $answer = $_POST['answer'] ?? '';
-    $action = $_POST['action'] ?? 'add'; // The default action is add
 
-    if (empty($question) || empty($answer)) {
-        redirectWithError("Question and answer cannot be empty.");
-    }
-
-    try {
-        switch ($action) {
-            case 'add':
-                if (empty($courseCode)) {
-                    redirectWithError("Course code is required for adding a FAQ.");
-                }
-                // SQL to add a new FAQ
-                $sql = "INSERT INTO FAQ (Question, Answer, ContributorID, CourseID) VALUES (?, ?, ?, (SELECT CourseID FROM Course WHERE CourseCode = ?))";
+    switch ($action) {
+        case 'add':
+            if ($question && $answer) {
+                $sql = "INSERT INTO FAQ (Question, Answer, CourseID) VALUES (?, ?, ?)";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([$question, $answer, $_SESSION['user_id'], $courseCode]);
-                break;
-
-            case 'update':
-                if (empty($faqId)) {
-                    redirectWithError("FAQ ID is required for updating.");
-                }
-                // SQL to update an existing FAQ
+                $stmt->execute([$question, $answer, $selectedCourseId]);
+            }
+            break;
+        case 'update':
+            if ($faq_id && $question && $answer) {
                 $sql = "UPDATE FAQ SET Question = ?, Answer = ? WHERE FAQID = ?";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([$question, $answer, $faqId]);
-                break;
-
-            case 'delete':
-                if (empty($faqId)) {
-                    redirectWithError("FAQ ID is required for deletion.");
-                }
-                // SQL to delete an FAQ
+                $stmt->execute([$question, $answer, $faq_id]);
+            }
+            break;
+        case 'delete':
+            if ($faq_id) {
                 $sql = "DELETE FROM FAQ WHERE FAQID = ?";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([$faqId]);
-                break;
-
-            default:
-                redirectWithError("Invalid action.");
-        }
-        $_SESSION['success_message'] = "FAQ successfully {$action}ed.";
-    } catch (PDOException $e) {
-        redirectWithError("Database error: " . $e->getMessage());
+                $stmt->execute([$faq_id]);
+            }
+            break;
     }
-    
-    header("Location: manage_faqs.php");
-    exit;
-} else {
-    header("Location: manage_faqs.php");
-    exit;
+    header("Location: manage_faqs.php"); // Redirect to avoid form resubmission
+    exit();
 }
 ?>
