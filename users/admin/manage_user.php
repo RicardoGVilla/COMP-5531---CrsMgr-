@@ -1,29 +1,9 @@
 <?php
-session_start(); // Start the session at the very beginning.
+session_start(); 
 
 // Include database connection
 include('../../database.php');
 
-// Fetch users from the database
-$query = "SELECT `User`.UserID, `User`.Name, `User`.EmailAddress, Role.RoleName FROM `User`
-          JOIN UserRole ON `User`.UserID = UserRole.UserID
-          JOIN Role ON UserRole.RoleID = Role.RoleID";
-$stmt = $pdo->query($query);
-
-// Initialize an empty array to store users
-$users = [];
-
-// Fetch users into the array
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $users[] = $row;
-}
-
-function compareUsers($a, $b) {
-    return $a['UserID'] - $b['UserID'];
-}
-
-// Sort the users array using the compareUsers function
-usort($users, 'compareUsers');
 ?>
 
 <!DOCTYPE html>
@@ -51,138 +31,88 @@ usort($users, 'compareUsers');
         </div>
         
         <main class="main">
-            <div class="main-header">
-                <h2>Manage Users</h2>
-            </div>
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Roles</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<h2>Edit User Roles</h2>
+<form action="edit_user_endpoint.php" method="post">
+    <label for="userId">User ID:</label>
+    <input type="text" id="userId" name="userId" required>
 
-            <!-- Add User Form -->
-            <div id="add-user" class="user-form table-wrapper">
-                <h2>Add User</h2>
-                <form class="inline-form" method="POST" action="edit_user_endpoint.php"> 
-                    <input type="hidden" name="action" value="add">
-                    <div class="input-body">
-                        <input type="text" name="name" placeholder="Full Name" required />
-                        <input type="email" name="email" placeholder="Email" required />
-                        <input type="text" name="role" placeholder="Role ID" required /> 
-                        <small>
-                            <p>Please enter the role ID:</p>
-                            <p>1 - Student</p>
-                            <p>2 - Instructor</p>
-                            <p>3 - TA</p>
-                            <p>4 - Admin</p>
-                        </small> 
-                    </div>
-                    <div>
-                        <button class="button is-primary" type="submit">Add User</button>
-                    </div>
+    <label for="role">Role:</label>
+    <select name="role" id="role" required>
+        <option value="1">Student</option>
+        <option value="2">Instructor</option>
+        <option value="3">TA</option>
+        <option value="4">Admin</option>
+    </select>
 
-                </form>
-            </div>
+    <label for="action">Action:</label>
+    <select name="action" id="action" required>
+        <option value="add">Add Role</option>
+        <option value="remove">Remove Role</option>
+    </select>
 
-            <!-- Update User Form -->
-            <div id="update-user" class="user-form" style="display: none;">
-                <h2>Update User</h2>
-                <form method="POST" action="edit_user_endpoint.php">
-                    <div>
-                        <input type="hidden" name="action" value="update"> 
-                        <input type="text" id="update_user_id" name="user_id" placeholder="User ID" required />
-                        <input type="text" id="update_new_name" name="new_name" placeholder="New Full Name" />
-                        <input type="email" id="update_new_email" name="new_email" placeholder="New Email" />
-                        <input type="password" id="update_new_password" name="new_password" placeholder="New Password" />
-                        <select id="update_new_role" name="new_role">
-                            <option value="1">Student</option>
-                            <option value="2">Instructor</option>
-                            <option value="3">TA</option>
-                            <option value="4">Admin</option>
-                        </select>
-                    </div>
-                    <button class="button" type="submit">Update User</button>
-                </form>
-            </div>
+    <button type="submit">Submit</button>
+</form>
+    <h1>User Roles List</h1>
+    <table>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Role</th>
+        </tr>
+        <?php
+        // SQL query to fetch user roles
+        $sql = "SELECT u.UserID, u.Name, u.EmailAddress, r.RoleName 
+                FROM UserRole ur
+                JOIN `User` u ON ur.UserID = u.UserID
+                JOIN Role r ON ur.RoleID = r.RoleID";
 
-            <!-- Delete Role Modal -->
-            <div id="deleteRoleModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeDeleteRoleModal()">&times;</span>
-                    <h2>Delete User Role</h2>
-                    <form id="deleteRoleForm" method="POST" action="edit_user_endpoint.php">
-                        <input type="hidden" name="action" value="delete_role">
-                        <label for="delete_role_id">Role ID:</label>
-                        <input type="text" id="delete_role_id" name="role_id" placeholder="Enter Role ID" required>
-                        <input type="hidden" id="delete_user_id" name="user_id">
-                        <button type="submit" class="button is-delete">Delete Role</button>
-                    </form>
-                </div>
-            </div>
+        try {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
 
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            <!-- User Table -->
-            <div class="user-table">
-                <h2>Current Users</h2>
-                <div class="table-wrapper">
-                    <table class="content-table">
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Actions</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($users as $user): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($user['UserID']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['Name']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['RoleName']); ?></td>
-                                    <td>
-                                        <button class="button is-secondary" onclick="openModal('<?php echo $user['UserID']; ?>', '<?php echo htmlspecialchars($user['Name']); ?>', '<?php echo htmlspecialchars($user['EmailAddress']); ?>', '', '<?php echo $user['RoleName']; ?>')">Update</button>
-                                    </td>
-                                    <td>
-                                        <button class="button is-delete" onclick="confirmDelete(<?php echo $user['UserID']; ?>, '<?php echo $user['RoleName']; ?>')">Delete</button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            if ($results) {
+                foreach ($results as $row) {
+                    echo "<tr>
+                            <td>" . $row["UserID"] . "</td>
+                            <td>" . $row["Name"] . "</td>
+                            <td>" . $row["EmailAddress"] . "</td>
+                            <td>" . $row["RoleName"] . "</td>
+                          </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='4'>No results found</td></tr>";
+            }
+        } catch (PDOException $e) {
+            echo "Query failed: " . $e->getMessage();
+        }
 
-            <!-- Modal -->
-            <div id="myModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                   
-                    <!-- Update User Form -->
-                    <h2>Update User</h2>
-                    <form class="form" id="update-user-form" method="POST" action="edit_user_endpoint.php">
-                        <input type="hidden" name="action" value="update"> 
-                        <input type="hidden" id="update_user_id" name="user_id" />
-                        <div class="input">
-                            <label for="update_new_name">New Name:</label>
-                            <input id="update_new_name" type="text" name="new_name" placeholder="New Full Name" />
-                        </div>
-                        <div class="input">
-                            <label for="update_new_email">New Email:</label>
-                            <input type="email" id="update_new_email" name="new_email" placeholder="New Email" />
-                        </div>
-                        <div class="input">
-                            <label for="update_new_password">New Password:</label>
-                            <input type="password" id="update_new_password" name="new_password" placeholder="New Password" />
-                        </div>
-                        
-                        <input type="text" id="update_new_role" name="new_role" placeholder="Role ID" required />
-                        <div class="button-container">
-                            <button class="button is-secondary" type="submit">Update User</button>
-                        </div>
-                    </form>
-                    
-                </div>
-            </div>
-
+        ?>
+    </table>
+</body>
+</html>
         </main>
 
         <footer class="footer">
@@ -191,66 +121,6 @@ usort($users, 'compareUsers');
         </footer>
     </div>
 
-    <script>
-        // Display popup alert for session messages
-        window.onload = function() {
-            <?php if (isset($_SESSION['message'])): ?>
-                alert("<?php echo addslashes($_SESSION['message']); ?>");
-                <?php unset($_SESSION['message']); ?>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['error'])): ?>
-                alert("<?php echo addslashes($_SESSION['error']); ?>");
-                <?php unset($_SESSION['error']); ?>
-            <?php endif; ?>
-        };
-        
-        function confirmDelete(userId) {
-            // Open modal to ask for role ID
-            document.getElementById('delete_user_id').value = userId;  // Set user ID in the hidden field
-            document.getElementById('deleteRoleModal').style.display = 'block';  // Show the modal
-        }
-
-        function closeDeleteRoleModal() {
-            document.getElementById('deleteRoleModal').style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('deleteRoleModal')) {
-                closeDeleteRoleModal();
-            }
-        }
-        function showForm(formId) {
-            // Hide all forms
-            document.getElementById('add-user').style.display = 'none';
-            document.getElementById('update-user').style.display = 'none';
-
-            // Show the selected form
-            document.getElementById(formId + '-user').style.display = 'block';
-        }
-
-        var modal = document.getElementById('myModal');
-
-        function openModal(userId, newName, newEmail, newPassword, newRole) {
-            document.getElementById('update_user_id').value = userId;
-            document.getElementById('update_new_name').value = newName;
-            document.getElementById('update_new_email').value = newEmail;
-            document.getElementById('update_new_password').value = newPassword;
-            document.getElementById('update_new_role').value = newRole;
-            // Update form action
-            document.getElementById('update-user-form').action = "update_user_endpoint.php?id=" + userId;
-            modal.style.display = "block";
-        }
-
-        function closeModal() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-    </script>
+    
 </body>
 </html>

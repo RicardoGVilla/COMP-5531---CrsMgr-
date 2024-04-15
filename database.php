@@ -10,10 +10,8 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->exec("SET NAMES 'utf8'");
     
-    // Connection successful
     echo "Database connected successfully!";
 } catch (PDOException $e) {
-    // Connection failed, handle the error as needed
     echo "Connection failed: " . $e->getMessage();
     die();
 }
