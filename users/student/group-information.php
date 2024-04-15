@@ -19,6 +19,7 @@ if (!isset($_SESSION["selectedCourseName"])) {
 
 // Initialize variables
 $currentUserName = $_SESSION["user"]["Name"];
+$currentUserID = $_SESSION["user"]["UserID"];
 $currentCourseName = $_SESSION["selectedCourseName"];
 
 try {
@@ -32,19 +33,18 @@ try {
         throw new Exception("Course not found.");
     }
 
-    // Fetch all groups and their member details for the found course ID
-    $groupStmt = $pdo->prepare("SELECT g.GroupID, u.UserID, u.Name, u.EmailAddress 
+    // Fetch the groups associated with the current user ID (student)
+    $groupStmt = $pdo->prepare("SELECT g.GroupID, g.CourseID, g.GroupLeaderID 
                                 FROM `Group` g
                                 JOIN StudentGroupMembership sgm ON g.GroupID = sgm.GroupID
-                                JOIN `User` u ON sgm.StudentID = u.UserID
-                                WHERE g.CourseID = ?");
-    $groupStmt->execute([$currentCourseID]);
-    $members = $groupStmt->fetchAll(PDO::FETCH_ASSOC);
+                                WHERE g.CourseID = ? AND sgm.StudentID = ?");
+    $groupStmt->execute([$currentCourseID, $currentUserID]);
+    $groups = $groupStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
 }
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,29 +69,25 @@ try {
 
         <main class="main">
             <h2>Group Members Details</h2>
-            <?php if (!empty($members)): ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Group ID</th>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email Address</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($members as $member): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($member['GroupID']); ?></td>
-                                <td><?php echo htmlspecialchars($member['UserID']); ?></td>
-                                <td><?php echo htmlspecialchars($member['Name']); ?></td>
-                                <td><?php echo htmlspecialchars($member['EmailAddress']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+            <?php if (!empty($groups)): ?>
+                <?php foreach ($groups as $group): ?>
+                    <h3>Group ID: <?php echo htmlspecialchars($group['GroupID']); ?></h3>
+                    <?php
+                    // Fetch all members in the group
+                    $membersStmt = $pdo->prepare("SELECT u.UserID, u.Name, u.EmailAddress FROM User u 
+                                                  JOIN StudentGroupMembership sgm ON u.UserID = sgm.StudentID 
+                                                  WHERE sgm.GroupID = ?");
+                    $membersStmt->execute([$group['GroupID']]);
+                    $members = $membersStmt->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
+                    <ul>
+                    <?php foreach ($members as $member): ?>
+                        <li><?php echo htmlspecialchars($member['Name']) . ' (' . htmlspecialchars($member['UserID']) . ') - ' . htmlspecialchars($member['EmailAddress']); ?></li>
+                    <?php endforeach; ?>
+                    </ul>
+                <?php endforeach; ?>
             <?php else: ?>
-                <p>No group members found for this course.</p>
+                <p>No group found for the current user in this course.</p>
             <?php endif; ?>
         </main>
 
