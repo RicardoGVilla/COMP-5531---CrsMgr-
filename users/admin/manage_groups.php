@@ -107,7 +107,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Information</title>
-    <link rel="stylesheet" href="../../css/home.css">
+    <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
 <div class="page">
@@ -117,7 +117,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
     <div class="sidebar">
         <button onclick="location.href='manage_user.php'">Manage Users</button>
-        <button  onclick="location.href='manage_courses.php'">Manage Courses</button>
+        <button onclick="location.href='manage_courses.php'">Manage Courses</button>
         <button onclick="location.href='manage_sections.php'">Manage Sections</button>
         <button class="is-selected" onclick="location.href='manage_groups.php'">Manage Groups</button>
         <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
@@ -125,41 +125,45 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     </div>
 
     <main class="main">
-        <h2>Upload CSV File</h2>
-        <form action="" method="post" enctype="multipart/form-data">
-            <input type="file" name="studentGroupFile" required>
-            <input type="hidden" name="form_submitted" value="1">
-            <input type="submit" value="Upload File">
-        </form>
+        <div class="table-wrapper">
+            <h2>Upload CSV File</h2>
+            <form class="form" action="" method="post" enctype="multipart/form-data">
+                <input type="file" name="studentGroupFile" required>
+                <input type="hidden" name="form_submitted" value="1">
+                
+                <input type="submit" value="Upload File">
+            </form>
+        </div>
 
         <?php if (!empty($successMessage)): ?>
             <p><?= $successMessage ?></p>
         <?php endif; ?>
-
-        <?php if (!empty($courses)): ?>
-            <h2>All Courses</h2>
-            <?php foreach ($courses as $courseCode => $course): ?>
-                <h3><?= htmlspecialchars($courseCode) . ' - ' . htmlspecialchars($course['Name']) ?></h3>
-                <?php if (!empty($course['Groups'])): ?>
-                    <?php foreach ($course['Groups'] as $groupId => $group): ?>
-                        <div>Group ID: <?= htmlspecialchars($groupId) ?>, Max Size: <?= htmlspecialchars($group['MaxSize']) ?></div>
-                        <ul>
-                            <?php if (!empty($group['Members'])): ?>
-                                <?php foreach ($group['Members'] as $userId => $userName): ?>
-                                    <li><?= htmlspecialchars($userName) ?> (ID: <?= htmlspecialchars($userId) ?>)</li>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <li>No members in this group.</li>
-                            <?php endif; ?>
-                        </ul>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No groups for this course.</p>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No courses found.</p>
-        <?php endif; ?>
+        <div class="table-wrapper">
+            <?php if (!empty($courses)): ?>
+                <h2>All Courses</h2>
+                <?php foreach ($courses as $courseCode => $course): ?>
+                    <h3><?= htmlspecialchars($courseCode) . ' - ' . htmlspecialchars($course['Name']) ?></h3>
+                    <?php if (!empty($course['Groups'])): ?>
+                        <?php foreach ($course['Groups'] as $groupId => $group): ?>
+                            <div>Group ID: <?= htmlspecialchars($groupId) ?>, Max Size: <?= htmlspecialchars($group['MaxSize']) ?></div>
+                            <ul>
+                                <?php if (!empty($group['Members'])): ?>
+                                    <?php foreach ($group['Members'] as $userId => $userName): ?>
+                                        <li><?= htmlspecialchars($userName) ?> (ID: <?= htmlspecialchars($userId) ?>)</li>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li>No members in this group.</li>
+                                <?php endif; ?>
+                            </ul>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p>No groups for this course.</p>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No courses found.</p>
+            <?php endif; ?>
+        </div>
     </main>
 
     <footer class="footer">
