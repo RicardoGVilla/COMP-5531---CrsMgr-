@@ -32,6 +32,11 @@
 
 }
 
+.button.is-remove {
+  background: var(--orange10);
+  color: var(--white);
+}
+
 .button.is-outline-primary {
   border: 1px solid var(--green10);
 }

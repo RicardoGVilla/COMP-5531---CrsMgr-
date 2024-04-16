@@ -23,7 +23,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bindParam(':userId', $userId);
             $stmt->bindParam(':role', $role);
             $stmt->execute();
-            echo "Role removed successfully!";
+            if ($stmt->rowCount() > 0) {
+                echo "Role removed successfully!";
+            } else {
+                http_response_code(500);
+                echo "Error: Unable to remove role";
+            }
         }
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
