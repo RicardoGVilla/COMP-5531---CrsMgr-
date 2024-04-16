@@ -5,10 +5,12 @@ require_once '../../database.php';
 // Fetch all instructors from the database for the dropdown menu
 try {
     // Fetch distinct instructors associated with a course
-    $query = "SELECT DISTINCT u.UserID, u.Name
-              FROM User u
-              JOIN CourseInstructor ci ON u.UserID = ci.InstructorID
-              JOIN Course c ON ci.CourseID = c.CourseID";
+    $query = "SELECT u.UserID, u.Name, u.EmailAddress
+    FROM `User` u
+    JOIN UserRole ur ON u.UserID = ur.UserID
+    JOIN Role r ON ur.RoleID = r.RoleID
+    WHERE r.RoleName = 'Instructor';
+    ";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $instructors = $stmt->fetchAll(PDO::FETCH_ASSOC); 
@@ -20,15 +22,17 @@ try {
 
 // Fetch all courses with sections and instructors from the database for the table
 try {
-    $query = "SELECT c.CourseID, c.CourseCode, c.Name AS CourseName, c.StartDate, c.EndDate, COUNT(cs.SectionID) AS Sections, 
-              (SELECT GROUP_CONCAT(DISTINCT u.Name SEPARATOR ', ')
-               FROM User u
-               JOIN CourseInstructor ci ON u.UserID = ci.InstructorID
-               WHERE ci.CourseID = c.CourseID
-               ) AS Instructors
-              FROM Course c
-              LEFT JOIN CourseSection cs ON c.CourseID = cs.CourseID
-              GROUP BY c.CourseID";
+    $query = "SELECT c.CourseID, c.CourseCode, c.Name AS CourseName, c.StartDate, c.EndDate, 
+    GROUP_CONCAT(DISTINCT cs.SectionNumber SEPARATOR ', ') AS Sections, 
+    (SELECT GROUP_CONCAT(DISTINCT u.Name SEPARATOR ', ')
+     FROM User u
+     JOIN CourseInstructor ci ON u.UserID = ci.InstructorID
+     WHERE ci.CourseID = c.CourseID
+    ) AS Instructors
+FROM Course c
+LEFT JOIN CourseSection cs ON c.CourseID = cs.CourseID
+GROUP BY c.CourseID;
+";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -202,7 +206,7 @@ try {
                                     <td><?= htmlspecialchars($course['CourseName']) ?></td>
                                     <td><?= htmlspecialchars($course['StartDate']) ?></td>
                                     <td><?= htmlspecialchars($course['EndDate']) ?></td>
-                                    <td><?= htmlspecialchars($course['Sections'] ?: 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($course['Sections'] ?: 'No Section Assigned Yet') ?></td>
                                     <td><?= htmlspecialchars($course['Instructors'] ?: 'No instructors') ?></td>
                                     <td>
                                         <button class="button is-delete" onclick="confirmDelete(<?php echo $course['CourseID']; ?>)">Delete Course</button>
