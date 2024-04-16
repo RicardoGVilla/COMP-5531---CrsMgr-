@@ -58,9 +58,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["studentGroupFile"])) 
         $courseId = $stmt->fetchColumn();
         
         if ($courseId) {
-            if ($courseId !== $selectedCourseId) {
-                $errorMsg = "The uploaded file does not correspond to the selected course.";
-            } else {
+            
+if ((string)$courseId !== (string)$selectedCourseId) {
+    $errorMsg = "The uploaded file does not correspond to the selected course.";
+}
+
+             else {
                 $stmt = $pdo->prepare("INSERT INTO `Group` (CourseID, GroupLeaderID, DatabasePassword, MaxSize) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$courseId, $groupLeaderId, $randomPassword, count($studentIds)]);
                 $newGroupId = $pdo->lastInsertId();
@@ -128,40 +131,43 @@ if ($currentInstructorId && $selectedCourseId) {
         <?php endif; ?>
 
         <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($courseCode)): ?>
-            <div class="results">
-                <h3>File Uploaded Successfully</h3>
-                <p><strong>Course Code:</strong> <?= htmlspecialchars($courseCode) ?></p>
-                <p><strong>Section:</strong> <?= htmlspecialchars($section) ?></p>
-                <p><strong>Group Leader ID:</strong> <?= htmlspecialchars($groupLeaderId) ?></p>
-                <p><strong>Random Password:</strong> <?= htmlspecialchars($randomPassword) ?></p>
-                <p><strong>Student IDs:</strong> <?= implode(", ", array_map('htmlspecialchars', $studentIds)) ?></p>
-            </div>
-        <?php endif; ?>
+    <div class="results">
+        <h3>File Uploaded Successfully</h3>
+        <p><strong>Course ID:</strong> <?= htmlspecialchars($selectedCourseId) ?></p>
+        <p><strong>Course Code:</strong> <?= htmlspecialchars($courseCode) ?></p>
+        <p><strong>Section:</strong> <?= htmlspecialchars($section) ?></p>
+        <p><strong>Group Leader ID:</strong> <?= htmlspecialchars($groupLeaderId) ?></p>
+        <p><strong>Random Password:</strong> <?= htmlspecialchars($randomPassword) ?></p>
+        <p><strong>Student IDs:</strong> <?= implode(", ", array_map('htmlspecialchars', $studentIds)) ?></p>
+    </div>
+<?php endif; ?>
 
-        <?php if (!empty($courses)): ?>
-            <h2>Your Courses and Groups</h2>
-            <?php foreach ($courses as $course): ?>
-                <h3><?= htmlspecialchars($course['CourseCode']) . ' - ' . htmlspecialchars($course['Name']) ?></h3>
-                <?php if (!empty($groups[$course['CourseID']])): ?>
-                    <?php foreach ($groups[$course['CourseID']] as $group): ?>
-                        <div>Group ID: <?= htmlspecialchars($group['GroupID']) ?>, Leader: <?= htmlspecialchars($group['GroupLeaderID']) ?>, Max Size: <?= htmlspecialchars($group['MaxSize']) ?></div>
-                        <ul>
-                            <?php 
-                            $stmt = $pdo->prepare("SELECT u.UserID, u.Name FROM `User` u INNER JOIN StudentGroupMembership sgm ON u.UserID = sgm.StudentID WHERE sgm.GroupID = ?");
-                            $stmt->execute([$group['GroupID']]);
-                            $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                            foreach ($members as $member): ?>
-                                <li><?= htmlspecialchars($member['Name']) ?> (ID: <?= htmlspecialchars($member['UserID']) ?>)</li>
-                            <?php endforeach; ?>
-                        </ul>
+
+<?php if (!empty($courses)): ?>
+    <h2>Your Courses and Groups</h2>
+    <?php foreach ($courses as $course): ?>
+        <h3><?= htmlspecialchars($course['CourseCode']) . ' - ' . htmlspecialchars($course['Name']) ?> (ID: <?= htmlspecialchars($course['CourseID']) ?>)</h3>
+        <?php if (!empty($groups[$course['CourseID']])): ?>
+            <?php foreach ($groups[$course['CourseID']] as $group): ?>
+                <div>Group ID: <?= htmlspecialchars($group['GroupID']) ?>, Leader: <?= htmlspecialchars($group['GroupLeaderID']) ?>, Max Size: <?= htmlspecialchars($group['MaxSize']) ?></div>
+                <ul>
+                    <?php 
+                    $stmt = $pdo->prepare("SELECT u.UserID, u.Name FROM `User` u INNER JOIN StudentGroupMembership sgm ON u.UserID = sgm.StudentID WHERE sgm.GroupID = ?");
+                    $stmt->execute([$group['GroupID']]);
+                    $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($members as $member): ?>
+                        <li><?= htmlspecialchars($member['Name']) ?> (ID: <?= htmlspecialchars($member['UserID']) ?>)</li>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No groups for this course.</p>
-                <?php endif; ?>
+                </ul>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>No courses found.</p>
+            <p>No groups for this course.</p>
         <?php endif; ?>
+    <?php endforeach; ?>
+<?php else: ?>
+    <p>No courses found.</p>
+<?php endif; ?>
+
     </main>
 
     <footer class="footer">

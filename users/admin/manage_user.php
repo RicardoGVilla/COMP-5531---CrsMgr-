@@ -41,6 +41,7 @@ include('../../database.php');
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
+            <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
         </div>
         
         <main class="main">
