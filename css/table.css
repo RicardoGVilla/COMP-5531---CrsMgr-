@@ -17,6 +17,7 @@
   font-size: 0.9em;
   min-width: 400px;
   width: 100%;
+  text-align: left;
 }
 
 .content-table thead th {

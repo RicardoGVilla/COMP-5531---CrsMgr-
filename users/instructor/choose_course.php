@@ -40,7 +40,7 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <div class="hundredvh-container">
-        <div class=" table-wrapper">
+        <div class="table-wrapper">
             <div class="login-header">
                 <h2>Welcome, <?php echo htmlspecialchars($userName); ?>!</h2>
             </div>
