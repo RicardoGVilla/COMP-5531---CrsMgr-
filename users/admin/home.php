@@ -7,13 +7,6 @@ if (!isset($_SESSION["user"]["UserID"])) {
     header("Location: ../../login.php"); // Redirect to login page if not logged in
     exit;
 }
-
-// Check if selected course information is available in session
-if (!isset($_SESSION["selectedCourseName"])) {
-    // Redirect to choose-class.php to select a course if no course is selected
-    header("Location: choose-class.php");
-    exit;
-}
 ?>
 
 

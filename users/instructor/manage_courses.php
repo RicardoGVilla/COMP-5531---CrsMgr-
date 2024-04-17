@@ -65,7 +65,6 @@ try {
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
             <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
-
         </div>
 
         <main class="main">
@@ -99,6 +98,7 @@ try {
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,6 +117,7 @@ try {
                                 <td><?= htmlspecialchars($student['UserID']) ?></td>
                                 <td><?= htmlspecialchars($student['Name']) ?></td>
                                 <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                                <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -132,13 +133,13 @@ try {
                     <div class="modal-content">
                         <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
                         <h3>Add Student</h3>
-                        <form id="studentForm<?= $section['SectionID'] ?>" method="post" action="edit_courses_endpoint.php">
+                        <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
                             <input type="hidden" name="action" value="enroll_student">
                             <input type="hidden" name="course_id" value="<?= $courseID ?>">
                             <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
                             <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
                             <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
-                            <input type="submit" value="Enroll Student">
+                            <input class="button is-primary" type="submit" value="Enroll Student">
                         </form>
                     </div>
                 </div>
@@ -151,29 +152,76 @@ try {
         </footer>
     </div>
 
-<script>
-    // Modal functions
-    function openModal(sectionID) {
-        var modal = document.getElementById('myModal' + sectionID);
-        modal.style.display = "block";
-    }
+    <script>
+        // Function to enroll a student asynchronously
+        function enrollStudent(event, sectionID) {
+            event.preventDefault(); // Prevent default form submission
 
-    function closeModal(sectionID) {
-        var modal = document.getElementById('myModal' + sectionID);
-        modal.style.display = "none";
-    }
+            var form = document.getElementById('studentForm' + sectionID);
+            var formData = new FormData(form);
 
-    window.onclick = function(event) {
-        var modals = document.getElementsByClassName('modal');
-        for (var i = 0; i < modals.length; i++) {
-            var modal = modals[i];
-            if (event.target == modal) {
-                var sectionID = modal.id.replace('myModal', '');
-                closeModal(sectionID);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'edit_courses_endpoint.php');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = xhr.responseText;
+                    alert(response); // Show the response message
+                    // Optionally, you can update the page content dynamically here
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                alert('Request failed.');
+            };
+            xhr.send(formData);
+        }
+
+        // Modal functions
+        function openModal(sectionID) {
+            var modal = document.getElementById('myModal' + sectionID);
+            modal.style.display = "block";
+        }
+
+        function closeModal(sectionID) {
+            var modal = document.getElementById('myModal' + sectionID);
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName('modal');
+            for (var i = 0; i < modals.length; i++) {
+                var modal = modals[i];
+                if (event.target == modal) {
+                    var sectionID = modal.id.replace('myModal', '');
+                    closeModal(sectionID);
+                }
             }
         }
-    }
-</script>
+        function removeStudent(sectionID, studentID) {
+            var confirmation = confirm("Are you sure you want to remove this student?");
+            if (confirmation) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'edit_courses_endpoint.php');
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var response = xhr.responseText;
+                        alert(response); // Show the response message
+                        // Optionally, you can update the page content dynamically here
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + xhr.statusText);
+                    }
+                };
+                xhr.onerror = function() {
+                    alert('Request failed.');
+                };
+                xhr.send('action=remove_student&section_id=' + sectionID + '&student_id=' + studentID);
+            }
+        }
+    </script>
 
 </body>
 </html>
