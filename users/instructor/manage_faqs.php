@@ -41,39 +41,41 @@ try {
     <div class="sidebar">
         <button onclick="location.href='manage_courses.php'">Manage Courses</button>
         <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-        <button onclick="location.href='manage_faqs.php'" >Manage FAQs</button>
+        <button class="is-selected" onclick="location.href='manage_faqs.php'" >Manage FAQs</button>
     </div>
 
     <main class="main">
         <h2>Manage FAQs for <?php echo htmlspecialchars($courseName); ?></h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Question</th>
-                    <th>Answer</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($faqs as $faq): ?>
+        <div class="table-wrapper">
+            <table class="content-table">
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($faq['Question']); ?></td>
-                        <td><?php echo htmlspecialchars($faq['Answer']); ?></td>
-                        <td>
-                            <button onclick="editFAQ(<?php echo $faq['FAQID']; ?>)">Edit</button>
-                            <button onclick="deleteFAQ(<?php echo $faq['FAQID']; ?>)">Delete</button>
-                        </td>
+                        <th>Question</th>
+                        <th>Answer</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endforeach; ?>
-                <tr>
-                    <form action="edit_faq_endpoint.php" method="post">
-                        <td><input type="text" name="question" placeholder="New question"></td>
-                        <td><input type="text" name="answer" placeholder="New answer"></td>
-                        <td><button type="submit" name="action" value="add">Add FAQ</button></td>
-                    </form>
-                </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($faqs as $faq): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($faq['Question']); ?></td>
+                            <td><?php echo htmlspecialchars($faq['Answer']); ?></td>
+                            <td>
+                                <button class="button is-primary" onclick="editFAQ(<?php echo $faq['FAQID']; ?>)">Edit</button>
+                                <button class="button is-delete" onclick="deleteFAQ(<?php echo $faq['FAQID']; ?>)">Delete</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr>
+                        <form action="edit_faq_endpoint.php" method="post">
+                            <td><input type="text" name="question" placeholder="New question"></td>
+                            <td><input type="text" name="answer" placeholder="New answer"></td>
+                            <td><button class="button is-secondary" type="submit" name="action" value="add">Add FAQ</button></td>
+                        </form>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
 
     <footer class="footer">
