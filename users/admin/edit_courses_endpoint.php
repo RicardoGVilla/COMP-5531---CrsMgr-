@@ -38,6 +38,10 @@ function addCourse() {
     $instructors = explode(',', $_POST['instructors']);
 
     try {
+
+        //Checking that dates that the enddate is after the startdate:
+
+        if (strtotime($endDate)>strtotime($startDate)){
         // Insert the course into the Course table
         $query = "INSERT INTO Course (Name, CourseCode, StartDate, EndDate) VALUES (:courseName, :courseCode, :startDate, :endDate)";
         $stmt = $pdo->prepare($query);
@@ -61,6 +65,12 @@ function addCourse() {
         }
 
         $_SESSION['message'] = "Course added successfully";
+        }else{
+
+        $_SESSION['error'] = "Course cannot be added! End Date must be later than the Start Date";
+
+        }
+        
     } catch (PDOException $e) {
         $_SESSION['error'] = "Error adding course: " . $e->getMessage();
     }
