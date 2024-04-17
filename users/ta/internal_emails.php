@@ -71,33 +71,84 @@ switch ($action) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email System - CrsMgr+</title>
     <link rel="stylesheet" href="../../css/index.css"> <!-- Ensure this path is correct -->
-    </style>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email System - CrsMgr+</title>
-    <link rel="stylesheet" href="../../css/index.css">
     <style>
-        /* Add any additional specific styles for the Email System here */
+        /* Additional styles specific to the email system */
+        .email-system {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .email-form h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .email-form label {
+            font-weight: 600;
+            color: #555;
+        }
+        .email-form input,
+        .email-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        .email-form button {
+            width: auto;
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .email-form button:hover {
+            background-color: #003975;
+        }
+        .email-navigation {
+            text-align: center;
+            padding-top: 20px;
+        }
+        .email-navigation button {
+            margin: 0 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .email-navigation button:hover {
+            background-color: #003975;
+        }
     </style>
 </head>
 <body>
     <div class="page">
+        <!-- Header -->
         <header class="header">
             <h1>Welcome TA <?php echo htmlspecialchars($userName); ?></h1>
-            <p>You are signed in as a Teaching Assistant</p>
         </header>
-        
+
+        <!-- Sidebar -->
         <div class="sidebar">
+            <!-- Sidebar buttons -->
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
-            <button class="active" onclick="location.href='internal_emails.php'">Email</button>
+            <button onclick="location.href='internal_emails.php'">Email</button>
         </div>
-        
+
+        <!-- Main content area -->
         <main class="main">
             <div class="email-system">
-                <!-- Form to Send Email -->
+                <!-- Email form -->
                 <div class="email-form">
                     <h2>Send an Email</h2>
                     <form action="send_email.php" method="post">
@@ -107,32 +158,25 @@ switch ($action) {
                         <label for="subject">Subject:</label>
                         <input type="text" id="subject" name="subject" required>
                         <label for="body">Body:</label>
-                        <textarea id="body" name="body" rows="6" required></textarea>
+                        <textarea id="body" name="body" rows="4" required></textarea>
                         <button type="submit">Send Email</button>
                     </form>
                 </div>
 
-                <!-- Email Navigation -->
+                <!-- Email navigation buttons -->
                 <div class="email-navigation">
-                    <button onclick="window.location.href='internal_emails.php?action=view_inbox';">View Inbox</button>
-                    <button onclick="window.location.href='internal_emails.php?action=view_sent';">View Sent Emails</button>
+                    <button onclick="location.href='internal_emails.php?action=view_inbox';">View Inbox</button>
+                    <button onclick="location.href='internal_emails.php?action=view_sent';">View Sent Emails</button>
                 </div>
             </div>
-            
-            <!-- Container to Display Emails -->
-            <div id="emailDisplay"></div>
         </main>
-        
+
+        <!-- Footer -->
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
-
-    <!-- Optional: Include AJAX script for dynamic email loading -->
-    <script>
-        // ... Your existing AJAX script ...
-    </script>
 </body>
 </html>
 
