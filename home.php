@@ -16,7 +16,7 @@
         <button>Manage Sections</button>
         <button>Manage Groups</button>
         <button>Assignments/Projects</button>
-        <button>Discussion Forum</button>
+        <button>Email</button>
         <button>Course Announcements</button>
         <button>FAQ Management</button>
     </div>
