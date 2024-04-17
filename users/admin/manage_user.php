@@ -35,7 +35,8 @@ include('../../database.php');
         </header>
 
         <div class="sidebar">
-            <button class="is-selected" onclick="location.href='manage_user.php'">Manage Users</button>
+        <button onclick="location.href='create_user.php'">Manage Users</button>
+            <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
@@ -46,7 +47,7 @@ include('../../database.php');
         
         <main class="main">
             <div class="main-header">
-                <h2>Manage Users</h2>
+                <h2>Manage Roles</h2>
             </div>
             <!-- Edit User Form -->
             <div class="table-wrapper">
