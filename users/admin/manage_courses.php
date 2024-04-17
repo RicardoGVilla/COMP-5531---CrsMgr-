@@ -94,7 +94,10 @@ GROUP BY c.CourseID;
                             <label for="end_date">End Date:</label>
                             <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
                         </div>
-
+                        <div class="label-input">
+                            <label for="sections">Sections:</label>
+                            <input type="text" id="sections" name="sections" placeholder="Sections" required />
+                        </div>
                         <div class="label-input">
                             <label for="instructors">Instructors:</label>
                             <!-- Dropdown menu for selecting instructors -->

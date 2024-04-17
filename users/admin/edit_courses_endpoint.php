@@ -46,11 +46,11 @@ function addCourse() {
         // Retrieve the ID of the newly inserted course
         $courseId = $pdo->lastInsertId();
 
-        // Insert section numbers into the CourseSection table
+        // Insert section numbers into the CourseSection table 
         foreach ($sections as $section) {
-            $query = "INSERT INTO CourseSection (CourseID, SectionNumber) VALUES (:courseId, :section)";
+            $query = "INSERT INTO CourseSection (CourseID, SectionNumber, StartDate, EndDate) VALUES (:courseId, :section, :startDate, :endDate)";
             $stmt = $pdo->prepare($query);
-            $stmt->execute([':courseId' => $courseId, ':section' => $section]);
+            $stmt->execute([':courseId' => $courseId, ':section' => $section, ':startDate' => $startDate, ':endDate' => $endDate]);
         }
 
         // Insert instructor IDs into the CourseInstructor table
