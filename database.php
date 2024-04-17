@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$port = '3306'; 
+$port = '3308'; 
 $dbname = 'crs_manager_final';
 $username = 'root';
 $password = '';
