@@ -1,11 +1,10 @@
 <?php
 session_start();
-require_once '../../database.php'; // Adjust the path as needed
+require_once '../../database.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get sender ID from session
-    $sender_id = $_SESSION['UserID']; // Ensure user's ID is stored in session
-    $recipients = explode(',', $_POST['recipients']); // Recipient IDs as comma-separated values
+    $sender_id = $_SESSION['UserID']; 
+    $recipients = explode(',', $_POST['recipients']);
     $subject = $_POST['subject'];
     $body = $_POST['body'];
 

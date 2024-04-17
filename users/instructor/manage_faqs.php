@@ -2,26 +2,24 @@
 session_start();
 require_once '../../database.php';
 
-if (!isset($_SESSION["selected_course_id"])) {
-    die("No course selected.");
+// Check if user is logged in and has a user ID stored in session
+if (!isset($_SESSION["user"]["UserID"]) || !isset($_SESSION["selected_course_id"])) {
+    header("Location: login.php"); // Redirect to login page if not logged in or course not selected
+    exit;
 }
 
+// Get the selected course ID from the session
 $selectedCourseId = $_SESSION["selected_course_id"];
 
+// Retrieve FAQs for the selected course
 try {
-    $query = "SELECT c.CourseCode, c.Name AS CourseName, f.FAQID, f.Question, f.Answer
-              FROM Course c
-              LEFT JOIN FAQ f ON c.CourseID = f.CourseID
-              WHERE c.CourseID = :courseId
-              ORDER BY c.CourseCode, f.Question";
-
-    $stmt = $pdo->prepare($query);
+    $stmt = $pdo->prepare("SELECT FAQID, Question, Answer FROM FAQ WHERE CourseID = :courseId");
     $stmt->execute(['courseId' => $selectedCourseId]);
-    $faqsByCourse = [];
+    $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $faqsByCourse[$row['CourseCode']][] = $row;
-    }
+    $stmt = $pdo->prepare("SELECT Name FROM Course WHERE CourseID = :courseId");
+    $stmt->execute(['courseId' => $selectedCourseId]);
+    $courseName = $stmt->fetch(PDO::FETCH_ASSOC)['Name'];
 } catch (PDOException $e) {
     die("Could not connect to the database: " . $e->getMessage());
 }
@@ -31,113 +29,91 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course FAQs</title>
+    <title>Manage FAQs</title>
     <link rel="stylesheet" href="../../css/index.css">
-    <style>
-        .modal {
-            display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 50%;
-        }
-        .close {
-            color: #aaa; float: right; font-size: 28px; font-weight: bold;
-        }
-        .close:hover, .close:focus {
-            color: black; text-decoration: none; cursor: pointer;
-        }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; text-align: left; padding: 8px; }
-        th { background-color: #f2f2f2; }
-    </style>
 </head>
 <body>
 <div class="page">
-    <header class="header"><h1>Welcome Instructor</h1></header>
+    <header class="header">
+        <h1>Welcome Instructor</h1>
+    </header>
+
     <div class="sidebar">
         <button onclick="location.href='manage_courses.php'">Manage Courses</button>
         <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-        <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
+        <button onclick="location.href='manage_faqs.php'" >Manage FAQs</button>
     </div>
+
     <main class="main">
-        <h2>Course FAQs</h2>
+        <h2>Manage FAQs for <?php echo htmlspecialchars($courseName); ?></h2>
         <table>
             <thead>
-            <tr>
-                <th>Course Code</th>
-                <th>Course Name</th>
-                <th>Current FAQs</th>
-                <th>Action</th>
-            </tr>
+                <tr>
+                    <th>Question</th>
+                    <th>Answer</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-            <?php foreach ($faqsByCourse as $courseCode => $faqs): ?>
+                <?php foreach ($faqs as $faq): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($faq['Question']); ?></td>
+                        <td><?php echo htmlspecialchars($faq['Answer']); ?></td>
+                        <td>
+                            <button onclick="editFAQ(<?php echo $faq['FAQID']; ?>)">Edit</button>
+                            <button onclick="deleteFAQ(<?php echo $faq['FAQID']; ?>)">Delete</button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
                 <tr>
-                    <td><?= htmlspecialchars($courseCode); ?></td>
-                    <td><?= htmlspecialchars($faqs[0]['CourseName']); ?></td>
-                    <td>
-                        <ul>
-                            <?php foreach ($faqs as $faq): ?>
-                                <li><?= htmlspecialchars($faq['Question']); ?> - <?= htmlspecialchars($faq['Answer']); ?>
-                                    <!-- <button onclick="updateFaq(<?= $faq['FAQID']; ?>)">Update</button> -->
-                                    <!-- <button onclick="deleteFaq(<?= $faq['FAQID']; ?>)">Delete</button> -->
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </td>
-                    <td><button onclick="openModal('<?= htmlspecialchars($courseCode); ?>')">Add FAQ</button></td>
+                    <form action="edit_faq_endpoint.php" method="post">
+                        <td><input type="text" name="question" placeholder="New question"></td>
+                        <td><input type="text" name="answer" placeholder="New answer"></td>
+                        <td><button type="submit" name="action" value="add">Add FAQ</button></td>
+                    </form>
                 </tr>
-            <?php endforeach; ?>
             </tbody>
         </table>
-
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <h3>Add FAQs</h3>
-                <form id="faqForm" action="edit_faq_endpoint.php" method="post">
-                    <input type="hidden" id="courseCode" name="courseCode">
-                    <label for="question">Question:</label><br>
-                    <input type="text" id="question" name="question" required><br><br>
-                    <label for="answer">Answer:</label><br>
-                    <textarea id="answer" name="answer" rows="4" required></textarea><br><br>
-                    <input type="submit" value="Submit">
-                </form>
-            </div>
-        </div>
     </main>
+
     <footer class="footer">
-        <button onclick="location.href='../home.php'">Home</button>
+        <button onclick="location.href='home.php'">Home</button>
         <button onclick="location.href='../../logout.php'">Logout</button>
     </footer>
 </div>
 
-<script>
-    var modal = document.getElementById('myModal');
 
-    function closeModal() {
-        modal.style.display = "none";
-    }
+    <script>
+        function editFAQ(faqID) {
+            var questionText = document.getElementById('questionText' + faqID);
+            var answerText = document.getElementById('answerText' + faqID);
+            var editControls = document.getElementById('editControls' + faqID);
 
-    function openModal(courseCode) {
-        document.getElementById('courseCode').value = courseCode;
-        modal.style.display = "block";
-    }
-
-    function updateFaq(faqId) {
-        window.location.href = 'edit_faq_endpoint.php?faqId=' + faqId + '&action=update';
-    }
-
-    function deleteFaq(faqId) {
-        window.location.href = 'edit_faq_endpoint.php?faqId=' + faqId + '&action=delete';
-    }
-
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            closeModal();
+            questionText.style.display = 'none';
+            answerText.style.display = 'none';
+            editControls.style.display = 'block';
         }
-    }
-</script>
+
+        function deleteFAQ(faqID) {
+            if (confirm('Are you sure you want to delete this FAQ?')) {
+                var form = document.createElement('form');
+                document.body.appendChild(form);
+                form.method = 'post';
+                form.action = 'edit_faq_endpoint.php';
+                var inputAction = document.createElement('input');
+                inputAction.type = 'hidden';
+                inputAction.name = 'action';
+                inputAction.value = 'delete';
+                form.appendChild(inputAction);
+                var inputId = document.createElement('input');
+                inputId.type = 'hidden';
+                inputId.name = 'faq_id';
+                inputId.value = faqID;
+                form.appendChild(inputId);
+                form.submit();
+            }
+        }
+    </script>
+
 </body>
 </html>
