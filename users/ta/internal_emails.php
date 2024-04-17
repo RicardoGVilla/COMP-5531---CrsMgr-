@@ -69,20 +69,16 @@ switch ($action) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TA Dashboard - CrsMgr+</title>
+    <title>Email System - CrsMgr+</title>
+    <link rel="stylesheet" href="../../css/index.css"> <!-- Ensure this path is correct -->
+    </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email System - CrsMgr+</title>
     <link rel="stylesheet" href="../../css/index.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f4f4; }
-        h1, h2 { color: #333; }
-        .content, form, .sidebar, header { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-top: 20px; }
-        label, input, textarea, button { display: block; margin-top: 10px; }
-        input, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { padding: 10px 15px; background-color: #0056b3; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #003975; }
-        .email-item { margin-bottom: 20px; padding: 10px; background-color: #fff; border-left: 5px solid #0056b3; }
-        .sidebar { width: 200px; float: left; margin-right: 20px; }
-        .page { display: flex; justify-content: start; align-items: flex-start; }
-        .main { flex-grow: 1; }
+        /* Add any additional specific styles for the Email System here */
     </style>
 </head>
 <body>
@@ -96,36 +92,48 @@ switch ($action) {
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
-            <button onclick="location.href='internal_emails.php'">Email</button>
+            <button class="active" onclick="location.href='internal_emails.php'">Email</button>
         </div>
+        
+        <main class="main">
+            <div class="email-system">
+                <!-- Form to Send Email -->
+                <div class="email-form">
+                    <h2>Send an Email</h2>
+                    <form action="send_email.php" method="post">
+                        <input type="hidden" name="action" value="send_email">
+                        <label for="recipients">Recipients (comma-separated IDs):</label>
+                        <input type="text" id="recipients" name="recipients" required>
+                        <label for="subject">Subject:</label>
+                        <input type="text" id="subject" name="subject" required>
+                        <label for="body">Body:</label>
+                        <textarea id="body" name="body" rows="6" required></textarea>
+                        <button type="submit">Send Email</button>
+                    </form>
+                </div>
 
-        <div class="main">
-            <!-- Form to Send Email -->
-            <div class="content">
-                <h2>Send an Email</h2>
-                <form action="send_email.php" method="post">
-                    <input type="hidden" name="action" value="send_email">
-                    <label for="recipients">Recipients (comma-separated IDs):</label>
-                    <input type="text" id="recipients" name="recipients" required>
-                    <label for="subject">Subject:</label>
-                    <input type="text" id="subject" name="subject" required>
-                    <label for="body">Body:</label>
-                    <textarea id="body" name="body" rows="6" required></textarea>
-                    <button type="submit">Send Email</button>
-                </form>
+                <!-- Email Navigation -->
+                <div class="email-navigation">
+                    <button onclick="window.location.href='internal_emails.php?action=view_inbox';">View Inbox</button>
+                    <button onclick="window.location.href='internal_emails.php?action=view_sent';">View Sent Emails</button>
+                </div>
             </div>
-
-            <!-- Buttons for Navigation -->
-            <div class="content">
-                <h2>Email Navigation</h2>
-                <button onclick="window.location.href='email_system.php?action=view_inbox';">View Inbox</button>
-                <button onclick="window.location.href='email_system.php?action=view_sent';">View Sent Emails</button>
-            </div>
-        </div>
-
-        <!-- Container to Display Emails -->
-        <div class="content" id="emailDisplay"></div>
+            
+            <!-- Container to Display Emails -->
+            <div id="emailDisplay"></div>
+        </main>
+        
+        <footer class="footer">
+            <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
+        </footer>
     </div>
+
+    <!-- Optional: Include AJAX script for dynamic email loading -->
+    <script>
+        // ... Your existing AJAX script ...
+    </script>
 </body>
 </html>
+
 
