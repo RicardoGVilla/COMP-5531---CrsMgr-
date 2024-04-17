@@ -84,45 +84,44 @@ function getFaqsForCourse($pdo, $courseId) {
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <textarea name="answer" placeholder="FAQ Answer" required></textarea>
+                    <textarea name="answer" placeholder="FAQ Answer" rows="7" required></textarea>
                     <div>
                         <button class="button is-primary" type="submit">Add FAQ</button>
                     </div>
                 </form>
             </div>
 
-           <!-- Update FAQ Form -->
-<div id="update-faq" class="faq-form table-wrapper" style="display: none;">
-    <h2>Update FAQ</h2>
-    <form class="inline-form" action="edit_faq_endpoint.php" method="post">
-        <div class="input-body">
-            <input type="number" name="faq_id" placeholder="FAQ ID" required />
-            <input type="text" name="new_question" placeholder="New Question" />
-            <select name="new_course_id">
-                <option value="">Select New Course (optional)</option>
-                <?php foreach ($courses as $course): ?>
-                    <option value="<?= htmlspecialchars($course['CourseID']) ?>">
-                        <?= htmlspecialchars($course['Name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <textarea name="new_answer" placeholder="New Answer"></textarea>
-        <div>
-            <button class="button is-secondary" type="submit">Update FAQ</button>
-        </div>
-    </form>
-</div>
+            <!-- Update FAQ Form -->
+            <div id="update-faq" class="faq-form table-wrapper" style="display: none;">
+                <h2>Update FAQ</h2>
+                <form class="inline-form" action="edit_faq_endpoint.php" method="post">
+                    <div class="input-body">
+                        <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                        <input type="text" name="new_question" placeholder="New Question" />
+                        <select name="new_course_id">
+                            <option value="">Select New Course (optional)</option>
+                            <?php foreach ($courses as $course): ?>
+                                <option value="<?= htmlspecialchars($course['CourseID']) ?>">
+                                    <?= htmlspecialchars($course['Name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <textarea name="new_answer" placeholder="New Answer"></textarea>
+                    <div>
+                        <button class="button is-secondary" type="submit">Update FAQ</button>
+                    </div>
+                </form>
+            </div>
 
-<!-- Delete FAQ Form -->
-<div id="delete-faq" class="faq-form" style="display: none;">
-    <h2>Delete FAQ</h2>
-    <form action="edit_faq_endpoint.php" method="post">
-        <input type="number" name="faq_id" placeholder="FAQ ID" required />
-        <button class="button is-delete" type="submit">Delete FAQ</button>
-    </form>
-</div>
-
+            <!-- Delete FAQ Form -->
+            <div id="delete-faq" class="faq-form" style="display: none;">
+                <h2>Delete FAQ</h2>
+                <form action="edit_faq_endpoint.php" method="post">
+                    <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                    <button class="button is-delete" type="submit">Delete FAQ</button>
+                </form>
+            </div>
 
             <div class="faq-actions">
                 <button class="button is-primary"  onclick="showForm('add')">Add FAQ</button>
@@ -162,9 +161,6 @@ function getFaqsForCourse($pdo, $courseId) {
                 </div>
             <?php endforeach; ?>
         </main>
-
-
-        
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>

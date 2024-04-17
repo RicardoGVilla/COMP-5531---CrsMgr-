@@ -156,6 +156,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     <li>No members in this group.</li>
                                 <?php endif; ?>
                             </ul>
+                            <br>
+                            <hr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>No groups for this course.</p>

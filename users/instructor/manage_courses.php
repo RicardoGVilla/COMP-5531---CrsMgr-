@@ -61,21 +61,36 @@ try {
     </header> 
     
     <div class="sidebar">
-        <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+        <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
         <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
         <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
     </div>
 
     <main class="main">
         <h2>Course Information</h2>
-        <p>Course Name: <?php echo htmlspecialchars($courseName); ?></p>
-        <p>Course ID: <?php echo htmlspecialchars($courseID); ?></p>
-        <?php foreach ($courseSections as $section): ?>
-            <h3>Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
-            <p>Start Date: <?= htmlspecialchars($section['StartDate']) ?></p>
-            <p>End Date: <?= htmlspecialchars($section['EndDate']) ?></p>
-            <p>Class Size: <?= htmlspecialchars($section['ClassSize']) ?></p>
+        <div class="table-wrapper">
+        <table class="content-table">
+            <tr>
+                <th>Course Name</th>
+                <th>Course ID</th>
+                <th>Section</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Class Size</th>
+            </tr>
+            <?php foreach ($courseSections as $section): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($courseName); ?></td> 
+                    <td><?php echo htmlspecialchars($courseID); ?></td> 
+                    <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
+                    <td><?= htmlspecialchars($section['StartDate']) ?></td>
+                    <td><?= htmlspecialchars($section['EndDate']) ?></td>
+                    <td><?= htmlspecialchars($section['ClassSize']) ?></td>
+                </tr>
             <?php if ($section['ClassSize'] > 0): ?>
+        </table>
+  
+        </div>
                 <table>
                     <thead>
                         <tr>
