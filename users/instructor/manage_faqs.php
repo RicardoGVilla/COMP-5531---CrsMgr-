@@ -47,13 +47,9 @@ if (!$selectedCourseId) {
 
         <!-- Sidebar Navigation -->
         <div class="sidebar">
-            <button onclick="location.href='manage_user.php'">Manage Users</button>
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_sections.php'">Manage Sections</button>
-            <button onclick="location.href='manage_groups.php'">Manage Groups</button>
-            <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
-            <button class="is-selected" onclick="location.href='manage_faqs.php'">FAQ Management</button>
-            <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+        <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
         </div>
 
         <!-- Main Content -->
