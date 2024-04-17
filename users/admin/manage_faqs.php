@@ -76,7 +76,7 @@ function getFaqsForCourse($pdo, $courseId) {
                     <div class="input-body">
                         <input type="text" name="question" placeholder="FAQ Question" required />
                         <select name="course_id">
-                            <option value="">Select Course (optional)</option>
+                            <option value="">Select Course</option>
                             <?php foreach ($courses as $course): ?>
                                 <option value="<?= htmlspecialchars($course['CourseID']) ?>">
                                     <?= htmlspecialchars($course['Name']) ?>
@@ -99,7 +99,7 @@ function getFaqsForCourse($pdo, $courseId) {
                         <input type="number" name="faq_id" placeholder="FAQ ID" required />
                         <input type="text" name="new_question" placeholder="New Question" />
                         <select name="new_course_id">
-                            <option value="">Select New Course (optional)</option>
+                            <option value="">Select Course</option>
                             <?php foreach ($courses as $course): ?>
                                 <option value="<?= htmlspecialchars($course['CourseID']) ?>">
                                     <?= htmlspecialchars($course['Name']) ?>
