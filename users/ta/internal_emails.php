@@ -187,11 +187,7 @@ switch ($action) {
                     <h2>Send an Email</h2>
                     <form action="send_email.php" method="post">
                         <input type="hidden" name="action" value="send_email">
-<<<<<<< HEAD
                         <label for="recipients">Recipients (Seperate email addresses with a comma):</label>
-=======
-                        <label for="recipients">Recipients (comma-separated email addresses):</label>
->>>>>>> 7da19dc9fe59bef0706c0783c686576f2457d95e
                         <input type="email" id="recipients" name="recipients" required multiple pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
                         <label for="subject">Subject:</label>
                         <input type="text" id="subject" name="subject" required>
