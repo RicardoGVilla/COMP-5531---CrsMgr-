@@ -114,6 +114,8 @@ if ($currentInstructorId && $selectedCourseId) {
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button class="is-selected" onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
+            <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
+
         </div>
 
         <main class="main">
