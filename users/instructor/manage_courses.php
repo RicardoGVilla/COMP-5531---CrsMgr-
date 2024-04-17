@@ -65,7 +65,6 @@ try {
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
             <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
-
         </div>
 
         <main class="main">
@@ -138,7 +137,7 @@ try {
                             <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
                             <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
                             <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
-                            <input type="submit" value="Enroll Student">
+                            <input class="button is-primary" type="submit" value="Enroll Student">
                         </form>
                     </div>
                 </div>
