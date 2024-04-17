@@ -58,10 +58,11 @@ try {
         </header>
 
         <div class="sidebar">
-        <button onclick="location.href='contact_information.php'">Contact Information</button>
+            <button onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
             <button onclick="location.href='group-information.php'">My Group Information </button>
-            <button>My Group (Internal Communication)</button>
+            <button onclick="location.href='manage-files.php'"> Manage Files </button>
+            <button onclick="location.href='internal_emails.php'">Email</button>
         </div>
 
         <main class="main">
