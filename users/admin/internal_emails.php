@@ -173,9 +173,13 @@ switch ($action) {
         <!-- Sidebar -->
         <div class="sidebar">
             <!-- Sidebar buttons -->
+            <button onclick="location.href='manage_user.php'">Manage Users</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-            <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
+            <button onclick="location.href='manage_sections.php'">Manage Sections</button>
+            <button onclick="location.href='manage_groups.php'">Manage Groups</button>
+            <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
+            <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
+            <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
             <button onclick="location.href='internal_emails.php'">Email</button>
         </div>
 
@@ -202,6 +206,7 @@ switch ($action) {
                     <button onclick="location.href='internal_emails.php?action=view_inbox';">View Inbox</button>
                     <button onclick="location.href='internal_emails.php?action=view_sent';">View Sent Emails</button>
                 </div>
+                <div id="emailDisplay"></div>
             </div>
         </main>
 
