@@ -47,8 +47,7 @@ $course = $stmt->fetch(PDO::FETCH_ASSOC);
 <body>
     <div class="page">
         <header class="header">
-            <h1>Course Details</h1>
-            <p>Welcome, <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?></p>
+            <h1>Welcome <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?></h1>
         </header>
         
         <div class="sidebar">
@@ -59,6 +58,7 @@ $course = $stmt->fetch(PDO::FETCH_ASSOC);
         </div>
 
         <main class="main">
+            <h2>Course Details</h2>
             <div class="table-wrapper">
                 <?php if ($course): ?>
                     <table class="content-table">

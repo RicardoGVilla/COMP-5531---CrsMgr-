@@ -58,16 +58,15 @@ try {
         </header>
 
         <div class="sidebar">
-        <button onclick="location.href='contact_information.php'">Contact Information</button>
-            <button onclick="location.href='faq-information.php'">FAQ</button>
+            <button onclick="location.href='contact_information.php'">Contact Information</button>
+            <button class="is-selected" onclick="location.href='faq-information.php'">FAQ</button>
             <button onclick="location.href='group-information.php'">My Group Information </button>
             <button>My Group (Internal Communication)</button>
         </div>
 
         <main class="main">
+            <h2>Current Course: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
             <div class="table-wrapper">
-                <h2>Current Course: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
-    
                 <h3>FAQs</h3>
                 <?php if (!empty($faqs)): ?>
                 <table class="content-table">
@@ -91,20 +90,18 @@ try {
                 <?php endif; ?>
             </div>
 
-<h3>Add New FAQ</h3>
-<form action="add_faq.php" method="post">
-    <p>
-        <label for="question">Question:</label>
-        <input type="text" id="question" name="question" required>
-    </p>
-    <p>
-        <label for="answer">Answer:</label>
-        <textarea id="answer" name="answer" required></textarea>
-    </p>
-    <p>
-        <input type="submit" value="Submit FAQ">
-    </p>
-</form>
+            <div class="table-wrapper">
+                <h3>Add New FAQ</h3>
+                <form class="inline-form" action="add_faq.php" method="post">
+                    <div class="input-body">
+                        <label for="question">Question:</label>
+                        <input type="text" id="question" name="question" required>
+                    </div>
+                    <div>
+                        <input class="button is-primary" type="submit" value="Submit FAQ">
+                    </div>
+                </form>
+            </div>
 
         
         </main>

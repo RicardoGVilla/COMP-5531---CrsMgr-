@@ -70,7 +70,7 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
 <body>
     <div class="page">
         <header class="header">
-            <h1>Welcome Student <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?></h1>
+            <h1>Welcome <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?></h1>
         </header>
 
         <div class="sidebar">
