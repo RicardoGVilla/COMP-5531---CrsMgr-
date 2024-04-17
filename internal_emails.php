@@ -64,3 +64,59 @@ switch ($action) {
         break;
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email System</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        label, input, textarea, button { display: block; margin-top: 10px; }
+        input, textarea { width: 300px; padding: 8px; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .email-item { margin-bottom: 20px; padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Email System</h1>
+
+    <!-- Form to Send Email -->
+    <h2>Send Email</h2>
+    <form action="internal_emails.php" method="post">
+        <input type="hidden" name="action" value="send_email">
+        <label for="recipients">Recipients (comma-separated IDs):</label>
+        <input type="text" id="recipients" name="recipients" required>
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required>
+        <label for="body">Body:</label>
+        <textarea id="body" name="body" required></textarea>
+        <button type="submit">Send Email</button>
+    </form>
+
+    <!-- Links to View Inbox and Sent Emails -->
+    <h2>View Emails</h2>
+    <button onclick="window.location.href='internal_emails.php?action=view_inbox';">View Inbox</button>
+    <button onclick="window.location.href='internal_emails.php?action=view_sent';">View Sent Emails</button>
+
+    <!-- Script for Handling AJAX Requests Optionally -->
+    <script>
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                if (this.getAttribute('type') !== 'submit') {
+                    event.preventDefault();
+                    fetch(this.getAttribute('data-url'))
+                        .then(response => response.text())
+                        .then(html => document.getElementById('emailDisplay').innerHTML = html)
+                        .catch(error => console.error('Error loading the data:', error));
+                }
+            });
+        });
+    </script>
+
+    <!-- Container to Display Emails -->
+    <div id="emailDisplay"></div>
+</body>
+</html>
