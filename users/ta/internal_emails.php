@@ -3,21 +3,43 @@ session_start();
 include_once 'database.php';
 
 // Utility Functions
-function sendEmail($pdo, $sender_id, $recipients, $subject, $body) {
+function sendEmail($pdo, $sender_id, $recipient_emails, $subject, $body) {
     try {
         $pdo->beginTransaction();
+
+        // Insert email into InternalEmail table
         $stmt = $pdo->prepare("INSERT INTO InternalEmail (SenderID, Subject, Body) VALUES (?, ?, ?)");
         $stmt->execute([$sender_id, $subject, $body]);
         $email_id = $pdo->lastInsertId();
 
-        $stmt = $pdo->prepare("INSERT INTO EmailRecipient (EmailID, RecipientID) VALUES (?, ?)");
-        foreach (explode(',', $recipients) as $recipient_id) {
-            $stmt->execute([$email_id, trim($recipient_id)]);
+        // Convert email addresses to user IDs
+        $recipient_ids = [];
+        foreach (explode(',', $recipient_emails) as $recipient_email) {
+            // Remove whitespace and ensure lowercase for accurate comparison
+            $recipient_email = strtolower(trim($recipient_email));
+
+            // Find the user ID associated with the email address
+            $userStmt = $pdo->prepare("SELECT UserID FROM `User` WHERE EmailAddress = ?");
+            $userStmt->execute([$recipient_email]);
+            $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                $recipient_ids[] = $user['UserID'];
+            } else {
+                // Handle the case where the email address does not correspond to a user
+                throw new Exception("No user found for email address: " . $recipient_email);
+            }
+        }
+
+        // Insert recipient user IDs into EmailRecipient table
+        $recipientStmt = $pdo->prepare("INSERT INTO EmailRecipient (EmailID, RecipientID) VALUES (?, ?)");
+        foreach ($recipient_ids as $recipient_id) {
+            $recipientStmt->execute([$email_id, $recipient_id]);
         }
 
         $pdo->commit();
         return "Email sent successfully!";
-    } catch (PDOException $e) {
+    } catch (Exception $e) {
         $pdo->rollBack();
         return "Error sending email: " . $e->getMessage();
     }
@@ -40,8 +62,20 @@ $action = $_POST['action'] ?? $_GET['action'] ?? '';
 switch ($action) {
     case 'send_email':
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $message = sendEmail($pdo, $_SESSION['UserID'], $_POST['recipients'], $_POST['subject'], $_POST['body']);
-            echo $message;
+            // Basic validation to ensure required fields are not empty
+            if (!empty($_POST['recipients']) && !empty($_POST['subject']) && !empty($_POST['body'])) {
+                // Call the sendEmail function with sanitized inputs
+                $message = sendEmail(
+                    $pdo, 
+                    $_SESSION['UserID'], 
+                    filter_var($_POST['recipients'], FILTER_SANITIZE_EMAIL), // Though this is not ideal for a list, further processing is assumed inside the function
+                    filter_var($_POST['subject'], FILTER_SANITIZE_STRING),
+                    filter_var($_POST['body'], FILTER_SANITIZE_STRING)
+                );
+                echo $message;
+            } else {
+                echo "Error: All fields are required!";
+            }
         }
         break;
     case 'view_inbox':
@@ -49,7 +83,7 @@ switch ($action) {
         foreach ($emails as $email) {
             echo "<div class='email-item'>From: " . htmlspecialchars($email['SenderName']) .
                  "<br>Subject: " . htmlspecialchars($email['Subject']) .
-                 "<br>Received: " . $email['Timestamp'] .
+                 "<br>Received: " . htmlspecialchars($email['Timestamp']) .
                  "<br><a href='view_email.php?email_id=" . $email['EmailID'] . "'>Read Email</a></div><br>";
         }
         break;
@@ -58,7 +92,7 @@ switch ($action) {
         foreach ($sent_emails as $email) {
             echo "<div class='email-item'>To: " . htmlspecialchars($email['RecipientNames']) .
                  "<br>Subject: " . htmlspecialchars($email['Subject']) .
-                 "<br>Sent: " . $email['Timestamp'] .
+                 "<br>Sent: " . htmlspecialchars($email['Timestamp']) .
                  "<br><a href='view_sent_email.php?email_id=" . $email['EmailID'] . "'>View Sent Email</a></div><br>";
         }
         break;
@@ -153,14 +187,14 @@ switch ($action) {
                     <h2>Send an Email</h2>
                     <form action="send_email.php" method="post">
                         <input type="hidden" name="action" value="send_email">
-                        <label for="recipients">Recipients (comma-separated IDs):</label>
-                        <input type="text" id="recipients" name="recipients" required>
+                        <label for="recipients">Recipients (Seperate email addresses with a comma):</label>
+                        <input type="email" id="recipients" name="recipients" required multiple pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
                         <label for="subject">Subject:</label>
                         <input type="text" id="subject" name="subject" required>
                         <label for="body">Body:</label>
                         <textarea id="body" name="body" rows="4" required></textarea>
                         <button type="submit">Send Email</button>
-                    </form>
+                     </form>
                 </div>
 
                 <!-- Email navigation buttons -->
