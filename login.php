@@ -36,7 +36,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["user"] = $user;
             $roles = getUserRoles($user['UserID'], $pdo);
 
-            if (in_array('Admin', $roles)) {
+            if (empty($roles)) {
+                // If no roles are assigned, redirect to login page with an error message
+                header("Location: login.php?error=no_role_assigned");
+                exit;
+            } elseif (in_array('Admin', $roles)) {
                 header("Location: users/admin/home.php");
             } elseif (in_array('Instructor', $roles)) {
                 $stmtCourses = $pdo->prepare("SELECT COUNT(DISTINCT CourseID) AS CourseCount FROM CourseInstructor WHERE InstructorID = :userId");
@@ -44,10 +48,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $coursesResult = $stmtCourses->fetch(PDO::FETCH_ASSOC);
 
                 if ($coursesResult && $coursesResult['CourseCount'] > 1) {
-                    // If the instructor teaches more than one course, redirect to choose_course.php
                     header("Location: users/instructor/choose_course.php");
                 } else {
-                    // If the instructor teaches only one course, redirect to the instructor home page
                     header("Location: users/instructor/home.php");
                 }
                 exit;
@@ -134,8 +136,12 @@ function getUserRoles($userID, $pdo) {
                     <div class="forgot-password">Forgot Password? <span>Click here</span></div>
                 
                     <?php
-                    if (isset($_GET["error"]) && $_GET["error"] === "invalid_credentials") {
-                        echo "<p style='color: red;'>Invalid email or password. Please try again.</p>";
+                    if (isset($_GET["error"])) {
+                        if ($_GET["error"] === "invalid_credentials") {
+                            echo "<p style='color: red;'>Invalid email or password. Please try again.</p>";
+                        } elseif ($_GET["error"] === "no_role_assigned") {
+                            echo "<p style='color: red;'>You have not been assigned to any course yet. Please contact your administrator.</p>";
+                        }
                     }
                     ?>
                 </form>

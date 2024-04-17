@@ -116,7 +116,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     </header> 
 
     <div class="sidebar">
-        <button onclick="location.href='manage_user.php'">Manage Users</button>
+        <button onclick="location.href='create_user.php'">Manage Users</button>
+        <button onclick="location.href='manage_user.php'">Manage Roles</button>
         <button onclick="location.href='manage_courses.php'">Manage Courses</button>
         <button onclick="location.href='manage_sections.php'">Manage Sections</button>
         <button class="is-selected" onclick="location.href='manage_groups.php'">Manage Groups</button>
@@ -156,6 +157,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     <li>No members in this group.</li>
                                 <?php endif; ?>
                             </ul>
+                            <br>
+                            <hr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>No groups for this course.</p>

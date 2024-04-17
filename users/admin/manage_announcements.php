@@ -76,7 +76,8 @@ try {
         </header> 
     
         <div class="sidebar">
-            <button onclick="location.href='manage_user.php'">Manage Users</button>
+            <button onclick="location.href='create_user.php'">Manage Users</button>
+            <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
@@ -101,14 +102,14 @@ try {
                         </select>
                         <input type="text" name="title" placeholder="Announcement Title" required />
                     </div>
-                    <textarea name="content" placeholder="Announcement Content" required></textarea>
+                    <textarea name="content" placeholder="Announcement Content" rows="7" required></textarea>
                     <div>
                         <button class="button is-primary" type="submit">Post Announcement</button>
                     </div>
                 </form>
             </div>
 
-            <div class="announcement-list">
+            <div class="announcement-list table-wrapper">
                 <h2>Existing Announcements</h2>
                 <?php if (empty($announcements)): ?>
                     <p>No announcements found.</p>
@@ -121,8 +122,12 @@ try {
                                 <p><strong>Course:</strong> <?php echo $announcement['CourseName']; ?></p>
                                 <p><strong>Date:</strong> <?php echo $announcement['AnnouncementDate']; ?></p>
                             </li>
+                            <br>
+                            <hr>
+                            <br>
                         <?php endforeach; ?>
                     </ul>
+                    
                 <?php endif; ?>
             </div>
         </main>

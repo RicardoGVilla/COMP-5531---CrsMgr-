@@ -56,14 +56,14 @@ try {
 <body>
     <div class="page">
         <header class="header">
-            <h1>Welcome Student <?php echo htmlspecialchars($currentUserName); ?></h1>
+            <h1>Welcome <?php echo htmlspecialchars($currentUserName); ?></h1>
             <p>Course: <?php echo htmlspecialchars($currentCourseName); ?></p>
         </header>
 
         <div class="sidebar">
             <button onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
-            <button onclick="location.href='group-information.php'">My Group Information </button>
+            <button class="is-selected" onclick="location.href='group-information.php'">My Group Information </button>
             <button>My Group (Internal Communication)</button>
         </div>
 

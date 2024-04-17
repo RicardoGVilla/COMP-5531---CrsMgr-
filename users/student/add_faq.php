@@ -12,9 +12,8 @@ if (!isset($_SESSION["user"]["UserID"])) {
 }
 
 // Check if there's a POST request
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['question'], $_POST['answer'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['question'])) {
     $question = $_POST['question'];
-    $answer = $_POST['answer'];
     $courseId = $_SESSION['selectedCourseId'] ?? null;
 
     // Ensure that a course is selected
@@ -23,11 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['question'], $_POST['an
     }
 
     // Prepare SQL query to insert FAQ
-    $sql = "INSERT INTO FAQ (CourseID, Question, Answer) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO FAQ (CourseID, Question) VALUES (?, ?)";
     $stmt = $pdo->prepare($sql);
     
     try {
-        $stmt->execute([$courseId, $question, $answer]);
+        $stmt->execute([$courseId, $question]);
         echo "FAQ added successfully!";
     } catch (PDOException $e) {
         die("Error adding FAQ: " . $e->getMessage());

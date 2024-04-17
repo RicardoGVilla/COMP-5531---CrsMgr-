@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
         $_SESSION["selectedCourseName"] = $course['Name'];
 
         // Redirect to the student home page
-        header('Location: /Final_Assignment_CrsMgr/users/student/home.php');
+        header('Location: home.php');
         exit;
     } else {
         // If the user is not enrolled in the selected course, handle the error

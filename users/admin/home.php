@@ -7,13 +7,6 @@ if (!isset($_SESSION["user"]["UserID"])) {
     header("Location: ../../login.php"); // Redirect to login page if not logged in
     exit;
 }
-
-// Check if selected course information is available in session
-if (!isset($_SESSION["selectedCourseName"])) {
-    // Redirect to choose-class.php to select a course if no course is selected
-    header("Location: choose-class.php");
-    exit;
-}
 ?>
 
 
@@ -32,7 +25,8 @@ if (!isset($_SESSION["selectedCourseName"])) {
         </header>
 
         <div class="sidebar">
-            <button onclick="location.href='manage_user.php'">Manage Users</button>
+        <button onclick="location.href='create_user.php'">Manage Users</button>
+            <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>

@@ -35,27 +35,31 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Class</title>
-    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="../../css/index.css"> 
     <style>
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Welcome, <?php echo htmlspecialchars($userName); ?>!</h2>
-        <h3>Select Your Class</h3>
-        <form action="ta_redirect.php" method="post">
-            <div class="form-group">
-                <label for="courseSelect">Choose a course:</label>
-                <select name="course" id="courseSelect" class="form-control">
-                    <?php foreach ($courses as $course): ?>
-                        <option value="<?php echo htmlspecialchars($course['CourseID']); ?>">
-                            <?php echo htmlspecialchars($course['Name']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+    <div class="hundredvh-container">
+        <div class=" table-wrapper">
+            <div class="login-header">
+                <h2>Welcome, <?php echo htmlspecialchars($userName); ?>!</h2>
             </div>
-            <button type="submit" class="form-button">Go to Class</button>
-        </form>
+            <h3>Select Your Class</h3>
+            <form class="inline-form"  action="ta_redirect.php" method="post">
+                <div class="form-group input-body">
+                    <label for="courseSelect">Choose a course:</label>
+                    <select name="course" id="courseSelect" class="form-control">
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?php echo htmlspecialchars($course['CourseID']); ?>">
+                                <?php echo htmlspecialchars($course['Name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <button class="button is-primary" type="submit" class="form-button">Go to Class</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -44,7 +44,8 @@ function getFaqsForCourse($pdo, $courseId) {
         
         <!-- Sidebar Navigation -->
         <div class="sidebar">
-            <button onclick="location.href='manage_user.php'">Manage Users</button>
+            <button onclick="location.href='create_user.php'">Manage Users</button>
+            <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
@@ -76,7 +77,7 @@ function getFaqsForCourse($pdo, $courseId) {
                     <div class="input-body">
                         <input type="text" name="question" placeholder="FAQ Question" required />
                         <select name="course_id">
-                            <option value="">Select Course (optional)</option>
+                            <option value="">Select Course</option>
                             <?php foreach ($courses as $course): ?>
                                 <option value="<?= htmlspecialchars($course['CourseID']) ?>">
                                     <?= htmlspecialchars($course['Name']) ?>
@@ -84,45 +85,44 @@ function getFaqsForCourse($pdo, $courseId) {
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <textarea name="answer" placeholder="FAQ Answer" required></textarea>
+                    <textarea name="answer" placeholder="FAQ Answer" rows="7" required></textarea>
                     <div>
                         <button class="button is-primary" type="submit">Add FAQ</button>
                     </div>
                 </form>
             </div>
 
-           <!-- Update FAQ Form -->
-<div id="update-faq" class="faq-form table-wrapper" style="display: none;">
-    <h2>Update FAQ</h2>
-    <form class="inline-form" action="edit_faq_endpoint.php" method="post">
-        <div class="input-body">
-            <input type="number" name="faq_id" placeholder="FAQ ID" required />
-            <input type="text" name="new_question" placeholder="New Question" />
-            <select name="new_course_id">
-                <option value="">Select New Course (optional)</option>
-                <?php foreach ($courses as $course): ?>
-                    <option value="<?= htmlspecialchars($course['CourseID']) ?>">
-                        <?= htmlspecialchars($course['Name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <textarea name="new_answer" placeholder="New Answer"></textarea>
-        <div>
-            <button class="button is-secondary" type="submit">Update FAQ</button>
-        </div>
-    </form>
-</div>
+            <!-- Update FAQ Form -->
+            <div id="update-faq" class="faq-form table-wrapper" style="display: none;">
+                <h2>Update FAQ</h2>
+                <form class="inline-form" action="edit_faq_endpoint.php" method="post">
+                    <div class="input-body">
+                        <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                        <input type="text" name="new_question" placeholder="New Question" />
+                        <select name="new_course_id">
+                            <option value="">Select Course</option>
+                            <?php foreach ($courses as $course): ?>
+                                <option value="<?= htmlspecialchars($course['CourseID']) ?>">
+                                    <?= htmlspecialchars($course['Name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <textarea name="new_answer" placeholder="New Answer"></textarea>
+                    <div>
+                        <button class="button is-secondary" type="submit">Update FAQ</button>
+                    </div>
+                </form>
+            </div>
 
-<!-- Delete FAQ Form -->
-<div id="delete-faq" class="faq-form" style="display: none;">
-    <h2>Delete FAQ</h2>
-    <form action="edit_faq_endpoint.php" method="post">
-        <input type="number" name="faq_id" placeholder="FAQ ID" required />
-        <button class="button is-delete" type="submit">Delete FAQ</button>
-    </form>
-</div>
-
+            <!-- Delete FAQ Form -->
+            <div id="delete-faq" class="faq-form table-wrapper" style="display: none;">
+                <h2>Delete FAQ</h2>
+                <form action="edit_faq_endpoint.php" method="post">
+                    <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                    <button class="button is-delete" type="submit">Delete FAQ</button>
+                </form>
+            </div>
 
             <div class="faq-actions">
                 <button class="button is-primary"  onclick="showForm('add')">Add FAQ</button>
@@ -130,15 +130,17 @@ function getFaqsForCourse($pdo, $courseId) {
                 <button class="button is-delete"  onclick="showForm('delete')">Delete FAQ</button>
             </div>
 
-             <!-- Course and FAQs Overview -->
-             <?php foreach ($courses as $course): ?>
+            <br>
+            <!-- Course and FAQs Overview -->
+            <div class="table-wrapper">
+            <?php foreach ($courses as $course): ?>
                 <div class="course-faq-section">
                     <h3><?= htmlspecialchars($course['Name']) ?></h3>
                     <?php 
                         $faqs = getFaqsForCourse($pdo, $course['CourseID']);
                         if (count($faqs) > 0):
                     ?>
-                    <table>
+                    <table class="content-table">
                         <thead>
                             <tr>
                                 <th>FAQ ID</th>
@@ -160,11 +162,11 @@ function getFaqsForCourse($pdo, $courseId) {
                         <p>No FAQs found for this course.</p>
                     <?php endif; ?>
                 </div>
+                <br>
+                <br>
             <?php endforeach; ?>
+            </div>
         </main>
-
-
-        
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>

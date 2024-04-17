@@ -55,33 +55,50 @@ try {
     <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
-<div class="page">
-    <header class="header">
-        <h1>Welcome Instructor</h1>
-    </header> 
-    
-    <div class="sidebar">
-        <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-        <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-        <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
-    </div>
+    <div class="page">
+        <header class="header">
+            <h1>Welcome Instructor</h1>
+        </header> 
+        
+        <div class="sidebar">
+            <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
+            <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
+        </div>
 
-    <main class="main">
-        <h2>Course Information</h2>
-        <p>Course Name: <?php echo htmlspecialchars($courseName); ?></p>
-        <p>Course ID: <?php echo htmlspecialchars($courseID); ?></p>
-        <?php foreach ($courseSections as $section): ?>
-            <h3>Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
-            <p>Start Date: <?= htmlspecialchars($section['StartDate']) ?></p>
-            <p>End Date: <?= htmlspecialchars($section['EndDate']) ?></p>
-            <p>Class Size: <?= htmlspecialchars($section['ClassSize']) ?></p>
-            <?php if ($section['ClassSize'] > 0): ?>
-                <table>
+        <main class="main">
+            <h2>Course Information</h2>
+            <div class="table-wrapper">
+                <table class="content-table">
+                    <tr>
+                        <th>Course Name</th>
+                        <th>Course ID</th>
+                        <th>Section</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Class Size</th>
+                    </tr>
+                    <?php foreach ($courseSections as $section): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($courseName); ?></td> 
+                            <td><?php echo htmlspecialchars($courseID); ?></td> 
+                            <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
+                            <td><?= htmlspecialchars($section['StartDate']) ?></td>
+                            <td><?= htmlspecialchars($section['EndDate']) ?></td>
+                            <td><?= htmlspecialchars($section['ClassSize']) ?></td>
+                        </tr>
+                    <?php if ($section['ClassSize'] > 0): ?>
+                </table>
+            </div>
+            <div class="table-wrapper">
+                <table class="content-table">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,61 +117,111 @@ try {
                                 <td><?= htmlspecialchars($student['UserID']) ?></td>
                                 <td><?= htmlspecialchars($student['Name']) ?></td>
                                 <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                                <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php else: ?>
-                <p>There are no students yet.</p>
-            <?php endif; ?>
-            <button onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
-            <!-- Modal -->
-            <div id="myModal<?= $section['SectionID'] ?>" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
-                    <h3>Add Student</h3>
-                    <form id="studentForm<?= $section['SectionID'] ?>" method="post" action="edit_courses_endpoint.php">
-                        <input type="hidden" name="action" value="enroll_student">
-                        <input type="hidden" name="course_id" value="<?= $courseID ?>">
-                        <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
-                        <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
-                        <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
-                        <input type="submit" value="Enroll Student">
-                    </form>
-                </div>
+                <?php else: ?>
+                    <p>There are no students yet.</p>
+                <?php endif; ?>
+                <br>
+                <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
             </div>
-        <?php endforeach; ?>
-    </main>
+                <!-- Modal -->
+                <div id="myModal<?= $section['SectionID'] ?>" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
+                        <h3>Add Student</h3>
+                        <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
+                            <input type="hidden" name="action" value="enroll_student">
+                            <input type="hidden" name="course_id" value="<?= $courseID ?>">
+                            <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                            <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
+                            <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
+                            <input class="button is-primary" type="submit" value="Enroll Student">
+                        </form>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+        </main>
 
-    <footer class="footer">
-        <button onclick="location.href='home.php'">Home</button>
-        <button onclick="location.href='../../logout.php'">Logout</button>
-    </footer>
-</div>
+        <footer class="footer">
+            <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
+        </footer>
+    </div>
 
-<script>
-    // Modal functions
-    function openModal(sectionID) {
-        var modal = document.getElementById('myModal' + sectionID);
-        modal.style.display = "block";
-    }
+    <script>
+        // Function to enroll a student asynchronously
+        function enrollStudent(event, sectionID) {
+            event.preventDefault(); // Prevent default form submission
 
-    function closeModal(sectionID) {
-        var modal = document.getElementById('myModal' + sectionID);
-        modal.style.display = "none";
-    }
+            var form = document.getElementById('studentForm' + sectionID);
+            var formData = new FormData(form);
 
-    window.onclick = function(event) {
-        var modals = document.getElementsByClassName('modal');
-        for (var i = 0; i < modals.length; i++) {
-            var modal = modals[i];
-            if (event.target == modal) {
-                var sectionID = modal.id.replace('myModal', '');
-                closeModal(sectionID);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'edit_courses_endpoint.php');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = xhr.responseText;
+                    alert(response); // Show the response message
+                    // Optionally, you can update the page content dynamically here
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                alert('Request failed.');
+            };
+            xhr.send(formData);
+        }
+
+        // Modal functions
+        function openModal(sectionID) {
+            var modal = document.getElementById('myModal' + sectionID);
+            modal.style.display = "block";
+        }
+
+        function closeModal(sectionID) {
+            var modal = document.getElementById('myModal' + sectionID);
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName('modal');
+            for (var i = 0; i < modals.length; i++) {
+                var modal = modals[i];
+                if (event.target == modal) {
+                    var sectionID = modal.id.replace('myModal', '');
+                    closeModal(sectionID);
+                }
             }
         }
-    }
-</script>
+        function removeStudent(sectionID, studentID) {
+            var confirmation = confirm("Are you sure you want to remove this student?");
+            if (confirmation) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'edit_courses_endpoint.php');
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var response = xhr.responseText;
+                        alert(response); // Show the response message
+                        // Optionally, you can update the page content dynamically here
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + xhr.statusText);
+                    }
+                };
+                xhr.onerror = function() {
+                    alert('Request failed.');
+                };
+                xhr.send('action=remove_student&section_id=' + sectionID + '&student_id=' + studentID);
+            }
+        }
+    </script>
 
 </body>
 </html>

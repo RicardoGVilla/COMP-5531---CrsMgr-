@@ -59,7 +59,8 @@ GROUP BY c.CourseID;
         </header> 
        
         <div class="sidebar">
-            <button onclick="location.href='manage_user.php'">Manage Users</button>
+            <button onclick="location.href='create_user.php'">Manage Users</button>
+            <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
@@ -94,7 +95,6 @@ GROUP BY c.CourseID;
                             <label for="end_date">End Date:</label>
                             <input type="date" id="end_date" name="end_date" placeholder="End Date" required />
                         </div>
-
                         <div class="label-input">
                             <label for="instructors">Instructors:</label>
                             <!-- Dropdown menu for selecting instructors -->

@@ -8,7 +8,7 @@
   margin-block-end: 15px;
 }
 
-.table-wrapper h2 {
+.table-wrapper h2, h3{
   margin-block-start: 0;
 }
 
@@ -17,6 +17,7 @@
   font-size: 0.9em;
   min-width: 400px;
   width: 100%;
+  text-align: left;
 }
 
 .content-table thead th {
