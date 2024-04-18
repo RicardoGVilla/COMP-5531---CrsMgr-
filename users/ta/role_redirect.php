@@ -17,8 +17,7 @@ if (isset($_POST['role'])) {
             header("Location: ../../login.php");
             exit;
         }
-        $studentID = $_SESSION["user"]["UserID"]; // Use the session variable as per the new structure
-        
+        $studentID = $_SESSION["user"]["UserID"]; 
         // Prepare the SQL query using PDO
         $query = "SELECT COUNT(DISTINCT CourseID) AS numCourses FROM StudentEnrollment WHERE StudentID = :studentId";
         $stmt = $pdo->prepare($query);
