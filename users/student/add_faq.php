@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['question'])) {
     
     try {
         $stmt->execute([$courseId, $question]);
-        echo "FAQ added successfully!";
+        //echo "FAQ added successfully!";
     } catch (PDOException $e) {
         die("Error adding FAQ: " . $e->getMessage());
     }

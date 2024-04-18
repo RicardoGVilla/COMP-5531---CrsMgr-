@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif (in_array('Admin', $roles)) {
                 header("Location: users/admin/home.php");
             } elseif (in_array('Instructor', $roles)) {
-                header("Location: users/instructor/home.php");
+                header("Location: users/instructor/choose_course.php");
                 exit;
             } elseif (in_array('TA', $roles)) {
                 header("Location: users/ta/choose-role.php");

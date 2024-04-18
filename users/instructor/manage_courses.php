@@ -80,17 +80,17 @@ try {
                         <th>Class Size</th>
                     </tr>
                     <?php foreach ($courseSections as $section): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($courseName); ?></td> 
-                            <td><?php echo htmlspecialchars($courseID); ?></td> 
-                            <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
-                            <td><?= htmlspecialchars($section['StartDate']) ?></td>
-                            <td><?= htmlspecialchars($section['EndDate']) ?></td>
-                            <td><?= htmlspecialchars($section['ClassSize']) ?></td>
-                        </tr>
-                    <?php if ($section['ClassSize'] > 0): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($courseName); ?></td> 
+                        <td><?php echo htmlspecialchars($courseID); ?></td> 
+                        <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
+                        <td><?= htmlspecialchars($section['StartDate']) ?></td>
+                        <td><?= htmlspecialchars($section['EndDate']) ?></td>
+                        <td><?= htmlspecialchars($section['ClassSize']) ?></td>
+                    </tr>
                 </table>
             </div>
+            <?php if ($section['ClassSize'] > 0): ?>
             <div class="table-wrapper">
                 <table class="content-table">
                     <thead>
@@ -124,26 +124,26 @@ try {
                 </table>
                 <?php else: ?>
                     <p>There are no students yet.</p>
-                <?php endif; ?>
-                <br>
-                <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
+                    <br>
+                    <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
             </div>
-                <!-- Modal -->
-                <div id="myModal<?= $section['SectionID'] ?>" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
-                        <h3>Add Student</h3>
-                        <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
-                            <input type="hidden" name="action" value="enroll_student">
-                            <input type="hidden" name="course_id" value="<?= $courseID ?>">
-                            <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
-                            <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
-                            <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
-                            <input class="button is-primary" type="submit" value="Enroll Student">
-                        </form>
-                    </div>
+            <?php endif; ?>
+            <!-- Modal -->
+            <div id="myModal<?= $section['SectionID'] ?>" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
+                    <h3>Add Student</h3>
+                    <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
+                        <input type="hidden" name="action" value="enroll_student">
+                        <input type="hidden" name="course_id" value="<?= $courseID ?>">
+                        <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                        <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
+                        <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
+                        <input class="button is-primary" type="submit" value="Enroll Student">
+                    </form>
                 </div>
-                <?php endforeach; ?>
+            </div>
+            <?php endforeach; ?>
         </main>
 
         <footer class="footer">
