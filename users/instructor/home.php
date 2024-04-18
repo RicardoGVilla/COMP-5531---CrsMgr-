@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
 <body>
     <div class="page">
         <header class="header">
-            <h1>Welcome <?php echo htmlspecialchars($userName); ?> [Instructor]</h1>
+            <h1>Welcome TA <?php echo htmlspecialchars($userName); ?> [Instructor]</h1>
         </header>
 
         <div class="sidebar">
@@ -47,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
             <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
+            <button onclick="location.href='internal_emails.php'">Email</button>
         </div>
 
         <main class="main">
