@@ -53,14 +53,16 @@ function sendEmail($pdo, $senderID, $recipient_emails, $subject, $body) {
 }
 
 function fetchInbox($pdo, $user_id) {
+    global $loggedUserId;
     $stmt = $pdo->prepare("SELECT InternalEmail.EmailID, InternalEmail.Subject, InternalEmail.Body, InternalEmail.Timestamp, `User`.Name AS SenderName FROM InternalEmail JOIN EmailRecipient ON InternalEmail.EmailID = EmailRecipient.EmailID JOIN `User` ON InternalEmail.SenderID = `User`.UserID WHERE EmailRecipient.RecipientID = ? ORDER BY InternalEmail.Timestamp DESC");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$loggedUserId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function fetchSentEmails($pdo, $user_id) {
+    global $loggedUserId;
     $stmt = $pdo->prepare("SELECT InternalEmail.EmailID, InternalEmail.Subject, InternalEmail.Body, InternalEmail.Timestamp, GROUP_CONCAT(`User`.Name SEPARATOR ', ') AS RecipientNames FROM InternalEmail JOIN EmailRecipient ON InternalEmail.EmailID = EmailRecipient.EmailID JOIN `User` ON EmailRecipient.RecipientID = `User`.UserID WHERE InternalEmail.SenderID = ? GROUP BY InternalEmail.EmailID ORDER BY InternalEmail.Timestamp DESC");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$loggedUserId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
