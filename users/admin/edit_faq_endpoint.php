@@ -34,7 +34,20 @@ try {
             $new_course_id = $_POST['new_course_id'] !== '' ? $_POST['new_course_id'] : NULL;
             updateFAQ($pdo, $_POST['faq_id'], $_POST['new_question'], $_POST['new_answer'], $new_course_id);
             $message = 'FAQ updated successfully!';
-        } else {
+        } elseif(isset($_POST['faq_id'], $_POST['new_course_id'])){
+
+            $faq_id = $_POST['faq_id'];
+            $new_course_id = $_POST['new_course_id'];
+
+            if (exportFAQ($pdo, $faq_id, $new_course_id)) {
+                $message = 'FAQ updated successfully!';
+            } else {
+                $error = 'Failed to update FAQ. FAQ ID not found or database error occurred.';
+            }
+
+
+
+        }else {
             // Delete FAQ logic
             deleteFAQ($pdo, $_POST['faq_id']);
             $message = 'FAQ deleted successfully!';
@@ -43,6 +56,37 @@ try {
 } catch (PDOException $e) {
     $error = 'Database error: ' . $e->getMessage();
 }
+
+function exportFAQ($pdo, $faq_id, $new_course_id) {
+    try {
+        // Fetch FAQ details based on the provided FAQID
+        $faqQuery = "SELECT * FROM FAQ WHERE FAQID = :faq_id";
+        $stmt = $pdo->prepare($faqQuery);
+        $stmt->execute([':faq_id' => $faq_id]);
+        $faq = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($faq) {
+            // Insert a new row with the fetched FAQ details and the new CourseID
+            $insertQuery = "INSERT INTO FAQ (Question, Answer, ContributorID, CourseID) 
+                            VALUES (:question, :answer, :contributor_id, :course_id)";
+            $insertStmt = $pdo->prepare($insertQuery);
+            $insertStmt->execute([
+                ':question' => $faq['Question'],
+                ':answer' => $faq['Answer'],
+                ':contributor_id' => $faq['ContributorID'],
+                ':course_id' => $new_course_id
+            ]);
+            return true; // Return true if insertion is successful
+        } else {
+            return false; // Return false if FAQ with provided ID is not found
+        }
+    } catch (PDOException $e) {
+        // Handle any database errors
+        return false;
+    }
+}
+
+
 
 // Redirect back to the manage FAQs page with a message or error
 $_SESSION['message'] = $message ?? NULL;
