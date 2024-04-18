@@ -4,32 +4,39 @@ require_once '../../database.php';
 
 // Check if user is logged in and has a user ID stored in session
 if (!isset($_SESSION["user"]["UserID"])) {
-    header("Location: login.php"); // Redirect to login page if not logged in
-    exit;
+    header("Location: login.php"); 
 }
 
 try {
-    // Retrieve information about all courses and their sections
     $query = "
-        SELECT 
-            c.CourseID, 
-            c.Name AS CourseName,
-            cs.SectionID, 
-            cs.SectionNumber, 
-            cs.StartDate, 
-            cs.EndDate, 
-            COUNT(se.StudentID) AS ClassSize
-        FROM 
-            Course c
-        JOIN 
-            CourseSection cs ON c.CourseID = cs.CourseID
-        LEFT JOIN 
-            StudentEnrollment se ON cs.SectionID = se.SectionID
-        GROUP BY 
-            c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
-        ORDER BY 
-            c.Name, cs.SectionNumber;
-    ";
+    SELECT 
+        c.CourseID, 
+        c.Name AS CourseName,
+        cs.SectionID, 
+        cs.SectionNumber, 
+        cs.StartDate, 
+        cs.EndDate, 
+        COUNT(se.StudentID) AS ClassSize,
+        GROUP_CONCAT(DISTINCT u.Name ORDER BY u.Name ASC SEPARATOR ', ') AS TAs
+    FROM 
+        Course c
+    JOIN 
+        CourseSection cs ON c.CourseID = cs.CourseID
+    LEFT JOIN 
+        StudentEnrollment se ON cs.SectionID = se.SectionID
+    LEFT JOIN 
+        (SELECT u.Name, se.SectionID
+         FROM `User` u
+         JOIN UserRole ur ON u.UserID = ur.UserID
+         JOIN Role r ON ur.RoleID = r.RoleID
+         JOIN StudentEnrollment se ON u.UserID = se.StudentID
+         WHERE r.RoleName = 'TA') AS u ON u.SectionID = cs.SectionID
+    GROUP BY 
+        c.CourseID, cs.SectionID, cs.SectionNumber, cs.StartDate, cs.EndDate
+    ORDER BY 
+        c.Name, cs.SectionNumber;
+";
+
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $courseSections = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,78 +64,102 @@ foreach ($courseSections as $section) {
 <div class="page">
     <header class="header">
         <h1>Welcome Admin</h1>
-    </header> 
+    </header>
     
     <div class="sidebar">
         <button onclick="location.href='create_user.php'">Manage Users</button>
-            <button onclick="location.href='manage_user.php'">Manage Roles</button>
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_sections.php'">Manage Sections</button>
-            <button onclick="location.href='manage_groups.php'">Manage Groups</button>
-            <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
-            <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
-            <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
-        </div>
+        <button onclick="location.href='manage_user.php'">Manage Roles</button>
+        <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+        <button onclick="location.href='manage_sections.php'">Manage Sections</button>
+        <button onclick="location.href='manage_groups.php'">Manage Groups</button>
+        <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
+        <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
+        <button class="is-selected" onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+        <button onclick="location.href='logs.php'">User Logs</button>
+    </div>
 
     <main class="main">
         <h2>All Courses Information</h2>
         <?php foreach ($courses as $courseID => $course): ?>
-            <h3><?= htmlspecialchars($course['CourseName']) ?> (Course ID: <?= $courseID ?>)</h3>
-            <?php foreach ($course['Sections'] as $section): ?>
-                <div>
-                    <h4>Section <?= htmlspecialchars($section['SectionNumber']) ?></h4>
-                    <p>Start Date: <?= htmlspecialchars($section['StartDate']) ?></p>
-                    <p>End Date: <?= htmlspecialchars($section['EndDate']) ?></p>
-                    <p>Class Size: <?= htmlspecialchars($section['ClassSize']) ?></p>
-                    <?php if ($section['ClassSize'] > 0): ?>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php 
-                                $sql = "SELECT u.UserID, u.Name, u.EmailAddress
-                                        FROM StudentEnrollment se
-                                        JOIN `User` u ON se.StudentID = u.UserID
-                                        WHERE se.SectionID = :sectionId";
-                                $stmt = $pdo->prepare($sql);
-                                $stmt->execute(['sectionId' => $section['SectionID']]);
-                                $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                                foreach ($students as $student): ?>
+            <div class="table-wrapper">
+                <h3><?= htmlspecialchars($course['CourseName']) ?> (Course ID: <?= $courseID ?>)</h3>
+                <?php foreach ($course['Sections'] as $section): ?>
+                    <div>
+                        <h4>Section <?= htmlspecialchars($section['SectionNumber']) ?></h4>
+                        <p>Start Date: <?= htmlspecialchars($section['StartDate']) ?></p>
+                        <p>End Date: <?= htmlspecialchars($section['EndDate']) ?></p>
+                        <p>Class Size: <?= htmlspecialchars($section['ClassSize']) ?></p>
+                        <p>Teaching Assistants: <?= htmlspecialchars($section['TAs'] ?? 'None') ?></p>
+                        <?php if ($section['ClassSize'] > 0): ?>
+                            <table class="content-table">
+                                <thead>
                                     <tr>
-                                        <td><?= htmlspecialchars($student['UserID']) ?></td>
-                                        <td><?= htmlspecialchars($student['Name']) ?></td>
-                                        <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php else: ?>
-                        <p>There are no students enrolled in this section yet.</p>
-                    <?php endif; ?>
-                    <!-- Button to open modal for adding a student -->
-                    <button onclick="openModal('<?= $section['SectionID'] ?>')">Add Student</button>
-                </div>
-
-                <!-- Modal for adding students -->
-                <div id="myModal<?= $section['SectionID'] ?>" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="closeModal('<?= $section['SectionID'] ?>')">&times;</span>
-                        <h3>Add Student to Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
-                        <form method="post" action="enroll_student.php">
-                            <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
-                            <label for="student_id">Student ID:</label>
-                            <input type="text" id="student_id" name="student_id" required><br><br>
-                            <input type="submit" value="Enroll Student">
-                        </form>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                    $sql = "SELECT u.UserID, u.Name, u.EmailAddress
+                                            FROM StudentEnrollment se
+                                            JOIN `User` u ON se.StudentID = u.UserID
+                                            WHERE se.SectionID = :sectionId";
+                                    $stmt = $pdo->prepare($sql);
+                                    $stmt->execute(['sectionId' => $section['SectionID']]);
+                                    $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+                                    foreach ($students as $student): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($student['UserID']) ?></td>
+                                            <td><?= htmlspecialchars($student['Name']) ?></td>
+                                            <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                                            <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <p>There are no students enrolled in this section yet.</p>
+                        <?php endif; ?>
+                        <br>
+                        <!-- Button to open modal for adding a student -->
+                        <button class="button is-primary" onclick="openModal('<?= $section['SectionID'] ?>')">Add Student</button>
+                        <button class="button is-primary" onclick="openModalTA('<?= $section['SectionID'] ?>')">Add TA</button>
                     </div>
-                </div>
-            <?php endforeach; ?>
+
+                    <!-- Modal for adding TAs -->
+                    <div id="myModalTA<?= $section['SectionID'] ?>" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModalTA('<?= $section['SectionID'] ?>')">&times;</span>
+                            <h3>Add TA to Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
+                            <form method="post" action="enroll_ta.php">
+                                <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                                <label for="ta_id">TA ID:</label>
+                                <input type="text" id="ta_id" name="ta_id" required><br><br>
+                                <input class="button is-primary" type="submit" value="Enroll TA">
+                            </form>
+                        </div>
+                    </div>
+    
+                    <!-- Modal for adding students -->
+                    <div id="myModal<?= $section['SectionID'] ?>" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal('<?= $section['SectionID'] ?>')">&times;</span>
+                            <h3>Add Student to Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
+                            <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" action="enroll_student.php" method="post">
+                                <input type="hidden" name="action" value="enroll_student">
+                                <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                                <input type="hidden" name="course_id" value="<?= $courseID ?>">
+                                <label for="student_id">Student ID:</label>
+                                <input type="text" id="student_id" name="student_id" required><br><br>
+                                <input class="button is-primary" type="submit" value="Enroll Student">
+                            </form>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         <?php endforeach; ?>
     </main>
 
@@ -139,6 +170,16 @@ foreach ($courseSections as $section) {
 </div>
 
 <script>
+    function openModalTA(sectionID) {
+        var modalTA = document.getElementById('myModalTA' + sectionID);
+        modalTA.style.display = "block";
+    }
+
+    function closeModalTA(sectionID) {
+        var modalTA = document.getElementById('myModalTA' + sectionID);
+        modalTA.style.display = "none";
+    }
+
     function openModal(sectionID) {
         var modal = document.getElementById('myModal' + sectionID);
         modal.style.display = "block";
@@ -150,18 +191,58 @@ foreach ($courseSections as $section) {
     }
 
     window.onclick = function(event) {
-        if (event.target.className === 'modal') {
-            event.target.style.display = "none";
+        // Check if the clicked area is a modal background
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";  
+        }
+    }
+
+    function enrollStudent(event, sectionID) {
+        event.preventDefault(); // Prevent default form submission
+
+        var form = document.getElementById('studentForm' + sectionID);
+        var formData = new FormData(form);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'enroll_student.php');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = xhr.responseText;
+                alert(response); // Show the response message
+                // Optionally, you can update the page content dynamically here
+                window.location.reload();
+            } else {
+                alert('Error: ' + xhr.statusText);
+            }
+        };
+        xhr.onerror = function() {
+            alert('Request failed.');
+        };
+        xhr.send(formData);
+    }
+    
+    function removeStudent(sectionID, studentID) {
+        var confirmation = confirm("Are you sure you want to remove this student?");
+        if (confirmation) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'enroll_student.php');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = xhr.responseText;
+                    alert(response); // Show the response message
+                    // Optionally, you can update the page content dynamically here
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                alert('Request failed.');
+            };
+            xhr.send('action=remove_student&section_id=' + sectionID + '&student_id=' + studentID);
         }
     }
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-

@@ -44,14 +44,15 @@ function getFaqsForCourse($pdo, $courseId) {
         
         <!-- Sidebar Navigation -->
         <div class="sidebar">
-        <button onclick="location.href='create_user.php'">Manage Users</button>
+            <button onclick="location.href='create_user.php'">Manage Users</button>
             <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
             <button onclick="location.href='manage_groups.php'">Manage Groups</button>
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
-            <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
+            <button class="is-selected" onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+            <button onclick="location.href='logs.php'">User Logs</button>
         </div>
 
         <!-- Main Content -->
@@ -116,7 +117,7 @@ function getFaqsForCourse($pdo, $courseId) {
             </div>
 
             <!-- Delete FAQ Form -->
-            <div id="delete-faq" class="faq-form" style="display: none;">
+            <div id="delete-faq" class="faq-form table-wrapper" style="display: none;">
                 <h2>Delete FAQ</h2>
                 <form action="edit_faq_endpoint.php" method="post">
                     <input type="number" name="faq_id" placeholder="FAQ ID" required />
@@ -155,15 +156,16 @@ function getFaqsForCourse($pdo, $courseId) {
                 <button class="button is-export"  onclick="showForm('export')">Export FAQ</button>
             </div>
 
-             <!-- Course and FAQs Overview -->
-             <?php foreach ($courses as $course): ?>
-                <div class="course-faq-section">
+            <br>
+            <!-- Course and FAQs Overview -->
+            <?php foreach ($courses as $course): ?>
+                <div class="course-faq-section table-wrapper">
                     <h3><?= htmlspecialchars($course['Name']) ?></h3>
                     <?php 
                         $faqs = getFaqsForCourse($pdo, $course['CourseID']);
                         if (count($faqs) > 0):
                     ?>
-                    <table>
+                    <table class="content-table">
                         <thead>
                             <tr>
                                 <th>FAQ ID</th>

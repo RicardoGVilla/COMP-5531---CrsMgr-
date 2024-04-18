@@ -1,23 +1,16 @@
 <?php
-session_start(); // Start the session at the very beginning
+session_start(); 
 
-// Include database connection
 include('../../database.php');
 
-// Initialize an empty array to store users
+$query = "SELECT UserID, Name, EmailAddress FROM `User`";
+$stmt = $pdo->query($query);
+
 $users = [];
 
-// Try to fetch users from the database
-try {
-    $query = "SELECT `User`.UserID, `User`.Name, `User`.EmailAddress FROM `User`";
-    $stmt = $pdo->query($query);
-
-    // Fetch users into the array
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $users[] = $row;
-    }
-} catch (Exception $e) {
-    $_SESSION['error'] = "Error fetching users: " . $e->getMessage();
+// Fetch users into the array
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $users[] = $row;
 }
 
 function compareUsers($a, $b) {
@@ -34,7 +27,7 @@ usort($users, 'compareUsers');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users</title>
+    <title>Create Users</title>
     <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
@@ -43,8 +36,9 @@ usort($users, 'compareUsers');
             <h1>Welcome Admin</h1>
         </header>
 
+        <!-- Sidebar Navigation -->
         <div class="sidebar">
-        <button onclick="location.href='create_user.php'">Manage Users</button>
+            <button class="is-selected" onclick="location.href='create_user.php'">Manage Users</button>
             <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
@@ -52,50 +46,78 @@ usort($users, 'compareUsers');
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+            <button onclick="location.href='logs.php'">User Logs</button>
         </div>
-
         <main class="main">
-            <div class="main-header">
-                <h2>Manage Users</h2>
+            <h2>Manage Users</h2>
+
+            <!-- Add User Form -->
+            <div class="table-wrapper">
+                <form id="add-user-form" class="user-form inline-form" method="POST" action="logic_user_endpoint.php">
+                    <h3>Add User</h3>
+                    <div class="input-body">
+                        <input type="hidden" name="action" value="add">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add User</button>
+                    </div>
+                </form>
             </div>
 
-            <!-- Display session messages -->
-            <?php
-            if (isset($_SESSION['message'])) {
-                echo '<div class="alert alert-success">' . $_SESSION['message'] . '</div>';
-                unset($_SESSION['message']);
-            }
-            if (isset($_SESSION['error'])) {
-                echo '<div class="alert alert-danger">' . $_SESSION['error'] . '</div>';
-                unset($_SESSION['error']);
-            }
-            ?>
+            <!-- Update User Form -->
+            <div class="table-wrapper">
+                <form id="update-user-form" class="user-form inline-form" method="POST" action="logic_user_endpoint.php">
+                    <h3>Update User</h3>
+                    <div class="input-body">
+                        <input type="hidden" name="action" value="update">
+                        <input type="text" name="user_id" placeholder="User ID" required>
+                        <input type="text" name="new_name" placeholder="New Full Name">
+                        <input type="email" name="new_email" placeholder="New Email">
+                    </div>
+                    <div>
+                        <button class="button is-secondary" type="submit">Update User</button>
+                    </div>
+                </form>
+            </div>
 
-            <!-- Add, Update, and Delete functionality will go here -->
-
-            <div class="user-table">
-                <h2>Current Users</h2>
+            <!-- Delete User Form -->
+            <div class="table-wrapper">
+                <form id="delete-user-form" class="user-form inline-form" method="POST" action="logic_user_endpoint.php">
+                    <h3>Delete User</h3>
+                    <div class="input-body">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="text" name="user_id" placeholder="User ID" required>
+                        <button class="button is-delete" type="submit">Delete User</button>
+                    </div>
+                </form>
+            </div>
+            <!-- User Table -->
+            <div class="user-table table-wrapper">
+                <h3>Current Users</h3>
                 <table class="content-table">
                     <thead>
                         <tr>
                             <th>User ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($users as $user): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($user['UserID']); ?></td>
-                            <td><?php echo htmlspecialchars($user['Name']); ?></td>
-                            <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
-                            <td>
-                                <button class="button is-secondary" onclick="openModal(<?php echo htmlspecialchars(json_encode($user)); ?>)">Update</button>
-                                <button class="button is-delete" onclick="confirmDelete(<?php echo $user['UserID']; ?>)">Delete</button>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
+                        <?php if (!empty($users)): ?>
+                            <?php foreach ($users as $user): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($user['UserID']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['Name']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['EmailAddress']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="3">No users found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -107,20 +129,6 @@ usort($users, 'compareUsers');
         </footer>
     </div>
 
-    <script>
-        function confirmDelete(userId) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                window.location.href = 'logic_user_endpoint.php?action=delete&user_id=' + userId;
-            }
-        }
-
-        function openModal(user) {
-            // Assuming you have a modal setup for updates, populate its fields and show it
-            document.getElementById('update_user_id').value = user.UserID;
-            document.getElementById('update_new_name').value = user.Name;
-            document.getElementById('update_new_email').value = user.EmailAddress;
-            // Show your modal, e.g., $('#myModal').modal('show');
-        }
-    </script>
+    
 </body>
 </html>

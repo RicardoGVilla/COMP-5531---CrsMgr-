@@ -1,33 +1,59 @@
 <?php
-session_start();
-require('../../database.php');
+session_start(); // Start the session at the very beginning
 
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
+// Include database connection
+require('../../database.php'); // Make sure the path is correct
 
-try {
-    switch ($action) {
-        case 'add':
-            $stmt = $pdo->prepare("INSERT INTO `User` (Name, EmailAddress) VALUES (?, ?)");
-            $stmt->execute([$_POST['name'], $_POST['email']]);
-            $_SESSION['message'] = "User added successfully.";
-            break;
-        case 'update':
-            $stmt = $pdo->prepare("UPDATE `User` SET Name = ?, EmailAddress = ? WHERE UserID = ?");
-            $stmt->execute([$_POST['new_name'], $_POST['new_email'], $_POST['user_id']]);
-            $_SESSION['message'] = "User updated successfully.";
-            break;
-        case 'delete':
-            $stmt = $pdo->prepare("DELETE FROM `User` WHERE UserID = ?");
-            $stmt->execute([$_GET['user_id']]);
-            $_SESSION['message'] = "User deleted successfully.";
-            break;
-        default:
-            $_SESSION['error'] = "Invalid action.";
+// Function to generate a random password
+function generateRandomPassword($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomPassword = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomPassword .= $characters[rand(0, $charactersLength - 1)];
     }
-} catch (PDOException $e) {
-    $_SESSION['error'] = "Database error: " . $e->getMessage();
+    return $randomPassword;
 }
 
-header('Location: create_user.php');
-exit;
+$action = $_POST['action'] ?? '';
+
+// Handle actions
+try {
+    $response = '';
+    if ($action === 'add') {
+        // Generate a new password for the new user
+        $newPassword = generateRandomPassword();
+        // Hash the generated password
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        
+        // Set NewUser to true
+        $_SESSION['NewUser'] = true;
+
+        // Prepare SQL and bind parameters
+        $stmt = $pdo->prepare("INSERT INTO `User` (Name, EmailAddress, Password, NewUser) VALUES (?, ?, ?, TRUE)");
+        $stmt->execute([$_POST['name'], $_POST['email'], $hashedPassword]);
+
+        $response = "User added successfully. Password is: " . $newPassword;
+    } elseif ($action === 'update') {
+        // Prepare SQL and bind parameters
+        $stmt = $pdo->prepare("UPDATE `User` SET Name = ?, EmailAddress = ? WHERE UserID = ?");
+        $stmt->execute([$_POST['new_name'], $_POST['new_email'], $_POST['user_id']]);
+
+        $response = "User updated successfully.";
+    } elseif ($action === 'delete') {
+        // Prepare SQL and bind parameters
+        $stmt = $pdo->prepare("DELETE FROM `User` WHERE UserID = ?");
+        $stmt->execute([$_POST['user_id']]);
+
+        $response = "User deleted successfully.";
+    } else {
+        throw new Exception("Invalid action.");
+    }
+} catch (Exception $e) {
+    $response = "Error: " . $e->getMessage();
+    http_response_code(500); // Set the response code to 500 if there's an error
+}
+
+// Return the response
+echo $response;
 ?>
