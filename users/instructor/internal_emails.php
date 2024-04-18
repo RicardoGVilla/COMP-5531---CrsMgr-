@@ -167,7 +167,7 @@ switch ($action) {
     <div class="page">
         <!-- Header -->
         <header class="header">
-            <h1>Welcome TA <?php echo htmlspecialchars($userName); ?></h1>
+            <h1>Welcome Instructor <?php echo htmlspecialchars($userName); ?></h1>
         </header>
 
         <!-- Sidebar -->

@@ -2,36 +2,27 @@
 session_start();
 require_once '../../database.php'; // Adjust the path as needed
 
-// Utility Functions
 function sendEmail($pdo, $sender_id, $recipient_emails, $subject, $body) {
     try {
         $pdo->beginTransaction();
 
-        // Insert email into InternalEmail table
         $stmt = $pdo->prepare("INSERT INTO InternalEmail (SenderID, Subject, Body) VALUES (?, ?, ?)");
         $stmt->execute([$sender_id, $subject, $body]);
         $email_id = $pdo->lastInsertId();
 
-        // Convert email addresses to user IDs
         $recipient_ids = [];
         foreach (explode(',', $recipient_emails) as $recipient_email) {
-            // Remove whitespace and ensure lowercase for accurate comparison
             $recipient_email = strtolower(trim($recipient_email));
-
-            // Find the user ID associated with the email address
             $userStmt = $pdo->prepare("SELECT UserID FROM `User` WHERE EmailAddress = ?");
             $userStmt->execute([$recipient_email]);
             $user = $userStmt->fetch(PDO::FETCH_ASSOC);
-
             if ($user) {
                 $recipient_ids[] = $user['UserID'];
             } else {
-                // Handle the case where the email address does not correspond to a user
                 throw new Exception("No user found for email address: " . $recipient_email);
             }
         }
 
-        // Insert recipient user IDs into EmailRecipient table
         $recipientStmt = $pdo->prepare("INSERT INTO EmailRecipient (EmailID, RecipientID) VALUES (?, ?)");
         foreach ($recipient_ids as $recipient_id) {
             $recipientStmt->execute([$email_id, $recipient_id]);
@@ -41,7 +32,7 @@ function sendEmail($pdo, $sender_id, $recipient_emails, $subject, $body) {
         return "Email sent successfully!";
     } catch (Exception $e) {
         $pdo->rollBack();
-        return "Error sending email: " . $e->getMessage();
+        echo "Error sending email: " . $e->getMessage();
     }
 }
 
@@ -57,56 +48,33 @@ function fetchSentEmails($pdo, $user_id) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Handling Requests
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
+$messages = [];
 switch ($action) {
     case 'send_email':
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Basic validation to ensure required fields are not empty
-            if (!empty($_POST['recipients']) && !empty($_POST['subject']) && !empty($_POST['body'])) {
-                // Call the sendEmail function with sanitized inputs
-                $message = sendEmail(
-                    $pdo, 
-                    $_SESSION['UserID'], 
-                    filter_var($_POST['recipients'], FILTER_SANITIZE_EMAIL), // Though this is not ideal for a list, further processing is assumed inside the function
-                    filter_var($_POST['subject'], FILTER_SANITIZE_STRING),
-                    filter_var($_POST['body'], FILTER_SANITIZE_STRING)
-                );
-                echo $message;
-            } else {
-                echo "Error: All fields are required!";
-            }
+            $messages[] = sendEmail($pdo, $_SESSION['UserID'], $_POST['recipients'], $_POST['subject'], $_POST['body']);
         }
         break;
     case 'view_inbox':
-        $emails = fetchInbox($pdo, $_SESSION['UserID']);
-        foreach ($emails as $email) {
-            echo "<div class='email-item'>From: " . htmlspecialchars($email['SenderName']) .
-                 "<br>Subject: " . htmlspecialchars($email['Subject']) .
-                 "<br>Received: " . htmlspecialchars($email['Timestamp']) .
-                 "<br><a href='view_email.php?email_id=" . $email['EmailID'] . "'>Read Email</a></div><br>";
-        }
+        $messages = fetchInbox($pdo, $_SESSION['UserID']);
         break;
     case 'view_sent':
-        $sent_emails = fetchSentEmails($pdo, $_SESSION['UserID']);
-        foreach ($sent_emails as $email) {
-            echo "<div class='email-item'>To: " . htmlspecialchars($email['RecipientNames']) .
-                 "<br>Subject: " . htmlspecialchars($email['Subject']) .
-                 "<br>Sent: " . htmlspecialchars($email['Timestamp']) .
-                 "<br><a href='view_sent_email.php?email_id=" . $email['EmailID'] . "'>View Sent Email</a></div><br>";
-        }
+        $messages = fetchSentEmails($pdo, $_SESSION['UserID']);
         break;
 }
+
+// Continue with the HTML below to show form and messages
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email System - CrsMgr+</title>
-    <link rel="stylesheet" href="../../css/index.css"> <!-- Ensure this path is correct -->
+    <link rel="stylesheet" href="../../css/index.css">
     <style>
-        /* Additional styles specific to the email system */
         .email-system {
             background-color: #ffffff;
             border-radius: 8px;
@@ -161,52 +129,70 @@ switch ($action) {
         .email-navigation button:hover {
             background-color: #003975;
         }
+        .email-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
     <div class="page">
-        <!-- Header -->
         <header class="header">
-            <h1>Welcome TA <?php echo htmlspecialchars($userName); ?></h1>
+            <h1>Welcome Student <?php echo htmlspecialchars($_SESSION['userName']); ?></h1>
         </header>
-
-        <!-- Sidebar -->
         <div class="sidebar">
-            <!-- Sidebar buttons -->
             <button onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
             <button onclick="location.href='group-information.php'">My Group Information </button>
             <button onclick="location.href='manage-files.php'"> Manage Files </button>
             <button onclick="location.href='internal_emails.php'">Email</button>
         </div>
-
-        <!-- Main content area -->
         <main class="main">
             <div class="email-system">
-                <!-- Email form -->
                 <div class="email-form">
                     <h2>Send an Email</h2>
-                    <form action="send_email.php" method="post">
+                    <form action="?action=send_email" method="post">
                         <input type="hidden" name="action" value="send_email">
-                        <label for="recipients">Recipients (Seperate email addresses with a comma):</label>
-                        <input type="email" id="recipients" name="recipients" required multiple pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+                        <label for="recipients">Recipients (Separate email addresses with a comma):</label>
+                        <input type="email" id="recipients" name="recipients" required pattern="([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,},\s*)*[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
                         <label for="subject">Subject:</label>
                         <input type="text" id="subject" name="subject" required>
                         <label for="body">Body:</label>
                         <textarea id="body" name="body" rows="4" required></textarea>
                         <button type="submit">Send Email</button>
-                     </form>
+                    </form>
                 </div>
-
-                <!-- Email navigation buttons -->
                 <div class="email-navigation">
-                    <button onclick="location.href='internal_emails.php?action=view_inbox';">View Inbox</button>
-                    <button onclick="location.href='internal_emails.php?action=view_sent';">View Sent Emails</button>
+                    <form action="?action=view_inbox" method="get">
+                        <input type="hidden" name="action" value="view_inbox">
+                        <button type="submit">View Inbox</button>
+                    </form>
+                    <form action="?action=view_sent" method="get">
+                        <input type="hidden" name="action" value="view_sent">
+                        <button type="submit">View Sent Emails</button>
+                    </form>
                 </div>
+                <!-- Display area for messages or emails -->
+                <?php if (!empty($messages)) : ?>
+                    <div class="email-messages">
+                        <?php foreach ($messages as $message) {
+                            if (is_array($message)) {
+                                echo "<div class='email-item'>";
+                                echo "From: " . htmlspecialchars($message['SenderName']) . "<br>";
+                                echo "Subject: " . htmlspecialchars($message['Subject']) . "<br>";
+                                echo "Received: " . htmlspecialchars($message['Timestamp']) . "<br>";
+                                echo "<a href='view_email.php?email_id=" . $message['EmailID'] . "'>Read Email</a>";
+                                echo "</div><br>";
+                            } else {
+                                echo "<p>" . htmlspecialchars($message) . "</p>";
+                            }
+                        } ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </main>
-
-        <!-- Footer -->
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
@@ -214,5 +200,3 @@ switch ($action) {
     </div>
 </body>
 </html>
-
-
