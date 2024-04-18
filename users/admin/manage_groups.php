@@ -124,6 +124,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
         <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+        <button onclick="location.href='logs.php'">User Logs</button>
     </div>
 
     <main class="main">
