@@ -129,7 +129,7 @@ foreach ($courseSections as $section) {
                     </div>
 
                     <!-- Modal for adding TAs -->
-                                        <div id="myModalTA<?= $section['SectionID'] ?>" class="modal">
+                    <div id="myModalTA<?= $section['SectionID'] ?>" class="modal">
                         <div class="modal-content">
                             <span class="close" onclick="closeModalTA('<?= $section['SectionID'] ?>')">&times;</span>
                             <h3>Add TA to Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
@@ -170,21 +170,32 @@ foreach ($courseSections as $section) {
 
 <script>
     function openModalTA(sectionID) {
-    var modalTA = document.getElementById('myModalTA' + sectionID);
-    modalTA.style.display = "block";
-}
-
-function closeModalTA(sectionID) {
-    var modalTA = document.getElementById('myModalTA' + sectionID);
-    modalTA.style.display = "none";
-}
-
-
-window.onclick = function(event) {
-    // Check if the clicked area is a modal background
-    if (event.target.classList.contains('modal')) {
-        event.target.style.display = "none";  
+        var modalTA = document.getElementById('myModalTA' + sectionID);
+        modalTA.style.display = "block";
     }
+
+    function closeModalTA(sectionID) {
+        var modalTA = document.getElementById('myModalTA' + sectionID);
+        modalTA.style.display = "none";
+    }
+
+    function openModal(sectionID) {
+        var modal = document.getElementById('myModal' + sectionID);
+        modal.style.display = "block";
+    }
+
+    function closeModal(sectionID) {
+        var modal = document.getElementById('myModal' + sectionID);
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        // Check if the clicked area is a modal background
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";  
+        }
+    }
+
     function enrollStudent(event, sectionID) {
         event.preventDefault(); // Prevent default form submission
 
@@ -208,6 +219,7 @@ window.onclick = function(event) {
         };
         xhr.send(formData);
     }
+    
     function removeStudent(sectionID, studentID) {
         var confirmation = confirm("Are you sure you want to remove this student?");
         if (confirmation) {
