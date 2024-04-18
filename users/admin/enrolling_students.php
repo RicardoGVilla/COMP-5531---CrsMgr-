@@ -88,6 +88,7 @@ foreach ($courseSections as $section) {
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,6 +106,7 @@ foreach ($courseSections as $section) {
                                             <td><?= htmlspecialchars($student['UserID']) ?></td>
                                             <td><?= htmlspecialchars($student['Name']) ?></td>
                                             <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                                            <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -122,8 +124,10 @@ foreach ($courseSections as $section) {
                         <div class="modal-content">
                             <span class="close" onclick="closeModal('<?= $section['SectionID'] ?>')">&times;</span>
                             <h3>Add Student to Section <?= htmlspecialchars($section['SectionNumber']) ?></h3>
-                            <form method="post" action="enroll_student.php">
+                            <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" action="enroll_student.php" method="post">
+                                <input type="hidden" name="action" value="enroll_student">
                                 <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                                <input type="hidden" name="course_id" value="<?= $courseID ?>">
                                 <label for="student_id">Student ID:</label>
                                 <input type="text" id="student_id" name="student_id" required><br><br>
                                 <input class="button is-primary" type="submit" value="Enroll Student">
@@ -157,14 +161,51 @@ foreach ($courseSections as $section) {
             event.target.style.display = "none";
         }
     }
+    function enrollStudent(event, sectionID) {
+        event.preventDefault(); // Prevent default form submission
+
+        var form = document.getElementById('studentForm' + sectionID);
+        var formData = new FormData(form);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'enroll_student.php');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = xhr.responseText;
+                alert(response); // Show the response message
+                // Optionally, you can update the page content dynamically here
+                window.location.reload();
+            } else {
+                alert('Error: ' + xhr.statusText);
+            }
+        };
+        xhr.onerror = function() {
+            alert('Request failed.');
+        };
+        xhr.send(formData);
+    }
+    function removeStudent(sectionID, studentID) {
+        var confirmation = confirm("Are you sure you want to remove this student?");
+        if (confirmation) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'enroll_student.php');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = xhr.responseText;
+                    alert(response); // Show the response message
+                    // Optionally, you can update the page content dynamically here
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                alert('Request failed.');
+            };
+            xhr.send('action=remove_student&section_id=' + sectionID + '&student_id=' + studentID);
+        }
+    }
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
