@@ -2,43 +2,42 @@
 session_start();
 require_once '../../database.php'; // Adjust the path as needed
 
-// Utility Functions
 function sendEmail($pdo, $sender_id, $recipient_emails, $subject, $body) {
     try {
-        $pdo->beginTransaction();
+        $pdo->beginTransaction();  // Start transaction
 
-        // Insert email into InternalEmail table
+        // Prepare and execute statement to insert the email into InternalEmail table
         $stmt = $pdo->prepare("INSERT INTO InternalEmail (SenderID, Subject, Body) VALUES (?, ?, ?)");
         $stmt->execute([$sender_id, $subject, $body]);
-        $email_id = $pdo->lastInsertId();
+        $email_id = $pdo->lastInsertId();  // Get the ID of the inserted email
 
-        // Convert email addresses to user IDs
+        // Process each recipient email address
         $recipient_ids = [];
         foreach (explode(',', $recipient_emails) as $recipient_email) {
-            $recipient_email = strtolower(trim($recipient_email));
+            $recipient_email = strtolower(trim($recipient_email));  // Clean and prepare email address
 
-            // Find the user ID associated with the email address
+            // Fetch the corresponding UserID for the email address
             $userStmt = $pdo->prepare("SELECT UserID FROM `User` WHERE EmailAddress = ?");
             $userStmt->execute([$recipient_email]);
             $user = $userStmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                $recipient_ids[] = $user['UserID'];
+                $recipient_ids[] = $user['UserID'];  // If user found, add UserID to recipient_ids
             } else {
                 throw new Exception("No user found for email address: " . $recipient_email);
             }
         }
 
-        // Insert recipient user IDs into EmailRecipient table
+        // Insert each recipient into EmailRecipient table
         $recipientStmt = $pdo->prepare("INSERT INTO EmailRecipient (EmailID, RecipientID) VALUES (?, ?)");
         foreach ($recipient_ids as $recipient_id) {
             $recipientStmt->execute([$email_id, $recipient_id]);
         }
 
-        $pdo->commit();
+        $pdo->commit();  // Commit the transaction if all operations succeed
         return "Email sent successfully!";
     } catch (Exception $e) {
-        $pdo->rollBack();
+        $pdo->rollBack();  // Rollback the transaction in case of an error
         return "Error sending email: " . $e->getMessage();
     }
 }
@@ -163,7 +162,7 @@ switch ($action) {
     <div class="page">
         <!-- Header -->
         <header class="header">
-            <h1>Welcome TA <?php echo htmlspecialchars($_SESSION['userName']); ?></h1>
+            <h1>Welcome Admin <?php echo htmlspecialchars($_SESSION['userName']); ?></h1>
         </header>
         <!-- Sidebar -->
         <div class="sidebar">
@@ -228,7 +227,7 @@ switch ($action) {
         <!-- Footer -->
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
-            <button onclick="location.href='logout.php'">Logout</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
 </body>
