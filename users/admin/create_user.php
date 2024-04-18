@@ -38,7 +38,7 @@ usort($users, 'compareUsers');
 
         <!-- Sidebar Navigation -->
         <div class="sidebar">
-            <button class="is-selected" onclick="location.href='create_user.php'">Manage Users</button>
+            <button onclick="location.href='create_user.php'">Manage Users</button>
             <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
@@ -46,6 +46,7 @@ usort($users, 'compareUsers');
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+            <button onclick="location.href='internal_emails.php'">Email</button>
         </div>
         <main class="main">
             <h2>Manage Users</h2>
