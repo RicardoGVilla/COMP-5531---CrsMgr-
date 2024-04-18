@@ -88,10 +88,10 @@ try {
                         <td><?= htmlspecialchars($section['EndDate']) ?></td>
                         <td><?= htmlspecialchars($section['ClassSize']) ?></td>
                     </tr>
-                </table>
-            </div>
-            <?php if ($section['ClassSize'] > 0): ?>
-            <div class="table-wrapper">
+                    <?php if ($section['ClassSize'] > 0): ?>
+                </table> <!-- Close the table for course information -->
+            </div> <!-- Close the table-wrapper div -->
+            <div class="table-wrapper"> <!-- Open a new table-wrapper for student information -->
                 <table class="content-table">
                     <thead>
                         <tr>
@@ -113,39 +113,24 @@ try {
                         $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         foreach ($students as $student): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($student['UserID']) ?></td>
-                                <td><?= htmlspecialchars($student['Name']) ?></td>
-                                <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
-                                <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
-                            </tr>
+                        <tr>
+                            <td><?= htmlspecialchars($student['UserID']) ?></td>
+                            <td><?= htmlspecialchars($student['Name']) ?></td>
+                            <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                            <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
+                        </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php else: ?>
-                    <p>There are no students yet.</p>
-                    <br>
-                    <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
-            </div>
+                <br>
+                <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
+                <!-- Modal and other HTML elements related to the modal go here -->
+            </div> <!-- Close the table-wrapper div -->
+            <?php else: ?>
+            <p>There are no students yet.</p>
             <?php endif; ?>
-            <!-- Modal -->
-            <div id="myModal<?= $section['SectionID'] ?>" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
-                    <h3>Add Student</h3>
-                    <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
-                        <input type="hidden" name="action" value="enroll_student">
-                        <input type="hidden" name="course_id" value="<?= $courseID ?>">
-                        <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
-                        <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
-                        <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
-                        <input class="button is-primary" type="submit" value="Enroll Student">
-                    </form>
-                </div>
-            </div>
             <?php endforeach; ?>
         </main>
-
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
