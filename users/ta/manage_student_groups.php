@@ -37,21 +37,55 @@ $stmt->execute();
 
 $groupMembers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-echo "<h1>Student Groups</h1>";
-if ($groupMembers) {
-    echo "<table border='1'>";
-    echo "<tr><th>Group ID</th><th>Group Leader ID</th><th>Student ID</th><th>Student Name</th><th>Email Address</th></tr>";
-    foreach ($groupMembers as $member) {
-        echo "<tr>";
-        echo "<td>" . htmlspecialchars($member['GroupID']) . "</td>";
-        echo "<td>" . htmlspecialchars($member['GroupLeaderID']) . "</td>";
-        echo "<td>" . htmlspecialchars($member['UserID']) . "</td>";
-        echo "<td>" . htmlspecialchars($member['StudentName']) . "</td>";
-        echo "<td>" . htmlspecialchars($member['EmailAddress']) . "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-} else {
-    echo "<p>No student groups found for this course.</p>";
-}
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TA Dashboard - CrsMgr+</title>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+<body>
+    <div class="page">
+        <header class="header">
+            <h1>Welcome TA <?php echo htmlspecialchars($userName); ?></h1>
+            <p>You are signed in as a Teaching Assistant</p>
+        </header>
+        
+        <div class="sidebar">
+            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button class="is-selected" onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
+        </div>
+        
+        <main class="main">
+            <h1>Student Groups</h1>
+            <?php
+                if ($groupMembers) {
+                    echo "<table border='1'>";
+                    echo "<tr><th>Group ID</th><th>Group Leader ID</th><th>Student ID</th><th>Student Name</th><th>Email Address</th></tr>";
+                    foreach ($groupMembers as $member) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($member['GroupID']) . "</td>";
+                        echo "<td>" . htmlspecialchars($member['GroupLeaderID']) . "</td>";
+                        echo "<td>" . htmlspecialchars($member['UserID']) . "</td>";
+                        echo "<td>" . htmlspecialchars($member['StudentName']) . "</td>";
+                        echo "<td>" . htmlspecialchars($member['EmailAddress']) . "</td>";
+                        echo "</tr>";
+                    }
+                    echo "</table>";
+                } else {
+                    echo "<p>No student groups found for this course.</p>";
+                }
+            ?>
+        </main>
+        
+        <footer class="footer">
+            <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='../../logout.php'">Logout</button>
+        </footer>
+    </div>
+</body>
+</html>
+
