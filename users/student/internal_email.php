@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["send_message"])) {
 
 // Retrieve messages for the current user
 $userID = $_SESSION["user"]["UserID"];
-$sql = "SELECT * FROM Message WHERE RecipientID = ?";
+$sql = "SELECT m.*, u.Name AS SenderName, u.EmailAddress AS SenderEmail FROM Message m INNER JOIN User u ON m.SenderID = u.UserID WHERE m.RecipientID = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$userID]);
 $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -92,7 +92,7 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <ul>
             <?php foreach ($receivedMessages as $message): ?>
                 <li>
-                    <strong>From:</strong> <?php echo $message['SenderID']; ?><br>
+                    <strong>From:</strong> <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>)<br>
                     <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
                 </li>
             <?php endforeach; ?>
