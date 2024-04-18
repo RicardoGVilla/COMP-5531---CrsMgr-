@@ -85,9 +85,14 @@ try {
         <div class="sidebar">
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+<<<<<<< HEAD
             <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
             <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
             <button onclick="location.href='internal_emails.php'">Email</button>
+=======
+            <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
+            <button class="is-selected" onclick="location.href='manage_announcements.php'">Manage Announcements</button>
+>>>>>>> fe459858416ee95ee4f3bbaf24563ffc49584d8b
 
         </div>
 

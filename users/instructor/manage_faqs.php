@@ -49,7 +49,7 @@ if (!$selectedCourseId) {
         <div class="sidebar">
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
+            <button class="is-selected" onclick="location.href='manage_faqs.php'">Manage FAQs</button>
             <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
             <button onclick="location.href='internal_emails.php'">Email</button>
 
@@ -126,11 +126,12 @@ if (!$selectedCourseId) {
                 <button class="button is-secondary" onclick="showForm('update')">Update FAQ</button>
                 <button class="button is-delete"  onclick="showForm('delete')">Delete FAQ</button>
             </div>
-
+            
+            <br>
             <!-- Course and FAQs Overview -->
-            <div class="course-faq-section">
+            <div class="course-faq-section table-wrapper">
                 <?php if (!empty($faqs)): ?>
-                    <table>
+                    <table class="content-table">
                         <thead>
                             <tr>
                                 <th>FAQ ID</th>

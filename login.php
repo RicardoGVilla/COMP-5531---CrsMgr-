@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // Query the database to fetch user details by email, including the NewUser attribute
+    // Query the database to fetch user details by email
     $stmt = $pdo->prepare("SELECT UserID, Name, Password, NewUser FROM `User` WHERE EmailAddress = :email");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -25,6 +25,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         if ($passwordMatch) {
+            // Log the login with success
+            logUserLogin($user['UserID'], $pdo, true);
+
             // Password is correct, check if NewUser is TRUE
             if ($user['NewUser']) {
                 // Redirect to new_password.php for the user to set a new password
@@ -43,35 +46,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif (in_array('Admin', $roles)) {
                 header("Location: users/admin/home.php");
             } elseif (in_array('Instructor', $roles)) {
-                $stmtCourses = $pdo->prepare("SELECT COUNT(DISTINCT CourseID) AS CourseCount FROM CourseInstructor WHERE InstructorID = :userId");
-                $stmtCourses->execute(['userId' => $user['UserID']]);
-                $coursesResult = $stmtCourses->fetch(PDO::FETCH_ASSOC);
-
-                if ($coursesResult && $coursesResult['CourseCount'] > 1) {
-                    header("Location: users/instructor/choose_course.php");
-                } else {
-                    header("Location: users/instructor/home.php");
-                }
+                header("Location: users/instructor/home.php");
                 exit;
             } elseif (in_array('TA', $roles)) {
                 header("Location: users/ta/choose-role.php");
             } elseif (in_array('Student', $roles)) {
-                $stmtCourses = $pdo->prepare("SELECT COUNT(DISTINCT CourseID) AS CourseCount FROM StudentEnrollment WHERE StudentID = :userId");
-                $stmtCourses->execute(['userId' => $user['UserID']]);
-                $coursesResult = $stmtCourses->fetch(PDO::FETCH_ASSOC);
-
-                if ($coursesResult && $coursesResult['CourseCount'] > 1) {
-                    header("Location: users/student/choose-class.php");
-                } elseif ($coursesResult && $coursesResult['CourseCount'] == 1) {
-                    header("Location: users/student/home.php");
-                } else {
-                    header("Location: home.php");
-                }
+                header("Location: users/student/home.php");
             } else {
                 header("Location: home.php");
             }
             exit;
         } else {
+            // Log the login attempt with failure
+            logUserLogin($user['UserID'], $pdo, false);
             // Invalid email or password
             header("Location: login.php?error=invalid_credentials");
             exit;
@@ -81,6 +68,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: login.php?error=invalid_credentials");
         exit;
     }
+}
+
+function logUserLogin($userID, $pdo, $success) {
+    // Log the login attempt to the UserLoginLog table
+    $stmt = $pdo->prepare("INSERT INTO UserLoginLog (UserID, Success) VALUES (:userID, :success)");
+    $stmt->execute(['userID' => $userID, 'success' => $success]);
 }
 
 function getUserRoles($userID, $pdo) {
@@ -94,8 +87,8 @@ function getUserRoles($userID, $pdo) {
     
     return $roles;
 }
-?>
 
+?>
 
 <!DOCTYPE html>
 <html>

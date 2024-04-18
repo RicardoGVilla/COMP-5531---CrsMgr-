@@ -46,41 +46,61 @@ usort($users, 'compareUsers');
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+<<<<<<< HEAD
             <button onclick="location.href='internal_emails.php'">Email</button>
+=======
+            <button onclick="location.href='logs.php'">User Logs</button>
+>>>>>>> fe459858416ee95ee4f3bbaf24563ffc49584d8b
         </div>
         <main class="main">
             <h2>Manage Users</h2>
 
             <!-- Add User Form -->
-            <form id="add-user-form" class="user-form" method="POST" action="logic_user_endpoint.php">
-                <h3>Add User</h3>
-                <input type="hidden" name="action" value="add">
-                <input type="text" name="name" placeholder="Full Name" required>
-                <input type="email" name="email" placeholder="Email" required>
-                <button type="submit">Add User</button>
-            </form>
+            <div class="table-wrapper">
+                <form id="add-user-form" class="user-form inline-form" method="POST" action="logic_user_endpoint.php">
+                    <h3>Add User</h3>
+                    <div class="input-body">
+                        <input type="hidden" name="action" value="add">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div>
+                        <button class="button is-primary" type="submit">Add User</button>
+                    </div>
+                </form>
+            </div>
 
             <!-- Update User Form -->
-            <form id="update-user-form" class="user-form" method="POST" action="logic_user_endpoint.php">
-                <h3>Update User</h3>
-                <input type="hidden" name="action" value="update">
-                <input type="text" name="user_id" placeholder="User ID" required>
-                <input type="text" name="new_name" placeholder="New Full Name">
-                <input type="email" name="new_email" placeholder="New Email">
-                <button type="submit">Update User</button>
-            </form>
+            <div class="table-wrapper">
+                <form id="update-user-form" class="user-form inline-form" method="POST" action="logic_user_endpoint.php">
+                    <h3>Update User</h3>
+                    <div class="input-body">
+                        <input type="hidden" name="action" value="update">
+                        <input type="text" name="user_id" placeholder="User ID" required>
+                        <input type="text" name="new_name" placeholder="New Full Name">
+                        <input type="email" name="new_email" placeholder="New Email">
+                    </div>
+                    <div>
+                        <button class="button is-secondary" type="submit">Update User</button>
+                    </div>
+                </form>
+            </div>
 
             <!-- Delete User Form -->
-            <form id="delete-user-form" class="user-form" method="POST" action="logic_user_endpoint.php">
-                <h3>Delete User</h3>
-                <input type="hidden" name="action" value="delete">
-                <input type="text" name="user_id" placeholder="User ID" required>
-                <button type="submit">Delete User</button>
-            </form>
+            <div class="table-wrapper">
+                <form id="delete-user-form" class="user-form inline-form" method="POST" action="logic_user_endpoint.php">
+                    <h3>Delete User</h3>
+                    <div class="input-body">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="text" name="user_id" placeholder="User ID" required>
+                        <button class="button is-delete" type="submit">Delete User</button>
+                    </div>
+                </form>
+            </div>
             <!-- User Table -->
-            <div class="user-table">
+            <div class="user-table table-wrapper">
                 <h3>Current Users</h3>
-                <table>
+                <table class="content-table">
                     <thead>
                         <tr>
                             <th>User ID</th>

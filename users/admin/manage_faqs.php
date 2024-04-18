@@ -52,7 +52,11 @@ function getFaqsForCourse($pdo, $courseId) {
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
+<<<<<<< HEAD
             <button onclick="location.href='internal_emails.php'">Email</button>
+=======
+            <button onclick="location.href='logs.php'">User Logs</button>
+>>>>>>> fe459858416ee95ee4f3bbaf24563ffc49584d8b
         </div>
 
         <!-- Main Content -->
@@ -133,9 +137,8 @@ function getFaqsForCourse($pdo, $courseId) {
 
             <br>
             <!-- Course and FAQs Overview -->
-            <div class="table-wrapper">
             <?php foreach ($courses as $course): ?>
-                <div class="course-faq-section">
+                <div class="course-faq-section table-wrapper">
                     <h3><?= htmlspecialchars($course['Name']) ?></h3>
                     <?php 
                         $faqs = getFaqsForCourse($pdo, $course['CourseID']);
@@ -163,10 +166,7 @@ function getFaqsForCourse($pdo, $courseId) {
                         <p>No FAQs found for this course.</p>
                     <?php endif; ?>
                 </div>
-                <br>
-                <br>
             <?php endforeach; ?>
-            </div>
         </main>
 
         <footer class="footer">
