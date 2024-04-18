@@ -34,7 +34,7 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </header>
 
         <div class="sidebar">
-            <button onclick="location.href='create_user.php'">Manage Users</button>
+        <button onclick="location.href='create_user.php'">Manage Users</button>
             <button onclick="location.href='manage_user.php'">Manage Roles</button>
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_sections.php'">Manage Sections</button>
@@ -43,6 +43,7 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
             <button onclick="location.href='logs.php'">User Logs</button>
+            <button onclick="location.href='internal_emails.php'">Internal Communication</button>
         </div>
 
         <main class="main">

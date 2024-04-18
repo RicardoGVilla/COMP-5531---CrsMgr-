@@ -36,12 +36,8 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
             <button onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
             <button onclick="location.href='group-information.php'">My Group Information </button>
-<<<<<<< HEAD
             <button onclick="location.href='manage-files.php'"> Manage Files </button>
             <button onclick="location.href='internal_emails.php'">Email</button>
-=======
-            <button onclick="location.href='internal_email.php'">Internal Email Communication </button>
->>>>>>> fe459858416ee95ee4f3bbaf24563ffc49584d8b
         </div>
 
         <main class="main">

@@ -52,7 +52,7 @@ if (isset($_GET['email_id'])) {
         <div class="sidebar">
             <button onclick="location.href='manage_courses.php'">Manage Courses</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-            <button onclick="location.href='manage_faqs.php'">Manage FAQSs</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
             <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
             <button onclick="location.href='internal_emails.php'">Email</button>
         </div>

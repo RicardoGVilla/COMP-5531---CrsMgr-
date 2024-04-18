@@ -58,7 +58,8 @@ if (isset($_GET['email_id'])) {
             <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
-            <button onclick="location.href='internal_emails.php'">Email</button>
+            <button onclick="location.href='logs.php'">User Logs</button>
+            <button onclick="location.href='internal_emails.php'">Internal Communication</button>
         </div>
         <!-- Main content area -->
         <main class="main">
