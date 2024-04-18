@@ -65,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["studentGroupFile"])) 
             if ($existingGroupId) {
                 $successMessage = "A similar group already exists with ID: " . $existingGroupId;
             } else {
+                try{
                 $stmt = $pdo->prepare("INSERT INTO `Group` (CourseID, GroupLeaderID, DatabasePassword, MaxSize) VALUES (?, ?, ?, ?)");
                 if ($stmt->execute([$courseId, $groupLeaderId, $randomPassword, count($studentIds)])) {
                     $newGroupId = $pdo->lastInsertId();
@@ -76,6 +77,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["studentGroupFile"])) 
                     }
                 } else {
                     $successMessage = "Failed to insert the group.";
+                }
+                }catch(Exception $e){
+                    //echo $e->getMessage() . "<br/>";
+                    $_SESSION['error'] = "Error updating group(s): " . $e->getMessage();
+                        echo '<script type ="text/JavaScript">';  
+                        echo 'alert("Error, could not upload correctly csv file")';  
+                        echo '</script>';
                 }
             }
         } else {
