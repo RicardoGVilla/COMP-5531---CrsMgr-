@@ -16,14 +16,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
     $courseId = $_POST['course'];
     // Store the selected course ID in the session
     $_SESSION['selected_course_id'] = $courseId;
-
+ 
     $sql = "SELECT Name FROM Course WHERE CourseID = :courseId";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['courseId' => $courseId]);
     $courseName = $stmt->fetchColumn();
-} else {
+    $_SESSION['course_name'] = $courseName;
+} elseif($_SESSION['selected_course_id']) {
     // If no course is selected or the request method is not POST, redirect to home page
-    header("Location: home.php");
+    //header("Location: home.php");
+    $courseName = $_SESSION['course_name'];
+   // exit;
+}else{
+
+    //illegal access
     exit;
 }
 ?>
@@ -54,6 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
         </main>
 
         <footer class="footer">
+            <button onclick="location.href='choose_course.php'">Change Course</button>
             <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
