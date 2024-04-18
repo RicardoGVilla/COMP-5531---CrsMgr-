@@ -89,9 +89,9 @@ try {
                         <td><?= htmlspecialchars($section['ClassSize']) ?></td>
                     </tr>
                     <?php if ($section['ClassSize'] > 0): ?>
-                </table> <!-- Close the table for course information -->
-            </div> <!-- Close the table-wrapper div -->
-            <div class="table-wrapper"> <!-- Open a new table-wrapper for student information -->
+                </table>
+            </div> 
+            <div class="table-wrapper">
                 <table class="content-table">
                     <thead>
                         <tr>
@@ -124,8 +124,22 @@ try {
                 </table>
                 <br>
                 <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
-                <!-- Modal and other HTML elements related to the modal go here -->
-            </div> <!-- Close the table-wrapper div -->
+                <!-- Modal -->
+                <div id="myModal<?= $section['SectionID'] ?>" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
+                        <h3>Add Student</h3>
+                        <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
+                            <input type="hidden" name="action" value="enroll_student">
+                            <input type="hidden" name="course_id" value="<?= $courseID ?>">
+                            <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                            <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
+                            <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
+                            <input class="button is-primary" type="submit" value="Enroll Student">
+                        </form>
+                    </div>
+                </div>
+            </div>
             <?php else: ?>
             <p>There are no students yet.</p>
             <?php endif; ?>
