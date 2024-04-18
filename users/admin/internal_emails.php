@@ -2,16 +2,26 @@
 session_start();
 require_once '../../database.php'; // Adjust the path as needed
 
-function sendEmail($pdo, $sender_id, $recipient_emails, $subject, $body) {
+// Check if user is logged in and has a user ID stored in session
+if (!isset($_SESSION["user"]["UserID"])) {
+
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit;
+}
+
+$loggedUserId = $_SESSION["user"]["UserID"];
+function sendEmail($pdo, $senderID, $recipient_emails, $subject, $body) {
+    global $loggedUserId;
+
     try {
         $pdo->beginTransaction();  // Start transaction
 
-        // Prepare and execute statement to insert the email into InternalEmail table
+        // Insert email into InternalEmail table
         $stmt = $pdo->prepare("INSERT INTO InternalEmail (SenderID, Subject, Body) VALUES (?, ?, ?)");
-        $stmt->execute([$sender_id, $subject, $body]);
+        $stmt->execute([$loggedUserId, $subject, $body]);
         $email_id = $pdo->lastInsertId();  // Get the ID of the inserted email
 
-        // Process each recipient email address
+        // Convert email addresses to user IDs
         $recipient_ids = [];
         foreach (explode(',', $recipient_emails) as $recipient_email) {
             $recipient_email = strtolower(trim($recipient_email));  // Clean and prepare email address
@@ -54,16 +64,11 @@ function fetchSentEmails($pdo, $user_id) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Handling Requests
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 switch ($action) {
     case 'send_email':
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (!empty($_POST['recipients']) && !empty($_POST['subject']) && !empty($_POST['body'])) {
-                echo sendEmail($pdo, $_SESSION['UserID'], $_POST['recipients'], $_POST['subject'], $_POST['body']);
-            } else {
-                echo "Error: All fields are required!";
-            }
+            echo sendEmail($pdo, $_SESSION['UserID'], $_POST['recipients'], $_POST['subject'], $_POST['body']);
         }
         break;
     case 'view_inbox':
@@ -205,23 +210,6 @@ switch ($action) {
                         <button type="submit">View Sent Emails</button>
                     </form>
                 </div>
-                <!-- Display area for messages or emails -->
-                <?php if (!empty($messages)) : ?>
-                    <div class="email-messages">
-                        <?php foreach ($messages as $message) {
-                            if (is_array($message)) {
-                                echo "<div class='email-item'>";
-                                echo "From: " . htmlspecialchars($message['SenderName']) . "<br>";
-                                echo "Subject: " . htmlspecialchars($message['Subject']) . "<br>";
-                                echo "Received: " . htmlspecialchars($message['Timestamp']) . "<br>";
-                                echo "<a href='view_email.php?email_id=" . $message['EmailID'] . "'>Read Email</a>";
-                                echo "</div><br>";
-                            } else {
-                                echo "<p>" . htmlspecialchars($message) . "</p>";
-                            }
-                        } ?>
-                    </div>
-                <?php endif; ?>
             </div>
         </main>
         <!-- Footer -->
@@ -232,3 +220,4 @@ switch ($action) {
     </div>
 </body>
 </html>
+
