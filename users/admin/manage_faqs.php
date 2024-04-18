@@ -132,9 +132,8 @@ function getFaqsForCourse($pdo, $courseId) {
 
             <br>
             <!-- Course and FAQs Overview -->
-            <div class="table-wrapper">
             <?php foreach ($courses as $course): ?>
-                <div class="course-faq-section">
+                <div class="course-faq-section table-wrapper">
                     <h3><?= htmlspecialchars($course['Name']) ?></h3>
                     <?php 
                         $faqs = getFaqsForCourse($pdo, $course['CourseID']);
@@ -162,10 +161,7 @@ function getFaqsForCourse($pdo, $courseId) {
                         <p>No FAQs found for this course.</p>
                     <?php endif; ?>
                 </div>
-                <br>
-                <br>
             <?php endforeach; ?>
-            </div>
         </main>
 
         <footer class="footer">
