@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once 'database.php';
+require_once '../../database.php'; // Adjust the path as needed
 
 // Utility Functions
 function sendEmail($pdo, $sender_id, $recipient_emails, $subject, $body) {
