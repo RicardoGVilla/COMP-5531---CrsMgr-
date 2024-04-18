@@ -11,24 +11,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
             $sectionNumber = $_POST['sectionNumber'];
             $startDate = $_POST['startDate'];
             $endDate = $_POST['endDate'];
+            //Checking for dates
+            if(strtotime($endDate)>strtotime($startDate)){
+                // Check for duplicate entry
+                $checkSql = "SELECT COUNT(*) FROM CourseSection WHERE CourseID = ? AND SectionNumber = ? AND StartDate = ? AND EndDate = ?";
+                $checkStmt = $pdo->prepare($checkSql);
+                $checkStmt->execute([$courseID, $sectionNumber, $startDate, $endDate]);
+                $exists = $checkStmt->fetchColumn();
 
-            // Check for duplicate entry
-$checkSql = "SELECT COUNT(*) FROM CourseSection WHERE CourseID = ? AND SectionNumber = ? AND StartDate = ? AND EndDate = ?";
-$checkStmt = $pdo->prepare($checkSql);
-$checkStmt->execute([$courseID, $sectionNumber, $startDate, $endDate]);
-$exists = $checkStmt->fetchColumn();
-
-if ($exists > 0) {
-    // Duplicate found, send error message
-    echo "A section with the same course ID, number, start date, and end date already exists.";
-} else {
-    // No duplicate, proceed with insertion
-    $sql = "INSERT INTO CourseSection (CourseID, SectionNumber, StartDate, EndDate) VALUES (?, ?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$courseID, $sectionNumber, $startDate, $endDate]);
-    echo "Section added successfully!";
-}
-
+                if ($exists > 0) {
+                    // Duplicate found, send error message
+                    echo "A section with the same course ID, number, start date, and end date already exists.";
+                } else {
+                    // No duplicate, proceed with insertion
+                    $sql = "INSERT INTO CourseSection (CourseID, SectionNumber, StartDate, EndDate) VALUES (?, ?, ?, ?)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$courseID, $sectionNumber, $startDate, $endDate]);
+                    echo "Section added successfully!";
+                }
+            } else{
+                 $_SESSION['error'] = "Course cannot be added! End Date must be later than the Start Date";
+            }
             break;
 
         case 'update':
@@ -36,10 +39,17 @@ if ($exists > 0) {
             $newSectionNumber = $_POST['newSectionNumber'];
             $newStartDate = $_POST['newStartDate'];
             $newEndDate = $_POST['newEndDate'];
+
+            //Checking dates
+            
+        if (strtotime($newEndDate)>strtotime($newStartDate)){ 
             $sql = "UPDATE CourseSection SET SectionNumber = ?, StartDate = ?, EndDate = ? WHERE SectionID = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$newSectionNumber, $newStartDate, $newEndDate, $sectionID]);
             echo "Section updated successfully!";
+        } else{
+            $_SESSION['error'] = "Course cannot be added! End Date must be later than the Start Date";
+        }
             break;
 
         case 'delete':

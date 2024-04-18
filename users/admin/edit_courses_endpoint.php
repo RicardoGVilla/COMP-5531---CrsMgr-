@@ -93,20 +93,27 @@ function updateCourse()
     $newInstructorID = $_POST['new_instructors'];
 
     try {
-        // Update the course details
-        $query = "UPDATE Course SET Name = ?, StartDate = ?, EndDate = ? WHERE CourseID = ?";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$newCourseName, $newStartDate, $newEndDate, $courseID]);
+        //Checking dates to ensure consistancy    
+        if (strtotime($newEndDate)>strtotime($newStartDate)){ 
+            // Update the course details
+            $query = "UPDATE Course SET Name = ?, StartDate = ?, EndDate = ? WHERE CourseID = ?";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([$newCourseName, $newStartDate, $newEndDate, $courseID]);
 
-        // Update the instructor associated with the course
-        $query = "UPDATE CourseInstructor SET InstructorID = ? WHERE CourseID = ?";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$newInstructorID, $courseID]);
+            // Update the instructor associated with the course
+            $query = "UPDATE CourseInstructor SET InstructorID = ? WHERE CourseID = ?";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([$newInstructorID, $courseID]);
 
-        $_SESSION['success'] = "Course updated successfully.";
+            $_SESSION['success'] = "Course updated successfully.";
+        } else{
+            $_SESSION['error'] = "Course cannot be added! End Date must be later than the Start Date";
+        }
+
     } catch (PDOException $e) {
         $_SESSION['error'] = "Error updating course: " . $e->getMessage();
     }
+    
 }
 
 function deleteCourse()
