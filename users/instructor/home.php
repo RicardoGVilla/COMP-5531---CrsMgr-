@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
 <body>
     <div class="page">
         <header class="header">
-            <h1>Welcome <?php echo htmlspecialchars($userName); ?> [Instructor]</h1>
+            <h1>Welcome TA <?php echo htmlspecialchars($userName); ?> [Instructor]</h1>
         </header>
 
         <div class="sidebar">

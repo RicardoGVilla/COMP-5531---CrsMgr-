@@ -55,7 +55,6 @@ if (isset($_GET['email_id'])) {
             <button onclick="location.href='group-information.php'">My Group Information </button>
             <button onclick="location.href='manage-files.php'"> Manage Files </button>
             <button onclick="location.href='internal_emails.php'">Email</button>
-        </div>
         <!-- Main content area -->
         <main class="main">
             <div class="email-system">
