@@ -62,7 +62,7 @@ $courseDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         </header>
         
         <div class="sidebar">
-            <button class="is-selected" onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button class="is-selected" onclick="location.href='manage_courses.php'">Course Details</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
             <button onclick="location.href='internal_email.php'">Internal Email Communication </button>
@@ -70,24 +70,27 @@ $courseDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         
         <main class="main">
             <h2>Current Class: <?php echo isset($_SESSION["selectedCourseName"]) ? htmlspecialchars($_SESSION["selectedCourseName"]) : "No class selected"; ?></h2>
-            <?php if ($courseDetails): ?>
-                <table border='1'>
-                    <tr><th>Course Code</th><th>Course Name</th><th>Section Number</th><th>Start Date</th><th>End Date</th></tr>
-                    <tr>
-                        <td><?php echo htmlspecialchars($courseDetails['CourseCode']); ?></td>
-                        <td><?php echo htmlspecialchars($courseDetails['Name']); ?></td>
-                        <td><?php echo htmlspecialchars($courseDetails['SectionNumber']); ?></td>
-                        <td><?php echo htmlspecialchars($courseDetails['StartDate']); ?></td>
-                        <td><?php echo htmlspecialchars($courseDetails['EndDate']); ?></td>
-                    </tr>
-                </table>
-            <?php else: ?>
-                <p>Course details not found.</p>
-            <?php endif; ?>
+            <div class="table-wrapper">
+                <?php if ($courseDetails): ?>
+                    <table class="content-table">
+                        <tr><th>Course Code</th><th>Course Name</th><th>Section Number</th><th>Start Date</th><th>End Date</th></tr>
+                        <tr>
+                            <td><?php echo htmlspecialchars($courseDetails['CourseCode']); ?></td>
+                            <td><?php echo htmlspecialchars($courseDetails['Name']); ?></td>
+                            <td><?php echo htmlspecialchars($courseDetails['SectionNumber']); ?></td>
+                            <td><?php echo htmlspecialchars($courseDetails['StartDate']); ?></td>
+                            <td><?php echo htmlspecialchars($courseDetails['EndDate']); ?></td>
+                        </tr>
+                    </table>
+                <?php else: ?>
+                    <p>Course details not found.</p>
+                <?php endif; ?>
+            </div>
         </main>
         
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='choose_course.php'">Change Course</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
