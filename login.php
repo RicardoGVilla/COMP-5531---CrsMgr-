@@ -49,8 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: users/instructor/home.php");
                 exit;
             } elseif (in_array('TA', $roles)) {
+                unset($_SESSION["selectedCourseName"]);
                 header("Location: users/ta/choose-role.php");
             } elseif (in_array('Student', $roles)) {
+                unset($_SESSION["selectedCourseName"]);
                 header("Location: users/student/home.php");
             } else {
                 header("Location: home.php");
