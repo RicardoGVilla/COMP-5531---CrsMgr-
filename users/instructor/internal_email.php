@@ -29,44 +29,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["send_message"])) {
     exit;
 }
 
-// Retrieve messages for the current user with sender details
+// Retrieve messages for the current user
 $userID = $_SESSION["user"]["UserID"];
-$sql = "SELECT m.*, u.UserID AS SenderUserID, u.Name AS SenderName, u.EmailAddress AS SenderEmail, r.RoleName AS SenderRole 
-        FROM Message m 
-        INNER JOIN User u ON m.SenderID = u.UserID
-        INNER JOIN UserRole ur ON u.UserID = ur.UserID
-        INNER JOIN Role r ON ur.RoleID = r.RoleID
-        WHERE m.RecipientID = ?";
+$sql = "SELECT m.*, u.Name AS SenderName, u.EmailAddress AS SenderEmail FROM Message m INNER JOIN User u ON m.SenderID = u.UserID WHERE m.RecipientID = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$userID]);
 $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internal Email</title>
+    <title>Student Dashboard - CrsMgr+</title>
     <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
     <div class="page">
         <header class="header">
-            <h1>Welcome Admin</h1>
+            <h1>Welcome Student <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?></h1>
         </header>
-        
+
         <div class="sidebar">
-            <button onclick="location.href='create_user.php'">Manage Users</button>
-            <button onclick="location.href='manage_user.php'">Manage Roles</button>
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_sections.php'">Manage Sections</button>
-            <button onclick="location.href='manage_groups.php'">Manage Groups</button>
-            <button onclick="location.href='manage_announcements.php'">Course Announcements</button>
-            <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
-            <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
-            <button onclick="location.href='logs.php'">User Logs</button>
-            <button class="is-selected" onclick="location.href='internal_email.php'">Internal Communication</button>
+            <button onclick="location.href='contact_information.php'">Contact Information</button>
+            <button onclick="location.href='faq-information.php'">FAQ</button>
+            <button onclick="location.href='group-information.php'">My Group Information </button>
+            <button class="is-selected" onclick="location.href='internal_email.php'">Internal Email Communication </button>
         </div>
 
         <main class="main">
@@ -84,7 +77,7 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </form>
             </div>
-        
+
             <h2>Received Messages</h2>
             <?php if (empty($receivedMessages)): ?>
                 <p>No messages received.</p>
@@ -92,12 +85,14 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <ul>
                     <?php foreach ($receivedMessages as $message): ?>
                         <li>
-                            <strong>From:</strong> <?php echo $message['SenderUserID']; ?> - <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>) - <?php echo $message['SenderRole']; ?><br>
+                            <strong>From:</strong> <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>)<br>
                             <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
+
+
         </main>
 
         <footer class="footer">

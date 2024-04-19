@@ -12,35 +12,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        $passwordMatch = false;
-
-        // Check if the password submitted starts with "hashed_"
-        if (substr($password, 0, 7) === 'hashed_') {
-            // Perform a direct string comparison
-            $passwordMatch = ($user['Password'] === $password);
-        } else {
-            // Use password_verify() for comparison for non-prefixed passwords
-            $_SESSION['change_password_user_id'] = $user['UserID']; // Store the user's ID in the session
-            $passwordMatch = password_verify($password, $user['Password']);
-        }
+        $passwordMatch = (substr($password, 0, 7) === 'hashed_') ? ($user['Password'] === $password) : password_verify($password, $user['Password']);
 
         if ($passwordMatch) {
-            // Log the login with success
-            logUserLogin($user['UserID'], $pdo, true);
-
-            // Password is correct, check if NewUser is TRUE
+            logUserLogin($user['UserID'], $pdo, true);  // Log successful login
             if ($user['NewUser']) {
-                // Redirect to new_password.php for the user to set a new password
                 header("Location: change_password.php");
                 exit;
             }
-
-            // If NewUser is FALSE, continue with the role-based redirection logic
             $_SESSION["user"] = $user;
             $roles = getUserRoles($user['UserID'], $pdo);
-
             if (empty($roles)) {
-                // If no roles are assigned, redirect to login page with an error message
                 header("Location: login.php?error=no_role_assigned");
                 exit;
             } elseif (in_array('Admin', $roles)) {
@@ -59,23 +41,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             exit;
         } else {
-            // Log the login attempt with failure
-            logUserLogin($user['UserID'], $pdo, false);
-            // Invalid email or password
+            logUserLogin($user['UserID'], $pdo, false);  // Log failed login
             header("Location: login.php?error=invalid_credentials");
             exit;
         }
     } else {
-        // If no user is found with the email
+        logUserLogin(null, $pdo, false);  // Log failed login with no user found
         header("Location: login.php?error=invalid_credentials");
         exit;
     }
 }
 
 function logUserLogin($userID, $pdo, $success) {
-    // Log the login attempt to the UserLoginLog table
-    $stmt = $pdo->prepare("INSERT INTO UserLoginLog (UserID, Success) VALUES (:userID, :success)");
-    $stmt->execute(['userID' => $userID, 'success' => $success]);
+    $userID = $userID ?: 'NULL';
+    try {
+        $stmt = $pdo->prepare("INSERT INTO UserLoginLog (UserID, Success) VALUES (:userID, :success)");
+        $stmt->bindValue(':userID', $userID, ($userID === 'NULL' ? PDO::PARAM_NULL : PDO::PARAM_INT));
+        $stmt->bindValue(':success', $success, PDO::PARAM_BOOL);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Failed to log user login: " . $e->getMessage());
+    }
 }
 
 function getUserRoles($userID, $pdo) {
@@ -86,10 +72,8 @@ function getUserRoles($userID, $pdo) {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $roles[] = $row['RoleName'];
     }
-    
     return $roles;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -112,24 +96,18 @@ function getUserRoles($userID, $pdo) {
             </div>
             <div class="form-container">
                 <form id="login-form" action="login.php" method="post">
-                    
                     <div class="inputs">
                         <div class="input-container">
-                            <img src="" alt="" />
                             <input id="email" type="email" name='email' placeholder='Email' required/>
                         </div>
-                    </div>
-                    <div class="inputs">
-                    <div class="input-container">
-                        <img src="" alt="" />
-                        <input id="password" type="password" name='password' placeholder='Password' required/>
-                    </div>
+                        <div class="input-container">
+                            <input id="password" type="password" name='password' placeholder='Password' required/>
+                        </div>
                     </div>
                     <div class="submit-container">
                         <button class="submit" name="submit" type="submit">Login</button>
                     </div>
                     <div class="forgot-password">Forgot Password? <span>Click here</span></div>
-                
                     <?php
                     if (isset($_GET["error"])) {
                         if ($_GET["error"] === "invalid_credentials") {
@@ -143,6 +121,5 @@ function getUserRoles($userID, $pdo) {
             </div>
         </div>
     </div>
-    
 </body>
 </html>

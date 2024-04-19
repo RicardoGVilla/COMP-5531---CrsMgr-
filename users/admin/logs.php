@@ -8,15 +8,12 @@ if (!isset($_SESSION["user"]["UserID"])) {
     exit;
 }
 
-// Query to fetch user login logs with user details
-$query = "SELECT l.LogID, l.UserID, l.LoginTime, l.Success, u.EmailAddress, u.Name 
-          FROM UserLoginLog l
-          INNER JOIN `User` u ON l.UserID = u.UserID";
-$stmt = $pdo->query($query);
+// Fetch all login logs from the database
+$stmt = $pdo->prepare("SELECT LogID, UserID, LoginTime, Success FROM UserLoginLog ORDER BY LoginTime DESC");
+$stmt->execute();
 $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
-
+?>
 
 
 <!DOCTYPE html>
@@ -30,7 +27,7 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="page">
         <header class="header">
-        <h1>Welcome <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?> [Admin]</h1>
+            <h1>Welcome <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?> [Admin]</h1>
         </header>
 
         <div class="sidebar">
@@ -51,52 +48,33 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Logs</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>Login Log</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
 </head>
 <body>
-    <h2>User Logs</h2>
+    <h1>Login Attempts</h1>
     <table>
         <thead>
             <tr>
                 <th>Log ID</th>
                 <th>User ID</th>
-                <th>Name</th>
-                <th>Email</th>
                 <th>Login Time</th>
                 <th>Success</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($logs as $log): ?>
-                <tr>
-                    <td><?php echo $log['LogID']; ?></td>
-                    <td><?php echo $log['UserID']; ?></td>
-                    <td><?php echo $log['Name']; ?></td>
-                    <td><?php echo $log['EmailAddress']; ?></td>
-                    <td><?php echo $log['LoginTime']; ?></td>
-                    <td><?php echo $log['Success'] ? 'Yes' : 'No'; ?></td>
-                </tr>
+            <tr>
+                <td><?= htmlspecialchars($log['LogID']) ?></td>
+                <td><?= $log['UserID'] !== null ? htmlspecialchars($log['UserID']) : 'No User Found' ?></td>
+                <td><?= htmlspecialchars($log['LoginTime']) ?></td>
+                <td><?= $log['Success'] ? 'Successful' : 'Failed' ?></td>
+            </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </body>
 </html>
-
         </main>
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
@@ -105,5 +83,3 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </body>
 </html>
-
-
