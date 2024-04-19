@@ -59,6 +59,7 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
             <button onclick="location.href='group-information.php'">My Group Information </button>
+            <button onclick="location.href='manage_announcements.php'">Announcements</button>
             <button class="is-selected" onclick="location.href='internal_email.php'">Internal Email Communication </button>
         </div>
 
@@ -78,25 +79,28 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </form>
             </div>
 
-            <h2>Received Messages</h2>
-            <?php if (empty($receivedMessages)): ?>
-                <p>No messages received.</p>
-            <?php else: ?>
-                <ul>
-                    <?php foreach ($receivedMessages as $message): ?>
-                        <li>
-                            <strong>From:</strong> <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>)<br>
-                            <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
+            <div class="table-wrapper">
+                <h2>Received Messages</h2>
+                <?php if (empty($receivedMessages)): ?>
+                    <p>No messages received.</p>
+                <?php else: ?>
+                    <ul>
+                        <?php foreach ($receivedMessages as $message): ?>
+                            <li>
+                                <strong>From:</strong> <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>)<br>
+                                <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
 
 
         </main>
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='choose-class.php'">Change Course</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>

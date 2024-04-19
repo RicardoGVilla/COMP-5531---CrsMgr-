@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require_once '../../database.php';
@@ -83,32 +84,19 @@ try {
         </header> 
     
         <div class="sidebar">
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
-            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
-            <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
-            <button class="is-selected" onclick="location.href='manage_announcements.php'">Manage Announcements</button>
-            <button onclick="location.href='internal_email.php'">Internal Communication</button>
+            <button onclick="location.href='contact_information.php'">Contact Information</button>
+            <button onclick="location.href='faq-information.php'">FAQ</button>
+            <button onclick="location.href='group-information.php'">My Group Information </button>
+            <button class="is-selected" onclick="location.href='manage_announcements.php'">Announcements</button>
+            <button onclick="location.href='internal_email.php'">Internal Email Communication </button>
+
         </div>
 
         <main class="main">
             <div class="main-header">
-                <h2>Manage Course Announcements</h2>
+                <h2>Course Announcements</h2>
             </div>
-            <div id="add-announcement" class="announcement-form table-wrapper">
-    <h2>Add New Announcement for <?= htmlspecialchars($selectedCourse['Name']) ?></h2>
-    <form class="inline-form" action="post_announcement.php" method="post"> 
-        <div class="input-body">
-            <input type="hidden" name="course_id" value="<?= htmlspecialchars($selectedCourseId) ?>">
-            <input type="text" name="title" placeholder="Announcement Title" required />
-        </div>
-        <textarea name="content" placeholder="Announcement Content" rows="7" required></textarea>
-        <div>
-            <button class="button is-primary" type="submit">Post Announcement</button>
-        </div>
-    </form>
-</div>
-
-
+           
             <div class="announcement-list table-wrapper">
                 <h2>Existing Announcements</h2>
                 <?php if (empty($announcements)): ?>
