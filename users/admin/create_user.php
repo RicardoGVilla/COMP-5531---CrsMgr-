@@ -129,6 +129,83 @@ usort($users, 'compareUsers');
         </footer>
     </div>
 
-    
+    <script>
+        document.getElementById('add-user-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = new FormData(this);
+
+            // Send AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'logic_user_endpoint.php', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show alert with response message
+                    alert(xhr.responseText);
+                    window.location.reload();
+                } else {
+                    // Handle error
+                    console.error('Request failed with status:', xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network errors
+                console.error('Request failed');
+            };
+            xhr.send(formData);
+        });
+        document.getElementById('update-user-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = new FormData(this);
+
+            // Send AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'logic_user_endpoint.php', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show alert with response message
+                    alert(xhr.responseText);
+                    window.location.reload();
+                } else {
+                    // Handle error
+                    console.error('Request failed with status:', xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network errors
+                console.error('Request failed');
+            };
+            xhr.send(formData);
+        });
+        document.getElementById('delete-user-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = new FormData(this);
+
+            // Send AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'logic_user_endpoint.php', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show alert with response message
+                    alert(xhr.responseText);
+                    window.location.reload();
+                } else {
+                    // Handle error
+                    console.error('Request failed with status:', xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network errors
+                console.error('Request failed');
+            };
+            xhr.send(formData);
+        });
+    </script>
+
 </body>
 </html>
