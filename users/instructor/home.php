@@ -57,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
         </div>
 
         <main class="main">
-            
             <h2>Welcome To Instructor Dashboard</h2>
             <h3>Current Course: <?php echo htmlspecialchars($courseName); ?></h3>
             <p>This dashboard provides tools and features tailored for Instructors. Below are the functionalities offered:</p>
@@ -100,8 +99,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
                 </li>
             </ul>
         </main>
-
-
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
