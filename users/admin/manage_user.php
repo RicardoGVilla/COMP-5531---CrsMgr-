@@ -20,11 +20,7 @@ include('../../database.php');
             border-collapse: collapse;
         }
         table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
+            border: 1px solid #999999;
         }
     </style>
 </head>
@@ -54,7 +50,7 @@ include('../../database.php');
             <!-- Edit User Form -->
             <div class="table-wrapper">
                 <h2>Edit User Roles</h2>
-                <form class="inline-form" action="edit_user_endpoint.php" method="post">
+                <form id="add-role-form" class="inline-form" action="edit_user_endpoint.php" method="post">
                     <div class="label-input-body">
                         <div class="label-input">
                             <label for="userId">User ID:</label>
@@ -84,7 +80,7 @@ include('../../database.php');
             </div>
             <div class="table-wrapper">
                 <h2>User Roles List</h2>
-                <table>
+                <table class="content-table">
                     <tr>
                         <th>User ID</th>
                         <th>Name</th>
@@ -136,6 +132,32 @@ include('../../database.php');
         </footer>
     </div>
     <script>
+        document.getElementById('add-role-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = new FormData(this);
+
+            // Send AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'edit_user_endpoint.php', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show alert with response message
+                    alert(xhr.responseText);
+                    // Reload the page to reflect changes
+                    window.location.reload();
+                } else {
+                    // Handle error
+                    console.error('Request failed with status:', xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network errors
+                console.error('Request failed');
+            };
+            xhr.send(formData);
+        });
         function removeRole(userId, roleId) {
             if (confirm("Are you sure you want to remove the role? UserID: " + userId + ", RoleID: " + roleId)) {
                 // Send AJAX request to edit_user_endpoint.php
