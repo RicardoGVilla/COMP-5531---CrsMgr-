@@ -30,6 +30,7 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
     <div class="page">
         <header class="header">
             <h1>Welcome Student <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?></h1>
+            <h5> DEBUG: <?php   echo htmlspecialchars($_SESSION["selectedCourseName"]) ?></h5>
         </header>
 
         <div class="sidebar">
@@ -134,7 +135,8 @@ $selectedCourseID = $_SESSION["selectedCourseName"];
         </main>
 
         <footer class="footer">
-            <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='./home.php'">Home</button>
+            <button onclick="location.href='choose-class.php'">Change Course</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>

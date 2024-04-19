@@ -125,10 +125,35 @@ function getFaqsForCourse($pdo, $courseId) {
                 </form>
             </div>
 
+
+            <!-- Export FAQ Form -->
+            <div id="export-faq" class="faq-form table-wrapper" style="display: none;">
+                <h2>Export FAQ</h2>
+                <form class="inline-form" action="edit_faq_endpoint.php" method="post">
+                    <div class="input-body">
+                        <input type="number" name="faq_id" placeholder="FAQ ID" required />
+                        <select name="new_course_id">
+                            <option value="">Select New Course</option>
+                            <?php foreach ($courses as $course): ?>
+                                <option value="<?= htmlspecialchars($course['CourseID']) ?>">
+                                    <?= htmlspecialchars($course['Name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="button is-secondary" type="submit">Export FAQ</button>
+                    </div>
+                </form>
+            </div>
+
+
+
             <div class="faq-actions">
                 <button class="button is-primary"  onclick="showForm('add')">Add FAQ</button>
                 <button class="button is-secondary" onclick="showForm('update')">Update FAQ</button>
                 <button class="button is-delete"  onclick="showForm('delete')">Delete FAQ</button>
+                <button class="button is-export"  onclick="showForm('export')">Export FAQ</button>
             </div>
 
             <br>
