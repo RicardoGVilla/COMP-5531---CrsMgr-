@@ -69,82 +69,87 @@ try {
 
         <main class="main">
             <h2>Course Information</h2>
-            <div class="table-wrapper">
-                <table class="content-table">
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Course ID</th>
-                        <th>Section</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Class Size</th>
-                    </tr>
-                    <?php foreach ($courseSections as $section): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($courseName); ?></td> 
-                        <td><?php echo htmlspecialchars($courseID); ?></td> 
-                        <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
-                        <td><?= htmlspecialchars($section['StartDate']) ?></td>
-                        <td><?= htmlspecialchars($section['EndDate']) ?></td>
-                        <td><?= htmlspecialchars($section['ClassSize']) ?></td>
-                    </tr>
-                    <?php if ($section['ClassSize'] > 0): ?>
-                </table>
-            </div> 
-            <div class="table-wrapper">
-                <table class="content-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        // Fetch student details for this section
-                        $sql = "SELECT u.UserID, u.Name, u.EmailAddress
-                                FROM StudentEnrollment se
-                                JOIN `User` u ON se.StudentID = u.UserID
-                                WHERE se.SectionID = :sectionId";
-                        $stmt = $pdo->prepare($sql);
-                        $stmt->execute(['sectionId' => $section['SectionID']]);
-                        $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            <?php foreach ($courseSections as $section): ?>
+                <div class="table-wrapper">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Course Name</th>
+                                <th>Course ID</th>
+                                <th>Section</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Class Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><?= htmlspecialchars($courseName) ?></td> 
+                                <td><?= htmlspecialchars($courseID) ?></td> 
+                                <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
+                                <td><?= htmlspecialchars($section['StartDate']) ?></td>
+                                <td><?= htmlspecialchars($section['EndDate']) ?></td>
+                                <td><?= htmlspecialchars($section['ClassSize']) ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> <!-- Close the table-wrapper -->
+                <?php if ($section['ClassSize'] > 0): ?>
+                <div class="table-wrapper">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            // Fetch student details for this section
+                            $sql = "SELECT u.UserID, u.Name, u.EmailAddress
+                                    FROM StudentEnrollment se
+                                    JOIN `User` u ON se.StudentID = u.UserID
+                                    WHERE se.SectionID = :sectionId";
+                            $stmt = $pdo->prepare($sql);
+                            $stmt->execute(['sectionId' => $section['SectionID']]);
+                            $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        foreach ($students as $student): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($student['UserID']) ?></td>
-                            <td><?= htmlspecialchars($student['Name']) ?></td>
-                            <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
-                            <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <br>
-                <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
-                <!-- Modal -->
-                <div id="myModal<?= $section['SectionID'] ?>" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
-                        <h3>Add Student</h3>
-                        <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
-                            <input type="hidden" name="action" value="enroll_student">
-                            <input type="hidden" name="course_id" value="<?= $courseID ?>">
-                            <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
-                            <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
-                            <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
-                            <input class="button is-primary" type="submit" value="Enroll Student">
-                        </form>
+                            foreach ($students as $student): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($student['UserID']) ?></td>
+                                    <td><?= htmlspecialchars($student['Name']) ?></td>
+                                    <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                                    <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <br>
+                    <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
+                    <!-- Modal -->
+                    <div id="myModal<?= $section['SectionID'] ?>" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal(<?= $section['SectionID'] ?>)">&times;</span>
+                            <h3>Add Student</h3>
+                            <form id="studentForm<?= $section['SectionID'] ?>" onsubmit="enrollStudent(event, <?= $section['SectionID'] ?>)" method="post" action="edit_courses_endpoint.php">
+                                <input type="hidden" name="action" value="enroll_student">
+                                <input type="hidden" name="course_id" value="<?= $courseID ?>">
+                                <input type="hidden" name="section_id" value="<?= $section['SectionID'] ?>">
+                                <label for="student_id<?= $section['SectionID'] ?>">Student ID:</label>
+                                <input type="text" id="student_id<?= $section['SectionID'] ?>" name="student_id" required><br><br>
+                                <input class="button is-primary" type="submit" value="Enroll Student">
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <?php else: ?>
-            <p>There are no students yet.</p>
-            <?php endif; ?>
+                </div> <!-- Close the table-wrapper -->
+                <?php else: ?>
+                    <p>There are no students yet.</p>
+                <?php endif; ?>
             <?php endforeach; ?>
         </main>
+
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>

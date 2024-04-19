@@ -47,6 +47,7 @@ usort($users, 'compareUsers');
             <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
             <button onclick="location.href='enrolling_students.php'">Course Enrollment</button>
             <button onclick="location.href='logs.php'">User Logs</button>
+            <button onclick="location.href='internal_email.php'">Internal Communication</button>
         </div>
         <main class="main">
             <h2>Manage Users</h2>
@@ -129,6 +130,83 @@ usort($users, 'compareUsers');
         </footer>
     </div>
 
-    
+    <script>
+        document.getElementById('add-user-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = new FormData(this);
+
+            // Send AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'logic_user_endpoint.php', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show alert with response message
+                    alert(xhr.responseText);
+                    window.location.reload();
+                } else {
+                    // Handle error
+                    console.error('Request failed with status:', xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network errors
+                console.error('Request failed');
+            };
+            xhr.send(formData);
+        });
+        document.getElementById('update-user-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = new FormData(this);
+
+            // Send AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'logic_user_endpoint.php', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show alert with response message
+                    alert(xhr.responseText);
+                    window.location.reload();
+                } else {
+                    // Handle error
+                    console.error('Request failed with status:', xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network errors
+                console.error('Request failed');
+            };
+            xhr.send(formData);
+        });
+        document.getElementById('delete-user-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = new FormData(this);
+
+            // Send AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'logic_user_endpoint.php', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show alert with response message
+                    alert(xhr.responseText);
+                    window.location.reload();
+                } else {
+                    // Handle error
+                    console.error('Request failed with status:', xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network errors
+                console.error('Request failed');
+            };
+            xhr.send(formData);
+        });
+    </script>
+
 </body>
 </html>
