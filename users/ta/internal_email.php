@@ -29,9 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["send_message"])) {
     exit;
 }
 
-// Retrieve messages for the current user
+// Retrieve messages for the current user with sender details
 $userID = $_SESSION["user"]["UserID"];
-$sql = "SELECT * FROM Message WHERE RecipientID = ?";
+$sql = "SELECT m.*, u.UserID AS SenderUserID, u.Name AS SenderName, u.EmailAddress AS SenderEmail, r.RoleName AS SenderRole 
+        FROM Message m 
+        INNER JOIN User u ON m.SenderID = u.UserID
+        INNER JOIN UserRole ur ON u.UserID = ur.UserID
+        INNER JOIN Role r ON ur.RoleID = r.RoleID
+        WHERE m.RecipientID = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$userID]);
 $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -81,7 +86,7 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <ul>
                     <?php foreach ($receivedMessages as $message): ?>
                         <li>
-                            <strong>From:</strong> <?php echo $message['SenderID']; ?><br>
+                            <strong>From:</strong> <?php echo $message['SenderUserID']; ?> - <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>) - <?php echo $message['SenderRole']; ?><br>
                             <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
                         </li>
                     <?php endforeach; ?>
