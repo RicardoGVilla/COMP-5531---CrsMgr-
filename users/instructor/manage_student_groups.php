@@ -175,8 +175,8 @@ if ($currentInstructorId && $selectedCourseId) {
         </main>
 
         <footer class="footer">
-            <button onclick="location.href='choose_course.php'">Change Course</button>
             <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='choose_course.php'">Change Course</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>
