@@ -80,17 +80,17 @@ try {
                         <th>Class Size</th>
                     </tr>
                     <?php foreach ($courseSections as $section): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($courseName); ?></td> 
-                            <td><?php echo htmlspecialchars($courseID); ?></td> 
-                            <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
-                            <td><?= htmlspecialchars($section['StartDate']) ?></td>
-                            <td><?= htmlspecialchars($section['EndDate']) ?></td>
-                            <td><?= htmlspecialchars($section['ClassSize']) ?></td>
-                        </tr>
+                    <tr>
+                        <td><?php echo htmlspecialchars($courseName); ?></td> 
+                        <td><?php echo htmlspecialchars($courseID); ?></td> 
+                        <td><?= htmlspecialchars($section['SectionNumber']) ?></td> 
+                        <td><?= htmlspecialchars($section['StartDate']) ?></td>
+                        <td><?= htmlspecialchars($section['EndDate']) ?></td>
+                        <td><?= htmlspecialchars($section['ClassSize']) ?></td>
+                    </tr>
                     <?php if ($section['ClassSize'] > 0): ?>
                 </table>
-            </div>
+            </div> 
             <div class="table-wrapper">
                 <table class="content-table">
                     <thead>
@@ -113,21 +113,17 @@ try {
                         $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         foreach ($students as $student): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($student['UserID']) ?></td>
-                                <td><?= htmlspecialchars($student['Name']) ?></td>
-                                <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
-                                <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
-                            </tr>
+                        <tr>
+                            <td><?= htmlspecialchars($student['UserID']) ?></td>
+                            <td><?= htmlspecialchars($student['Name']) ?></td>
+                            <td><?= htmlspecialchars($student['EmailAddress']) ?></td>
+                            <td><button class="button is-delete" onclick="removeStudent(<?= $section['SectionID'] ?>, <?= $student['UserID'] ?>)">Remove Student</button></td>
+                        </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php else: ?>
-                    <p>There are no students yet.</p>
-                <?php endif; ?>
                 <br>
                 <button class="button is-primary" onclick="openModal(<?= $section['SectionID'] ?>)">Add Student</button>
-            </div>
                 <!-- Modal -->
                 <div id="myModal<?= $section['SectionID'] ?>" class="modal">
                     <div class="modal-content">
@@ -143,9 +139,12 @@ try {
                         </form>
                     </div>
                 </div>
-                <?php endforeach; ?>
+            </div>
+            <?php else: ?>
+            <p>There are no students yet.</p>
+            <?php endif; ?>
+            <?php endforeach; ?>
         </main>
-
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
