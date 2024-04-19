@@ -76,6 +76,7 @@ foreach ($courseSections as $section) {
         <button onclick="location.href='manage_faqs.php'">FAQ Management</button>
         <button class="is-selected" onclick="location.href='enrolling_students.php'">Course Enrollment</button>
         <button onclick="location.href='logs.php'">User Logs</button>
+        <button onclick="location.href='internal_email.php'">Internal Communication</button>
     </div>
 
     <main class="main">
