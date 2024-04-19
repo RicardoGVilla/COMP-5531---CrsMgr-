@@ -48,7 +48,7 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="page">
         <header class="header">
-            <h1>Internal Email</h1>
+            <h1>Welcome Admin</h1>
         </header>
         
         <div class="sidebar">
@@ -65,16 +65,20 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <main class="main">
-            <h2>Send Message</h2>
-            <form method="post">
-                <label for="recipient_id">Recipient User ID:</label>
-                <input type="text" id="recipient_id" name="recipient_id" required>
-                
-                <label for="message_content">Message:</label>
-                <textarea id="message_content" name="message_content" rows="4" cols="50" required></textarea>
-                
-                <button type="submit" name="send_message">Send Message</button>
-            </form>
+            <h2>Internal Email</h2>
+            <div class="table-wrapper">
+                <h2>Send Message</h2>
+                <form class="inline-form" method="post">
+                    <label for="recipient_id">Recipient User ID:</label>
+                    <input type="text" id="recipient_id" name="recipient_id" required>
+                    
+                    <label for="message_content">Message:</label>
+                    <textarea id="message_content" name="message_content" rows="4" cols="50" required></textarea>
+                    <div>
+                        <button class="button is-primary" type="submit" name="send_message">Send Message</button>
+                    </div>
+                </form>
+            </div>
         
             <h2>Received Messages</h2>
             <?php if (empty($receivedMessages)): ?>

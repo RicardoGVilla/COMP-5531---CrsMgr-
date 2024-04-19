@@ -54,7 +54,7 @@ $course = $stmt->fetch(PDO::FETCH_ASSOC);
             <button class="is-selected" onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
             <button onclick="location.href='group-information.php'">My Group Information </button>
-            <button>My Group (Internal Communication)</button>
+            <button onclick="location.href='internal_email.php'">Internal Email Communication </button>
         </div>
 
         <main class="main">

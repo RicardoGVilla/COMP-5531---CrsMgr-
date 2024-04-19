@@ -43,45 +43,6 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internal Email</title>
-</head>
-<body>
-    <h1>Internal Email</h1>
-    
-    <h2>Send Message</h2>
-    <form method="post">
-        <label for="recipient_id">Recipient User ID:</label>
-        <input type="text" id="recipient_id" name="recipient_id" required>
-        
-        <label for="message_content">Message:</label>
-        <textarea id="message_content" name="message_content" rows="4" cols="50" required></textarea>
-        
-        <button type="submit" name="send_message">Send Message</button>
-    </form>
-
-    <h2>Received Messages</h2>
-    <?php if (empty($receivedMessages)): ?>
-        <p>No messages received.</p>
-    <?php else: ?>
-        <ul>
-            <?php foreach ($receivedMessages as $message): ?>
-                <li>
-                    <strong>From:</strong> <?php echo $message['SenderID']; ?><br>
-                    <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-</body>
-</html>
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - CrsMgr+</title>
     <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
@@ -91,14 +52,41 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </header>
 
         <div class="sidebar">
-            <button onclick="location.href='contact_information.php'">Contact Information</button>
-            <button onclick="location.href='faq-information.php'">FAQ</button>
-            <button onclick="location.href='group-information.php'">My Group Information </button>
-            <button onclick="location.href='internal_email.php'">Internal Email Communication </button>
+            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
+            <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
+            <button class="is-selected" onclick="location.href='internal_email.php'">Internal Email Communication </button>
         </div>
 
         <main class="main">
-           
+            <h2>Internal Email</h2>
+            <div class="table-wrapper">
+                <h2>Send Message</h2>
+                <form class="inline-form" method="post">
+                    <label for="recipient_id">Recipient User ID:</label>
+                    <input type="text" id="recipient_id" name="recipient_id" required>
+                    
+                    <label for="message_content">Message:</label>
+                    <textarea id="message_content" name="message_content" rows="4" cols="50" required></textarea>
+                    <div>
+                        <button class="button is-primary" type="submit" name="send_message">Send Message</button>
+                    </div>
+                </form>
+            </div>
+
+            <h2>Received Messages</h2>
+            <?php if (empty($receivedMessages)): ?>
+                <p>No messages received.</p>
+            <?php else: ?>
+                <ul>
+                    <?php foreach ($receivedMessages as $message): ?>
+                        <li>
+                            <strong>From:</strong> <?php echo $message['SenderID']; ?><br>
+                            <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
         </main>
 
         <footer class="footer">
