@@ -65,6 +65,7 @@ try {
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
             <button onclick="location.href='manage_announcements.php'">Manage Announcements</button>
+            <button onclick="location.href='internal_email.php'">Internal Communication</button>
         </div>
 
         <main class="main">
@@ -152,6 +153,7 @@ try {
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='choose_course.php'">Change Course</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>

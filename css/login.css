@@ -69,6 +69,7 @@ body{
   height: 80px;
   background: #eaeaea;
   border-radius: 6px;
+  padding-inline-start: 15px;
 }
 
 .input-container img{

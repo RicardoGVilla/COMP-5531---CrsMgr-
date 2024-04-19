@@ -54,7 +54,7 @@ $groupMembers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </header>
         
         <div class="sidebar">
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_courses.php'">Course Details</button>
             <button class="is-selected" onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
             <button onclick="location.href='internal_email.php'">Internal Email Communication </button>
@@ -62,28 +62,31 @@ $groupMembers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         <main class="main">
             <h1>Student Groups</h1>
-            <?php
-                if ($groupMembers) {
-                    echo "<table border='1'>";
-                    echo "<tr><th>Group ID</th><th>Group Leader ID</th><th>Student ID</th><th>Student Name</th><th>Email Address</th></tr>";
-                    foreach ($groupMembers as $member) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($member['GroupID']) . "</td>";
-                        echo "<td>" . htmlspecialchars($member['GroupLeaderID']) . "</td>";
-                        echo "<td>" . htmlspecialchars($member['UserID']) . "</td>";
-                        echo "<td>" . htmlspecialchars($member['StudentName']) . "</td>";
-                        echo "<td>" . htmlspecialchars($member['EmailAddress']) . "</td>";
-                        echo "</tr>";
+            <div class="table-wrapper">
+                <?php
+                    if ($groupMembers) {
+                        echo "<table border='1'>";
+                        echo "<tr><th>Group ID</th><th>Group Leader ID</th><th>Student ID</th><th>Student Name</th><th>Email Address</th></tr>";
+                        foreach ($groupMembers as $member) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($member['GroupID']) . "</td>";
+                            echo "<td>" . htmlspecialchars($member['GroupLeaderID']) . "</td>";
+                            echo "<td>" . htmlspecialchars($member['UserID']) . "</td>";
+                            echo "<td>" . htmlspecialchars($member['StudentName']) . "</td>";
+                            echo "<td>" . htmlspecialchars($member['EmailAddress']) . "</td>";
+                            echo "</tr>";
+                        }
+                        echo "</table>";
+                    } else {
+                        echo "<p>No student groups found for this course.</p>";
                     }
-                    echo "</table>";
-                } else {
-                    echo "<p>No student groups found for this course.</p>";
-                }
-            ?>
+                ?>
+            </div>
         </main>
         
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='choose_course.php'">Change Course</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>

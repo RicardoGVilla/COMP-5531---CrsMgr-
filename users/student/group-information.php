@@ -64,35 +64,39 @@ try {
             <button onclick="location.href='contact_information.php'">Contact Information</button>
             <button onclick="location.href='faq-information.php'">FAQ</button>
             <button class="is-selected" onclick="location.href='group-information.php'">My Group Information </button>
+            <button onclick="location.href='manage_announcements.php'">Announcements</button>
             <button onclick="location.href='internal_email.php'">Internal Email Communication </button>
         </div>
 
         <main class="main">
             <h2>Group Members Details</h2>
-            <?php if (!empty($groups)): ?>
-                <?php foreach ($groups as $group): ?>
-                    <h3>Group ID: <?php echo htmlspecialchars($group['GroupID']); ?></h3>
-                    <?php
-                    // Fetch all members in the group
-                    $membersStmt = $pdo->prepare("SELECT u.UserID, u.Name, u.EmailAddress FROM User u 
-                                                  JOIN StudentGroupMembership sgm ON u.UserID = sgm.StudentID 
-                                                  WHERE sgm.GroupID = ?");
-                    $membersStmt->execute([$group['GroupID']]);
-                    $members = $membersStmt->fetchAll(PDO::FETCH_ASSOC);
-                    ?>
-                    <ul>
-                    <?php foreach ($members as $member): ?>
-                        <li><?php echo htmlspecialchars($member['Name']) . ' (' . htmlspecialchars($member['UserID']) . ') - ' . htmlspecialchars($member['EmailAddress']); ?></li>
+            <div class="table-wrapper">
+                <?php if (!empty($groups)): ?>
+                    <?php foreach ($groups as $group): ?>
+                        <h3>Group ID: <?php echo htmlspecialchars($group['GroupID']); ?></h3>
+                        <?php
+                        // Fetch all members in the group
+                        $membersStmt = $pdo->prepare("SELECT u.UserID, u.Name, u.EmailAddress FROM User u 
+                                                      JOIN StudentGroupMembership sgm ON u.UserID = sgm.StudentID 
+                                                      WHERE sgm.GroupID = ?");
+                        $membersStmt->execute([$group['GroupID']]);
+                        $members = $membersStmt->fetchAll(PDO::FETCH_ASSOC);
+                        ?>
+                        <ul>
+                        <?php foreach ($members as $member): ?>
+                            <li><?php echo htmlspecialchars($member['Name']) . ' (' . htmlspecialchars($member['UserID']) . ') - ' . htmlspecialchars($member['EmailAddress']); ?></li>
+                        <?php endforeach; ?>
+                        </ul>
                     <?php endforeach; ?>
-                    </ul>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>No group found for the current user in this course.</p>
-            <?php endif; ?>
+                <?php else: ?>
+                    <p>No group found for the current user in this course.</p>
+                <?php endif; ?>
+            </div>
         </main>
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
+            <button onclick="location.href='choose-class.php'">Change Course</button>
             <button onclick="location.href='../../logout.php'">Logout</button>
         </footer>
     </div>

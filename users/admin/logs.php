@@ -22,7 +22,7 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - CrsMgr+</title>
-    <link rel="stylesheet" href="../../css/home.css">
+    <link rel="stylesheet" href="../../css/index.css">
 </head>
 <body>
     <div class="page">
@@ -44,37 +44,29 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <main class="main">
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login Log</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
-</head>
-<body>
-    <h1>Login Attempts</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Log ID</th>
-                <th>User ID</th>
-                <th>Login Time</th>
-                <th>Success</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($logs as $log): ?>
-            <tr>
-                <td><?= htmlspecialchars($log['LogID']) ?></td>
-                <td><?= $log['UserID'] !== null ? htmlspecialchars($log['UserID']) : 'No User Found' ?></td>
-                <td><?= htmlspecialchars($log['LoginTime']) ?></td>
-                <td><?= $log['Success'] ? 'Successful' : 'Failed' ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</body>
-</html>
+            <div class="table-wrapper">
+                <h2>Login Attempts</h2>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>User ID</th>
+                            <th>Login Time</th>
+                            <th>Success</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($logs as $log): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($log['LogID']) ?></td>
+                            <td><?= $log['UserID'] !== null ? htmlspecialchars($log['UserID']) : 'No User Found' ?></td>
+                            <td><?= htmlspecialchars($log['LoginTime']) ?></td>
+                            <td><?= $log['Success'] ? 'Successful' : 'Failed' ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </main>
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>

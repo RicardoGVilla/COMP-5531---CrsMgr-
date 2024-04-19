@@ -33,15 +33,44 @@ if (!isset($_SESSION["selectedCourseName"])) {
         </header>
 
         <div class="sidebar">
-            <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+            <button onclick="location.href='manage_courses.php'">Course Details</button>
             <button onclick="location.href='manage_student_groups.php'">Manage Student Groups</button>
             <button onclick="location.href='manage_faqs.php'">Manage FAQs</button>
             <button onclick="location.href='internal_email.php'">Internal Communication</button>
         </div>
 
         <main class="main">
-            <h2>Current Class: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h2>
+            <h3>Welcome To TA Dashboard</h3>
+            <h4>Current Class: <?php echo htmlspecialchars($_SESSION["selectedCourseName"]); ?></h4>
             
+            <p>This dashboard provides tools and features tailored for Teaching Assistants. Below are the functionalities offered:</p>
+            <b>Features</b>
+            <ul type="disc">
+                <li><b>Course Details</b>
+                    <ul type="disc">
+                        <li>View details from current course such as Course Code and  Section Number</li>
+                    </ul>
+                </li>
+                <br>
+                <li><b>Manage Student Groups</b>
+                    <ul type="disc">
+                        <li>Create and manage student groups for collaborative projects and discussions within courses.</li>
+                    </ul>
+                </li>
+                <br>
+                <li><b>FAQ Management</b>
+                    <ul type="disc">
+                        <li>Maintain a list of frequently asked questions (FAQs) by adding new questions and answers.</li>
+                        <li>Help students by providing clear and concise answers to common queries.</li>
+                    </ul>
+                </li>
+                <br>
+                <li><b>Internal Communication</b>
+                    <ul type="disc">
+                        <li>Access internal messaging system to communicate with instructors, other TAs.</li>
+                    </ul>
+                </li>
+            </ul>
         </main>
 
         <footer class="footer">
