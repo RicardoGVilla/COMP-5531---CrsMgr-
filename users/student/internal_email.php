@@ -79,21 +79,21 @@ $receivedMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </form>
             </div>
 
-            <h2>Received Messages</h2>
-            <?php if (empty($receivedMessages)): ?>
-                <p>No messages received.</p>
-            <?php else: ?>
-                <ul>
-                    <?php foreach ($receivedMessages as $message): ?>
-                        <li>
-                            <strong>From:</strong> <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>)<br>
-                            <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
-
-
+            <div class="table-wrapper">
+                <h2>Received Messages</h2>
+                <?php if (empty($receivedMessages)): ?>
+                    <p>No messages received.</p>
+                <?php else: ?>
+                    <ul>
+                        <?php foreach ($receivedMessages as $message): ?>
+                            <li>
+                                <strong>From:</strong> <?php echo $message['SenderName']; ?> (<?php echo $message['SenderEmail']; ?>)<br>
+                                <strong>Message:</strong> <?php echo $message['MessageContent']; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
         </main>
 
         <footer class="footer">

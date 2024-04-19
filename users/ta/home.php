@@ -51,22 +51,23 @@ if (!isset($_SESSION["selectedCourseName"])) {
                         <li>View details from current course such as Course Code and  Section Number</li>
                     </ul>
                 </li>
+                <br>
                 <li><b>Manage Student Groups</b>
                     <ul type="disc">
                         <li>Create and manage student groups for collaborative projects and discussions within courses.</li>
-                        <li>Assign students to groups and monitor group activities.</li>
                     </ul>
                 </li>
+                <br>
                 <li><b>FAQ Management</b>
                     <ul type="disc">
-                        <li>Maintain a list of frequently asked questions (FAQs) by adding new questions and answers, updating existing ones, and removing outdated information.</li>
+                        <li>Maintain a list of frequently asked questions (FAQs) by adding new questions and answers.</li>
                         <li>Help students by providing clear and concise answers to common queries.</li>
                     </ul>
                 </li>
+                <br>
                 <li><b>Internal Communication</b>
                     <ul type="disc">
-                        <li>Access internal messaging system to communicate with instructors, other TAs, and students regarding course-related matters.</li>
-                        <li>Send messages, announcements, and reminders to relevant parties.</li>
+                        <li>Access internal messaging system to communicate with instructors, other TAs.</li>
                     </ul>
                 </li>
             </ul>

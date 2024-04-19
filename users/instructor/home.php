@@ -57,8 +57,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['course'])) {
         </div>
 
         <main class="main">
-            <h2> <?php echo htmlspecialchars($courseName); ?></h2>
+            
+            <h2>Welcome To Instructor Dashboard</h2>
+            <h3>Current Course: <?php echo htmlspecialchars($courseName); ?></h3>
+            <p>This dashboard provides tools and features tailored for Instructors. Below are the functionalities offered:</p>
+            
+            <b>Features</b>
+            <ul type="disc">
+                <li><b>Manage Courses</b>
+                    <ul type="disc">
+                        <li>Add and remove students from the course roster.</li>
+                        <li>Update course details such as schedule, syllabus, and resources.</li>
+                    </ul>
+                </li>
+                <br>
+                <li><b>Manage Student Groups</b>
+                    <ul type="disc">
+                        <li>Create and manage student groups for collaborative projects.</li>
+                        <li>Upload a CSV file to automatically create groups for the course.</li>
+                    </ul>
+                </li>
+                <br>
+                <li><b>Manage FAQs</b>
+                    <ul type="disc">
+                        <li>Create, edit, and delete frequently asked questions (FAQs) related to the course.</li>
+                        <li>Provide clear and concise answers to common queries from students.</li>
+                    </ul>
+                </li>
+                <br>
+                <li><b>Manage Announcements</b>
+                    <ul type="disc">
+                        <li>Create and manage announcements to communicate important information to students enrolled in the course.</li>
+                        <li>Notify students about upcoming events, deadlines, or changes to course materials.</li>
+                    </ul>
+                </li>
+                <br>
+                <li><b>Internal Communication</b>
+                    <ul type="disc">
+                        <li>Send messages to other users, such as TAs, fellow instructors, or individual students.</li>
+                        <li>Communicate efficiently with course staff and students regarding course-related matters.</li>
+                    </ul>
+                </li>
+            </ul>
         </main>
+
+
 
         <footer class="footer">
             <button onclick="location.href='home.php'">Home</button>
