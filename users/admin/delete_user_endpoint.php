@@ -1,5 +1,13 @@
 <?php
-session_start(); // Start the session.
+
+// code written by:
+// Ricardo Gutierrez, 40074308
+
+//code debugged and tested by: 
+// Alejandro Araya, 40170778
+// Omar Ghandour, 40109052
+
+session_start(); 
 require_once '../../database.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {

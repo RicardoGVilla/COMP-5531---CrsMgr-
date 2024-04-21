@@ -1,4 +1,9 @@
 <?php
+
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+
 session_start(); 
 
 include_once '../../database.php'; 

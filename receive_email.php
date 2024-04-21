@@ -1,4 +1,7 @@
 <?php
+// code written by:
+// Omar Ghandour, 40109052
+
 session_start();
 require_once '../../database.php';
 

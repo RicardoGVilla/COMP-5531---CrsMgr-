@@ -1,6 +1,16 @@
 <?php
+
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+
 session_start();
 include_once '../../database.php';
+
+
 
 // Check if user is logged in and has a user ID stored in session
 if (!isset($_SESSION["user"]["UserID"])) {

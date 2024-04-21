@@ -1,4 +1,7 @@
 <?php
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
 $host = 'localhost';
 $port = '3306'; 
 $dbname = 'crs_manager_final';

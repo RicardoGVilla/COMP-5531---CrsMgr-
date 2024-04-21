@@ -1,4 +1,9 @@
 <?php
+
+// code written by:
+// Ricardo Gutierrez, 40074308
+
+
 require_once '../../database.php';
 session_start();
 
@@ -81,7 +86,6 @@ function exportFAQ($pdo, $faq_id, $new_course_id) {
             return false; // Return false if FAQ with provided ID is not found
         }
     } catch (PDOException $e) {
-        // Handle any database errors
         return false;
     }
 }

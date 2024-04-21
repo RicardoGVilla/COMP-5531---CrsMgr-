@@ -1,8 +1,16 @@
 <?php
-// Start the session
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+//code debugged and tested by: 
+// Alejandro Araya, 40170778
+// Omar Ghandour, 40109052
+
 session_start();
 
-// Include your database connection file
 require_once('../../database.php');
 
 // Check if user is logged in

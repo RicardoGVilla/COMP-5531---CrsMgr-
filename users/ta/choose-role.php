@@ -1,3 +1,10 @@
+<!-- 
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+-->
+
 
 <!DOCTYPE html>
 <html>

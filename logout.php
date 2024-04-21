@@ -1,4 +1,7 @@
 <?php
+// code written by:
+// Ricardo Gutierrez, 40074308
+
 session_start();
 
 // Unset specific session variables

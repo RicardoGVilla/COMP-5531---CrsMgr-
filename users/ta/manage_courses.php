@@ -1,4 +1,12 @@
 <?php
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+
+
 // Start the session
 session_start();
 

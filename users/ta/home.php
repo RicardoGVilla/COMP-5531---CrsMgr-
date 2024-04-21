@@ -1,5 +1,12 @@
 <?php
-// Start the session
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+
+
 session_start();
 
 // Check if user is logged in and has a user ID stored in session

@@ -1,6 +1,11 @@
-<!-- <?php
+<?php
 include_once 'database.php';
 session_start();
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
 
 // Redirect to login page if no user ID is stored in the session
 if (!isset($_SESSION['change_password_user_id'])) {
@@ -34,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['error'] = "Error updating password: " . $e->getMessage();
     }
 }
-?> -->
+?> 
 
 <!DOCTYPE html>
 <html lang="en">

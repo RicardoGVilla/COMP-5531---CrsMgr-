@@ -1,8 +1,9 @@
 <?php
-// Start the session
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
 session_start();
 
-// Include database connection
 include_once '../../database.php';
 
 // Check if the form was submitted and a course was selected

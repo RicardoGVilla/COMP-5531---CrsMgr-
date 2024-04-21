@@ -1,3 +1,17 @@
+/* 
+
+// code written by:
+// Ricardo Gutierrez, 40074308
+
+
+//code debugged and tested by: 
+// Alejandro Araya, 40170778
+// Omar Ghandour, 40109052
+
+
+*/
+
+
 INSERT INTO Role (RoleName) VALUES ('Student'), ('Instructor'), ('TA'), ('Admin');
 
 -- Users, with Rachel Ray as the new user

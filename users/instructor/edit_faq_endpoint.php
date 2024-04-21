@@ -1,4 +1,9 @@
 <?php
+
+// code written by:
+// Ricardo Gutierrez, 40074308
+
+
 session_start(); 
 require_once '../../database.php'; 
 

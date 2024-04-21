@@ -1,7 +1,18 @@
 <?php
+
+
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+//code debugged and tested by: 
+// Alejandro Araya, 40170778
+// Omar Ghandour, 40109052
+
 session_start(); 
 
-// Include database connection
 include('../../database.php');
 
 ?>
@@ -12,7 +23,7 @@ include('../../database.php');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users</title>
+    <h1>Welcome <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?> [Admin]</h1>
     <link rel="stylesheet" href="../../css/index.css"> 
     <style>
         table {

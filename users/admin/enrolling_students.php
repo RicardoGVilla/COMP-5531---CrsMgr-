@@ -1,4 +1,15 @@
 <?php
+
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+//code debugged and tested by: 
+// Alejandro Araya, 40170778
+// Omar Ghandour, 40109052
+
 session_start();
 require_once '../../database.php';
 
@@ -199,7 +210,7 @@ foreach ($courseSections as $section) {
     }
 
     function enrollStudent(event, sectionID) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); 
 
         var form = document.getElementById('studentForm' + sectionID);
         var formData = new FormData(form);
@@ -209,8 +220,7 @@ foreach ($courseSections as $section) {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var response = xhr.responseText;
-                alert(response); // Show the response message
-                // Optionally, you can update the page content dynamically here
+                alert(response); 
                 window.location.reload();
             } else {
                 alert('Error: ' + xhr.statusText);

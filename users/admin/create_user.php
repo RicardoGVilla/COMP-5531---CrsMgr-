@@ -1,4 +1,12 @@
 <?php
+
+// code logic written by:
+// Ricardo Gutierrez, 40074308
+
+// front end written by: 
+// Paulina Valero, 40289881
+
+
 session_start(); 
 
 include('../../database.php');
@@ -33,7 +41,7 @@ usort($users, 'compareUsers');
 <body>
     <div class="page">
         <header class="header">
-            <h1>Welcome Admin</h1>
+        <h1>Welcome <?php echo htmlspecialchars($_SESSION["user"]["Name"]); ?> [Admin]</h1>
         </header>
 
         <!-- Sidebar Navigation -->
